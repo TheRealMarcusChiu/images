@@ -1,12 +1,49 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   Mosaic Gallery — renders real content from window.GALLERY_ITEMS
-   (generated into content/manifest.js by tools/build-manifest.mjs).
-   Items arrive sorted newest-first and are laid out as a shortest-column
-   masonry (see the Masonry engine section below). More are revealed as the
-   sentinel scrolls into view.
+   Mosaic Gallery — renders content authored in content/items.js
+   (window.GALLERY_ITEMS). No build step: this file derives everything at
+   runtime — sorts by date (newest first), formats the timestamp, builds the
+   media URL, and measures each image's aspect ratio — then lays the tiles out
+   as a shortest-column masonry. More are revealed as the sentinel scrolls in.
    ────────────────────────────────────────────────────────────────────────── */
 
-const ITEMS = Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : [];
+const VIDEO_AR = 0.5625; // 16:9 height/width, for youtube + posterless video
+
+/** "YYYY.MM.DD HH:MM" from an ISO 8601 string. */
+function displayTS(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso || '');
+  return m ? `${m[1]}.${m[2]}.${m[3]} ${m[4]}:${m[5]}` : (iso || '');
+}
+
+/** Web path for a media file: content/media/<url-encoded filename>. */
+function mediaSrc(file) {
+  return `content/media/${encodeURIComponent(file)}`;
+}
+
+/** Normalize authored entries into render-ready items, newest first. */
+function normalize(raw) {
+  return raw
+    .filter((e) => e && e.type && e.date && !Number.isNaN(Date.parse(e.date)))
+    .map((e) => {
+      const it = { type: e.type, date: e.date, ts: displayTS(e.date) };
+      if (e.desc) it.desc = e.desc;
+      if (e.link) it.link = e.link;
+      if (e.type === 'youtube') {
+        it.id = e.id;
+        it.ar = VIDEO_AR;
+      } else {
+        it.src = mediaSrc(e.file);
+        if (e.type === 'video') {
+          if (e.poster) it.poster = mediaSrc(e.poster); // ar measured from poster
+          else it.ar = VIDEO_AR;
+        }
+        // image (and video-with-poster) ar is measured lazily before placement
+      }
+      return it;
+    })
+    .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+}
+
+const ITEMS = normalize(Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : []);
 
 const mosaic   = document.getElementById('mosaic');
 const sentinel = document.getElementById('sentinel');
@@ -14,6 +51,26 @@ const galWrap  = document.getElementById('gallery-wrap');
 
 let loading = false;
 let cursor  = 0;     // index into ITEMS of the next item to place
+
+/** Measure aspect ratio (height/width) by decoding the image; resilient. */
+function measureAR(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    let settled = false;
+    const done = (v) => { if (!settled) { settled = true; resolve(v); } };
+    img.onload  = () => done(img.naturalWidth && img.naturalHeight
+                            ? img.naturalHeight / img.naturalWidth : 1);
+    img.onerror = () => done(1);
+    img.src = url;
+    setTimeout(() => done(1), 5000); // fallback if a load stalls
+  });
+}
+
+/** Ensure item.ar is set (no-op for youtube / posterless video). */
+async function ensureAR(it) {
+  if (it.ar != null) return;
+  it.ar = await measureAR(it.type === 'video' ? it.poster : it.src);
+}
 
 // External-link SVG icon (arrow-up-right style)
 const LINK_ICON_SVG = `
@@ -212,26 +269,27 @@ function relayout() {
 
 /* ── Reveal the next batch of items ── */
 const BATCH_SIZE = 12;
-function loadMore() {
+async function loadMore() {
   if (loading) return;
   if (cursor >= ITEMS.length) { finish(); return; }
 
   loading = true;
   sentinel.textContent = 'Loading…';
 
-  setTimeout(() => {
-    const end = Math.min(cursor + BATCH_SIZE, ITEMS.length);
-    while (cursor < end) {
-      placeItem(ITEMS[cursor], cursor);
-      cursor++;
-    }
-    loading = false;
+  // Measure aspect ratios up front so placement is exact and reflow-free.
+  const end = Math.min(cursor + BATCH_SIZE, ITEMS.length);
+  await Promise.all(ITEMS.slice(cursor, end).map(ensureAR));
 
-    if (cursor >= ITEMS.length) finish();
-    else sentinel.textContent = 'Loading…';
+  while (cursor < end) {
+    placeItem(ITEMS[cursor], cursor);
+    cursor++;
+  }
+  loading = false;
 
-    restoreScroll();
-  }, 80);
+  if (cursor >= ITEMS.length) finish();
+  else sentinel.textContent = 'Loading…';
+
+  restoreScroll();
 }
 
 /* Re-flow only when the column count actually changes. */
