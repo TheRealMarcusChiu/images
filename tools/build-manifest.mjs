@@ -54,6 +54,61 @@ function mediaSrc(file) {
   return `content/media/${encodeURIComponent(file)}`;
 }
 
+const VIDEO_AR = 0.5625; // 16:9 height/width, for youtube + posterless video
+
+/** Read intrinsic pixel size from a JPEG/PNG/GIF/WebP buffer. Returns {w,h} or null. */
+function imageSize(buf) {
+  // PNG
+  if (buf.length >= 24 && buf.readUInt32BE(0) === 0x89504e47) {
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  }
+  // GIF
+  if (buf.length >= 10 && buf.toString('ascii', 0, 3) === 'GIF') {
+    return { w: buf.readUInt16LE(6), h: buf.readUInt16LE(8) };
+  }
+  // WebP (RIFF....WEBP)
+  if (buf.length >= 30 && buf.toString('ascii', 0, 4) === 'RIFF' &&
+      buf.toString('ascii', 8, 12) === 'WEBP') {
+    const fmt = buf.toString('ascii', 12, 16);
+    if (fmt === 'VP8 ') return { w: buf.readUInt16LE(26) & 0x3fff, h: buf.readUInt16LE(28) & 0x3fff };
+    if (fmt === 'VP8L') {
+      const b = buf.readUInt32LE(21);
+      return { w: (b & 0x3fff) + 1, h: ((b >> 14) & 0x3fff) + 1 };
+    }
+    if (fmt === 'VP8X') {
+      return {
+        w: 1 + (buf[24] | (buf[25] << 8) | (buf[26] << 16)),
+        h: 1 + (buf[27] | (buf[28] << 8) | (buf[29] << 16)),
+      };
+    }
+  }
+  // JPEG: scan for a Start-Of-Frame marker
+  if (buf.length >= 2 && buf[0] === 0xff && buf[1] === 0xd8) {
+    let off = 2;
+    while (off + 9 < buf.length) {
+      if (buf[off] !== 0xff) { off++; continue; }
+      const marker = buf[off + 1];
+      if (marker >= 0xc0 && marker <= 0xcf &&
+          marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+        return { h: buf.readUInt16BE(off + 5), w: buf.readUInt16BE(off + 7) };
+      }
+      off += 2 + buf.readUInt16BE(off + 2);
+    }
+  }
+  return null;
+}
+
+/** Aspect ratio (height/width) of a media file on disk, or null if unreadable. */
+async function measureAR(absPath) {
+  try {
+    const size = imageSize(await readFile(absPath));
+    if (size && size.w > 0 && size.h > 0) {
+      return Math.round((size.h / size.w) * 10000) / 10000;
+    }
+  } catch { /* fall through */ }
+  return null;
+}
+
 async function build() {
   let raw;
   try {
@@ -85,17 +140,27 @@ async function build() {
     if (entry.type === 'youtube') {
       if (!entry.id) { warn(`${where} — youtube entry missing "id", skipped`); continue; }
       item.id = entry.id;
+      item.ar = VIDEO_AR;
     } else {
       if (!entry.file) { warn(`${where} — ${entry.type} entry missing "file", skipped`); continue; }
       item.src = mediaSrc(entry.file);
-      if (!(await exists(join(MEDIA_DIR, entry.file)))) {
-        warn(`${where} — file not found: content/media/${entry.file}`);
-      }
-      if (entry.type === 'video' && entry.poster) {
-        item.poster = mediaSrc(entry.poster);
-        if (!(await exists(join(MEDIA_DIR, entry.poster)))) {
-          warn(`${where} — poster not found: content/media/${entry.poster}`);
+      const filePath = join(MEDIA_DIR, entry.file);
+      const fileThere = await exists(filePath);
+      if (!fileThere) warn(`${where} — file not found: content/media/${entry.file}`);
+
+      if (entry.type === 'image') {
+        const ar = fileThere ? await measureAR(filePath) : null;
+        if (ar == null && fileThere) warn(`${where} — could not read image size, defaulting ar=1`);
+        item.ar = ar ?? 1;
+      } else { // video
+        let posterThere = false;
+        if (entry.poster) {
+          item.poster = mediaSrc(entry.poster);
+          posterThere = await exists(join(MEDIA_DIR, entry.poster));
+          if (!posterThere) warn(`${where} — poster not found: content/media/${entry.poster}`);
         }
+        const ar = posterThere ? await measureAR(join(MEDIA_DIR, entry.poster)) : null;
+        item.ar = ar ?? VIDEO_AR;
       }
     }
 

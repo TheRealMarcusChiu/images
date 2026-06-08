@@ -1,8 +1,9 @@
 /* ──────────────────────────────────────────────────────────────────────────
    Mosaic Gallery — renders real content from window.GALLERY_ITEMS
    (generated into content/manifest.js by tools/build-manifest.mjs).
-   Items arrive sorted newest-first. We reveal them one year-group at a time
-   as the sentinel scrolls into view.
+   Items arrive sorted newest-first and are laid out as a shortest-column
+   masonry (see the Masonry engine section below). More are revealed as the
+   sentinel scrolls into view.
    ────────────────────────────────────────────────────────────────────────── */
 
 const ITEMS = Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : [];
@@ -11,9 +12,8 @@ const mosaic   = document.getElementById('mosaic');
 const sentinel = document.getElementById('sentinel');
 const galWrap  = document.getElementById('gallery-wrap');
 
-let loading      = false;
-let cursor       = 0;     // index into ITEMS of the next item to render
-let revealAnimIx = 0;     // for staggered fade-in within a batch
+let loading = false;
+let cursor  = 0;     // index into ITEMS of the next item to place
 
 // External-link SVG icon (arrow-up-right style)
 const LINK_ICON_SVG = `
@@ -52,12 +52,14 @@ function applyLink(tile, item) {
 
 /* ── Image tile ── */
 function makeImageTile(item, i) {
-  const alt  = item.title || item.desc || 'photo';
+  const alt = item.title || item.desc || 'photo';
+  const ar  = item.ar || 1;                 // height / width
   const tile = document.createElement('div');
   tile.className = 'tile';
   tile.style.animationDelay = `${(i % 5) * 55}ms`;
   tile.innerHTML = `
-    <img src="${escapeAttr(item.src)}" alt="${escapeAttr(alt)}" loading="lazy">
+    <img src="${escapeAttr(item.src)}" alt="${escapeAttr(alt)}" loading="lazy"
+         style="aspect-ratio:${1 / ar}">
     ${overlayHTML(item, null)}`;
   applyLink(tile, item);
   return tile;
@@ -145,6 +147,69 @@ function makeTile(item, i) {
   return null;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Masonry engine
+
+   Tiles are placed in date order (newest first). Each next tile goes into the
+   column that is currently shortest — i.e. whose stacked content reaches
+   closest to the top — with ties broken toward the left. Because every item
+   carries its aspect ratio (item.ar = height/width), we can track column
+   heights exactly without waiting for images to load, so there is no reflow.
+   ────────────────────────────────────────────────────────────────────────── */
+const GAP = parseInt(getComputedStyle(document.documentElement)
+              .getPropertyValue('--gap'), 10) || 6;
+
+let cols      = [];   // column <div> elements
+let colHeights = [];  // running pixel height of each column
+let colCount  = 0;
+let colWidth  = 0;
+
+function targetColumnCount() {
+  const w = window.innerWidth;
+  if (w <= 720)  return 2;
+  if (w <= 1100) return 3;
+  return 4;
+}
+
+function setupColumns() {
+  colCount = targetColumnCount();
+  mosaic.innerHTML = '';
+  cols = [];
+  colHeights = [];
+  for (let i = 0; i < colCount; i++) {
+    const c = document.createElement('div');
+    c.className = 'mcol';
+    mosaic.appendChild(c);
+    cols.push(c);
+    colHeights.push(0);
+  }
+  colWidth = cols[0].clientWidth || (mosaic.clientWidth / colCount);
+}
+
+/** Index of the shortest column (leftmost on a tie). */
+function shortestColumn() {
+  let min = 0;
+  for (let i = 1; i < colCount; i++) {
+    if (colHeights[i] < colHeights[min]) min = i;
+  }
+  return min;
+}
+
+function placeItem(item, i) {
+  const tile = makeTile(item, i);
+  if (!tile) return;
+  const c = shortestColumn();
+  cols[c].appendChild(tile);
+  colHeights[c] += colWidth * (item.ar || 1) + GAP;
+}
+
+/** Rebuild all currently-revealed tiles from scratch (e.g. on column change). */
+function relayout() {
+  const revealed = cursor;
+  setupColumns();
+  for (let i = 0; i < revealed; i++) placeItem(ITEMS[i], i);
+}
+
 /* ── Reveal the next batch of items ── */
 const BATCH_SIZE = 12;
 function loadMore() {
@@ -156,10 +221,8 @@ function loadMore() {
 
   setTimeout(() => {
     const end = Math.min(cursor + BATCH_SIZE, ITEMS.length);
-    let i = 0;
     while (cursor < end) {
-      const tile = makeTile(ITEMS[cursor], i++);
-      if (tile) mosaic.appendChild(tile);
+      placeItem(ITEMS[cursor], cursor);
       cursor++;
     }
     loading = false;
@@ -170,6 +233,15 @@ function loadMore() {
     restoreScroll();
   }, 80);
 }
+
+/* Re-flow only when the column count actually changes. */
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (targetColumnCount() !== colCount) relayout();
+  }, 150);
+});
 
 function finish() {
   sentinel.textContent = ITEMS.length ? '— end of archive —' : '— no content yet —';
@@ -196,5 +268,6 @@ const observer = new IntersectionObserver(
 );
 observer.observe(sentinel);
 
+setupColumns();
 loadMore();
 setTimeout(loadMore, 250);
