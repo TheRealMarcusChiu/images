@@ -22,7 +22,7 @@ function mediaSrc(file) {
 /** Normalize authored entries into render-ready items, newest first. */
 function normalize(raw) {
   return raw
-    .filter((e) => e && e.type && e.date && !Number.isNaN(Date.parse(e.date)))
+    .filter((e) => e && e.type && e.date && !e.hidden && !Number.isNaN(Date.parse(e.date)))
     .map((e) => {
       const it = { type: e.type, date: e.date, ts: displayTS(e.date) };
       if (e.desc) it.desc = e.desc;
