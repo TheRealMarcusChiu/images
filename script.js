@@ -107,18 +107,84 @@ function applyLink(tile, item) {
   tile.addEventListener('click', () => window.open(item.link, '_blank'));
 }
 
-/* ── Image tile ── */
+/* ──────────────────────────────────────────────────────────────────────────
+   Lightbox — clicking an image enlarges it over a darkened backdrop.
+   Dismiss by clicking the backdrop, the ✕ button, or pressing Escape.
+   ────────────────────────────────────────────────────────────────────────── */
+const lightbox = (() => {
+  const el = document.createElement('div');
+  el.className = 'lightbox';
+  el.setAttribute('aria-hidden', 'true');
+  el.innerHTML = `
+    <button class="lightbox-close" aria-label="Close">&times;</button>
+    <figure class="lightbox-figure">
+      <img class="lightbox-img" alt="">
+      <figcaption class="lightbox-cap">
+        <span class="lb-ts"></span>
+        <span class="lb-desc"></span>
+        <a class="lb-link" target="_blank" rel="noopener">Source &nearr;</a>
+      </figcaption>
+    </figure>`;
+  document.body.appendChild(el);
+
+  const imgEl  = el.querySelector('.lightbox-img');
+  const tsEl   = el.querySelector('.lb-ts');
+  const descEl = el.querySelector('.lb-desc');
+  const linkEl = el.querySelector('.lb-link');
+
+  function open(item) {
+    imgEl.src = item.src;
+    imgEl.alt = item.desc || 'photo';
+    tsEl.textContent   = item.ts || '';
+    descEl.textContent = item.desc || '';
+    if (item.link) { linkEl.href = item.link; linkEl.style.display = ''; }
+    else           { linkEl.removeAttribute('href'); linkEl.style.display = 'none'; }
+    el.classList.add('open');
+    el.setAttribute('aria-hidden', 'false');
+  }
+  function close() {
+    el.classList.remove('open');
+    el.setAttribute('aria-hidden', 'true');
+    imgEl.removeAttribute('src'); // stop holding the decoded bitmap
+  }
+
+  el.addEventListener('click', (e) => { if (e.target === el) close(); });
+  el.querySelector('.lightbox-close').addEventListener('click', close);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && el.classList.contains('open')) close();
+  });
+
+  return { open, close };
+})();
+
+function openLightbox(item) { lightbox.open(item); }
+
+/* ── Image tile (click to open in the lightbox) ── */
 function makeImageTile(item, i) {
   const alt = item.title || item.desc || 'photo';
   const ar  = item.ar || 1;                 // height / width
   const tile = document.createElement('div');
-  tile.className = 'tile';
+  tile.className = 'tile image-tile';
   tile.style.animationDelay = `${(i % 5) * 55}ms`;
+
+  // A linked image keeps its external link reachable through a clickable
+  // corner badge; the image body itself opens the lightbox.
+  const badge = item.link
+    ? `<a class="link-badge link-badge-active" href="${escapeAttr(item.link)}"
+          target="_blank" rel="noopener" aria-label="Open source">${LINK_ICON_SVG}</a>`
+    : '';
+  if (item.link) tile.classList.add('has-link');
+
   tile.innerHTML = `
     <img src="${escapeAttr(item.src)}" alt="${escapeAttr(alt)}" loading="lazy"
          style="aspect-ratio:${1 / ar}">
+    ${badge}
     ${overlayHTML(item, null)}`;
-  applyLink(tile, item);
+
+  const badgeEl = tile.querySelector('.link-badge-active');
+  if (badgeEl) badgeEl.addEventListener('click', (e) => e.stopPropagation());
+
+  tile.addEventListener('click', () => openLightbox(item));
   return tile;
 }
 

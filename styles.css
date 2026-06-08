@@ -69,6 +69,7 @@ html, body {
   transform: scale(1.04);
   filter: saturate(1.1) brightness(1.0);
 }
+.image-tile > img { cursor: zoom-in; }
 
 /* ── Link badge (top-right corner) ── */
 .link-badge {
@@ -90,6 +91,16 @@ html, body {
   transition: opacity 0.25s ease, transform 0.25s ease;
   pointer-events: none; /* tile click handles navigation */
 }
+/* A linked image's badge is itself clickable (opens the source). */
+a.link-badge-active {
+  pointer-events: auto;
+  cursor: pointer;
+  text-decoration: none;
+}
+a.link-badge-active:hover {
+  background: rgba(200, 169, 110, 0.92);
+}
+a.link-badge-active:hover svg { stroke: #0e0d0b; }
 .link-badge svg {
   width: 12px;
   height: 12px;
@@ -234,6 +245,101 @@ html, body {
   height: 100%;
   background: #000;
   z-index: 2;
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+  background: rgba(8, 7, 5, 0.92);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+.lightbox.open {
+  opacity: 1;
+  visibility: visible;
+}
+.lightbox-figure {
+  margin: 0;
+  max-width: 92vw;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  transform: scale(0.94);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lightbox.open .lightbox-figure { transform: scale(1); }
+.lightbox-img {
+  max-width: 92vw;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 3px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+}
+.lightbox-cap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  max-width: 70ch;
+}
+.lightbox-cap .lb-ts {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.lightbox-cap .lb-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: var(--text);
+}
+.lightbox-cap .lb-link {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid rgba(200, 169, 110, 0.4);
+  border-radius: 2px;
+  padding: 3px 9px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.lightbox-cap .lb-link:hover {
+  background: var(--accent);
+  color: #0e0d0b;
+}
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(40, 37, 31, 0.6);
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.lightbox-close:hover {
+  background: rgba(200, 169, 110, 0.9);
+  color: #0e0d0b;
+  transform: rotate(90deg);
 }
 
 /* ── Sentinel ── */
