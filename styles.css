@@ -230,33 +230,6 @@ html, body {
   z-index: 2;
 }
 
-/* ── Year divider (spans all mosaic columns) ── */
-.year-divider {
-  column-span: all;
-  -webkit-column-span: all;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 10px 2px 14px;
-  color: var(--accent);
-  font-size: 13px;
-  letter-spacing: 0.28em;
-  font-weight: 400;
-}
-.year-divider::before,
-.year-divider::after {
-  content: '';
-  height: 1px;
-  flex: 1;
-  background: linear-gradient(to right, transparent, var(--border), transparent);
-}
-.year-divider span {
-  padding: 0 2px;
-  font-family: 'DM Serif Display', serif;
-  font-size: 20px;
-  letter-spacing: 0.06em;
-}
-
 /* ── Sentinel ── */
 #sentinel {
   text-align: center;

@@ -50,14 +50,6 @@ function applyLink(tile, item) {
   tile.addEventListener('click', () => window.open(item.link, '_blank'));
 }
 
-/* ── Year divider ── */
-function makeYearDivider(year) {
-  const d = document.createElement('div');
-  d.className = 'year-divider';
-  d.innerHTML = `<span>${year}</span>`;
-  return d;
-}
-
 /* ── Image tile ── */
 function makeImageTile(item, i) {
   const alt  = item.title || item.desc || 'photo';
@@ -153,23 +145,19 @@ function makeTile(item, i) {
   return null;
 }
 
-/* ── Reveal the next year-group of items ── */
-let lastYearShown = null;
+/* ── Reveal the next batch of items ── */
+const BATCH_SIZE = 12;
 function loadMore() {
   if (loading) return;
   if (cursor >= ITEMS.length) { finish(); return; }
 
   loading = true;
-  const year = ITEMS[cursor].year;
-  sentinel.textContent = `Loading ${year}…`;
+  sentinel.textContent = 'Loading…';
 
   setTimeout(() => {
-    if (year !== lastYearShown) {
-      mosaic.appendChild(makeYearDivider(year));
-      lastYearShown = year;
-    }
+    const end = Math.min(cursor + BATCH_SIZE, ITEMS.length);
     let i = 0;
-    while (cursor < ITEMS.length && ITEMS[cursor].year === year) {
+    while (cursor < end) {
       const tile = makeTile(ITEMS[cursor], i++);
       if (tile) mosaic.appendChild(tile);
       cursor++;

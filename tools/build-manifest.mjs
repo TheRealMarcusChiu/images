@@ -1,22 +1,31 @@
 #!/usr/bin/env node
 /**
- * build-manifest.mjs — merges every content/YYYY/MM/items.json into a single
- * sorted content/manifest.js (window.GALLERY_ITEMS = [...]).
+ * build-manifest.mjs — turns the single content/items.json into
+ * content/manifest.js (window.GALLERY_ITEMS = [...]), sorted newest-first.
  *
- * Zero dependencies (Node built-ins only). Run after adding content:
+ * Zero dependencies (Node built-ins only). Run after editing items.json:
  *   node tools/build-manifest.mjs
  *
- * Why a generated .js (not .json fetched at runtime): the page must work over
- * file:// where fetch() of separate files is blocked. A <script> works in both
- * file:// and GitHub Pages.
+ * Time model:
+ *   - image/video entries: timestamp is encoded in the FILENAME, which is an
+ *     ISO 8601 instant, e.g. "2024-03-14T18:35:00.000-05:00.jpg". The media
+ *     file lives in content/media/.
+ *   - youtube entries: no file, so they carry an explicit "date" field in the
+ *     same ISO 8601 format, e.g. "2024-03-14T18:30:00-05:00".
+ *
+ * Why a generated .js (not the .json fetched at runtime): the page must work
+ * over file:// where fetch() of separate files is blocked. A <script> works in
+ * both file:// and GitHub Pages.
  */
 
-import { readdir, readFile, writeFile, access } from 'node:fs/promises';
+import { readFile, writeFile, access } from 'node:fs/promises';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT        = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT_DIR = join(ROOT, 'content');
+const MEDIA_DIR   = join(CONTENT_DIR, 'media');
+const ITEMS_FILE  = join(CONTENT_DIR, 'items.json');
 const OUT_FILE    = join(CONTENT_DIR, 'manifest.js');
 const VALID_TYPES = new Set(['image', 'video', 'youtube']);
 
@@ -27,105 +36,93 @@ async function exists(p) {
   try { await access(p); return true; } catch { return false; }
 }
 
-/** Return numeric subdirectory names (e.g. years, months) sorted ascending. */
-async function numericDirs(parent) {
-  let entries;
-  try { entries = await readdir(parent, { withFileTypes: true }); }
-  catch { return []; }
-  return entries
-    .filter((e) => e.isDirectory() && /^\d+$/.test(e.name))
-    .map((e) => e.name)
-    .sort((a, b) => Number(a) - Number(b));
+/** Strip the trailing file extension, leaving the ISO instant. */
+function isoFromFilename(file) {
+  const dot = file.lastIndexOf('.');
+  return dot === -1 ? file : file.slice(0, dot);
 }
 
-/** Build the display timestamp, e.g. "2024.03.14 18:30" / "2024.03". */
-function displayTimestamp(year, month, day, time) {
-  let s = `${year}.${month}`;
-  if (day != null) s += `.${String(day).padStart(2, '0')}`;
-  if (time)        s += ` ${time}`;
-  return s;
+/** Build the display timestamp "YYYY.MM.DD HH:MM" from an ISO 8601 string. */
+function displayTimestamp(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso);
+  if (!m) return iso;
+  const [, y, mo, d, h, mi] = m;
+  return `${y}.${mo}.${d} ${h}:${mi}`;
 }
 
-/** Sortable key: larger = newer. */
-function sortKey(year, month, day, time, index) {
-  const [hh, mm] = (time || '').split(':');
-  return (
-    Number(year)          * 1e10 +
-    Number(month)         * 1e8  +
-    (Number(day)  || 0)   * 1e6  +
-    (Number(hh)   || 0)   * 1e4  +
-    (Number(mm)   || 0)   * 1e2  +
-    // preserve authored order within identical timestamps (earlier = newer)
-    (999 - Math.min(index, 999)) / 1000
-  );
+/** Sortable epoch ms; NaN-safe. */
+function sortKey(iso) {
+  const t = Date.parse(iso);
+  return Number.isNaN(t) ? 0 : t;
+}
+
+/** Web path for a media file: content/media/<url-encoded filename>. */
+function mediaSrc(file) {
+  return `content/media/${encodeURIComponent(file)}`;
 }
 
 async function build() {
-  const items = [];
-
-  for (const year of await numericDirs(CONTENT_DIR)) {
-    for (const month of await numericDirs(join(CONTENT_DIR, year))) {
-      const monthDir = join(CONTENT_DIR, year, month);
-      const jsonPath = join(monthDir, 'items.json');
-      if (!(await exists(jsonPath))) continue;
-
-      let entries;
-      try {
-        entries = JSON.parse(await readFile(jsonPath, 'utf8'));
-      } catch (err) {
-        warn(`${year}/${month}/items.json — invalid JSON: ${err.message}`);
-        continue;
-      }
-      if (!Array.isArray(entries)) {
-        warn(`${year}/${month}/items.json — expected an array`);
-        continue;
-      }
-
-      const webBase = `content/${year}/${month}`;
-      for (let index = 0; index < entries.length; index++) {
-        const entry = entries[index];
-        const where = `${year}/${month}/items.json[${index}]`;
-
-        if (!VALID_TYPES.has(entry.type)) {
-          warn(`${where} — unknown type "${entry.type}", skipped`);
-          continue;
-        }
-
-        const item = {
-          type: entry.type,
-          ts:   displayTimestamp(year, month, entry.day, entry.time),
-          year: Number(year),
-        };
-        if (entry.title) item.title = entry.title;
-        if (entry.desc)  item.desc  = entry.desc;
-
-        if (entry.type === 'youtube') {
-          if (!entry.id) { warn(`${where} — youtube entry missing "id", skipped`); continue; }
-          item.id = entry.id;
-          if (entry.link) item.link = entry.link;
-        } else {
-          if (!entry.file) { warn(`${where} — ${entry.type} entry missing "file", skipped`); continue; }
-          item.src = `${webBase}/${entry.file}`;
-          if (!(await exists(join(monthDir, entry.file)))) {
-            warn(`${where} — file not found: ${webBase}/${entry.file}`);
-          }
-          if (entry.type === 'video' && entry.poster) {
-            item.poster = `${webBase}/${entry.poster}`;
-            if (!(await exists(join(monthDir, entry.poster)))) {
-              warn(`${where} — poster not found: ${webBase}/${entry.poster}`);
-            }
-          }
-          if (entry.link) item.link = entry.link;
-        }
-
-        items.push({ _key: sortKey(year, month, entry.day, entry.time, index), item });
-      }
-    }
+  let raw;
+  try {
+    raw = JSON.parse(await readFile(ITEMS_FILE, 'utf8'));
+  } catch (err) {
+    console.error(`✗ Cannot read content/items.json: ${err.message}`);
+    process.exit(1);
+  }
+  if (!Array.isArray(raw)) {
+    console.error('✗ content/items.json must be an array');
+    process.exit(1);
   }
 
-  // Newest first.
-  items.sort((a, b) => b._key - a._key);
-  const ordered = items.map((x) => x.item);
+  const rows = [];
+
+  for (let index = 0; index < raw.length; index++) {
+    const entry = raw[index];
+    const where = `items.json[${index}]`;
+
+    if (!VALID_TYPES.has(entry.type)) {
+      warn(`${where} — unknown type "${entry.type}", skipped`);
+      continue;
+    }
+
+    let iso;
+    const item = { type: entry.type };
+
+    if (entry.type === 'youtube') {
+      if (!entry.id)   { warn(`${where} — youtube entry missing "id", skipped`);   continue; }
+      if (!entry.date) { warn(`${where} — youtube entry missing "date", skipped`); continue; }
+      iso = entry.date;
+      item.id = entry.id;
+    } else {
+      if (!entry.file) { warn(`${where} — ${entry.type} entry missing "file", skipped`); continue; }
+      iso = isoFromFilename(entry.file);
+      item.src = mediaSrc(entry.file);
+      if (!(await exists(join(MEDIA_DIR, entry.file)))) {
+        warn(`${where} — file not found: content/media/${entry.file}`);
+      }
+      if (entry.type === 'video' && entry.poster) {
+        item.poster = mediaSrc(entry.poster);
+        if (!(await exists(join(MEDIA_DIR, entry.poster)))) {
+          warn(`${where} — poster not found: content/media/${entry.poster}`);
+        }
+      }
+    }
+
+    if (Number.isNaN(Date.parse(iso))) {
+      warn(`${where} — unparseable date/timestamp "${iso}", skipped`);
+      continue;
+    }
+
+    item.ts = displayTimestamp(iso);
+    if (entry.title) item.title = entry.title;
+    if (entry.desc)  item.desc  = entry.desc;
+    if (entry.link)  item.link  = entry.link;
+
+    rows.push({ _key: sortKey(iso), item });
+  }
+
+  rows.sort((a, b) => b._key - a._key); // newest first
+  const ordered = rows.map((r) => r.item);
 
   const banner =
     '// GENERATED by tools/build-manifest.mjs — do not edit by hand.\n' +
