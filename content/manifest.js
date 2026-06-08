@@ -5,7 +5,6 @@ window.GALLERY_ITEMS = [
     "type": "image",
     "src": "content/media/2025-05-28T10%3A20%3A00.000-05%3A00.jpg",
     "ts": "2025.05.28 10:20",
-    "title": "Market Day",
     "desc": "Market day, the usual chaos, an unusual calm at its center.",
     "link": "https://en.wikipedia.org/wiki/Marketplace"
   },
@@ -13,14 +12,12 @@ window.GALLERY_ITEMS = [
     "type": "image",
     "src": "content/media/2025-05-19T07%3A45%3A00.000-05%3A00.jpg",
     "ts": "2025.05.19 07:45",
-    "title": "Scaffolding Down",
     "desc": "Scaffolding came down that morning. The building blinked in the sun."
   },
   {
     "type": "image",
     "src": "content/media/2025-05-04T12%3A00%3A00.000-05%3A00.jpg",
     "ts": "2025.05.04 12:00",
-    "title": "Sovereign Territory",
     "desc": "The cat had claimed the entire kitchen as sovereign territory.",
     "link": "https://en.wikipedia.org/wiki/Cat_behavior"
   },
@@ -28,7 +25,6 @@ window.GALLERY_ITEMS = [
     "type": "image",
     "src": "content/media/2024-03-14T18%3A35%3A00.000-05%3A00.jpg",
     "ts": "2024.03.14 18:35",
-    "title": "Golden Hour, Warehouse",
     "desc": "Golden hour catches the dust suspended mid-air in the empty warehouse.",
     "link": "https://en.wikipedia.org/wiki/Golden_hour_(photography)"
   },
@@ -36,28 +32,24 @@ window.GALLERY_ITEMS = [
     "type": "youtube",
     "id": "aqz-KE-bpKQ",
     "ts": "2024.03.14 18:30",
-    "title": "Big Buck Bunny",
     "desc": "Golden hour catches the dust suspended mid-air in the empty warehouse."
   },
   {
     "type": "youtube",
     "id": "YE7VzlLtp-4",
     "ts": "2024.03.09 08:15",
-    "title": "Elephants Dream",
     "desc": "The light changed and everyone looked up at once."
   },
   {
     "type": "image",
     "src": "content/media/2024-03-05T12%3A00%3A00.000-05%3A00.jpg",
     "ts": "2024.03.05 12:00",
-    "title": "She Had Been Sitting There",
     "desc": "She had been sitting there for hours before I noticed."
   },
   {
     "type": "youtube",
     "id": "TKNjNatvOuA",
     "ts": "2024.03.02 12:00",
-    "title": "Tears of Steel",
     "desc": "Storm light over the reservoir just before the rain arrived.",
     "link": "https://www.magnumphotos.com"
   },
@@ -65,14 +57,12 @@ window.GALLERY_ITEMS = [
     "type": "youtube",
     "id": "eRsGyueVLvQ",
     "ts": "2024.01.22 16:40",
-    "title": "Cosmos Laundromat",
     "desc": "First frost of the season traced along the windowpane."
   },
   {
     "type": "image",
     "src": "content/media/2024-01-18T06%3A50%3A00.000-05%3A00.jpg",
     "ts": "2024.01.18 06:50",
-    "title": "First Frost",
     "desc": "First frost of the season traced along the windowpane.",
     "link": "https://en.wikipedia.org/wiki/Frost"
   },
@@ -80,7 +70,6 @@ window.GALLERY_ITEMS = [
     "type": "image",
     "src": "content/media/2024-01-11T17%3A25%3A00.000-05%3A00.jpg",
     "ts": "2024.01.11 17:25",
-    "title": "The Water Became Silk",
     "desc": "Long exposure of the ferry crossing — the water became silk.",
     "link": "https://en.wikipedia.org/wiki/Long-exposure_photography"
   },
@@ -88,21 +77,18 @@ window.GALLERY_ITEMS = [
     "type": "youtube",
     "id": "WhWc3b3KhnY",
     "ts": "2024.01.06 12:00",
-    "title": "Sintel",
     "desc": "Rain-slicked cobblestones, a single red umbrella."
   },
   {
     "type": "youtube",
     "id": "RR36BkHqAbo",
     "ts": "2023.11.18 11:05",
-    "title": "Caminandes: Gran Desierto",
     "desc": "Nobody told the sunflowers summer was nearly over."
   },
   {
     "type": "image",
     "src": "content/media/2023-11-12T15%3A30%3A00.000-05%3A00.jpg",
     "ts": "2023.11.12 15:30",
-    "title": "Late Sunflowers",
     "desc": "Nobody told the sunflowers summer was nearly over.",
     "link": "https://en.wikipedia.org/wiki/Helianthus"
   },
@@ -110,14 +96,12 @@ window.GALLERY_ITEMS = [
     "type": "image",
     "src": "content/media/2023-11-07T16%3A05%3A00.000-05%3A00.jpg",
     "ts": "2023.11.07 16:05",
-    "title": "Storm Light",
     "desc": "Storm light over the reservoir just before the rain arrived."
   },
   {
     "type": "youtube",
     "id": "otiHE9D3dAI",
     "ts": "2023.11.03 12:00",
-    "title": "Caminandes: Llamigos",
     "desc": "Three dogs, zero humans, one very suspicious tennis ball.",
     "link": "https://www.lensculture.com"
   },
@@ -125,7 +109,6 @@ window.GALLERY_ITEMS = [
     "type": "image",
     "src": "content/media/2023-07-21T21%3A10%3A00.000-05%3A00.jpg",
     "ts": "2023.07.21 21:10",
-    "title": "Red Umbrella",
     "desc": "Rain-slicked cobblestones, a single red umbrella.",
     "link": "https://en.wikipedia.org/wiki/Street_photography"
   },
@@ -133,7 +116,6 @@ window.GALLERY_ITEMS = [
     "type": "image",
     "src": "content/media/2023-07-08T12%3A00%3A00.000-05%3A00.jpg",
     "ts": "2023.07.08 12:00",
-    "title": "One Suspicious Tennis Ball",
     "desc": "Three dogs, zero humans, one very suspicious tennis ball."
   }
 ];

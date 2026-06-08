@@ -7,11 +7,10 @@
  *   node tools/build-manifest.mjs
  *
  * Time model:
- *   - image/video entries: timestamp is encoded in the FILENAME, which is an
- *     ISO 8601 instant, e.g. "2024-03-14T18:35:00.000-05:00.jpg". The media
- *     file lives in content/media/.
- *   - youtube entries: no file, so they carry an explicit "date" field in the
- *     same ISO 8601 format, e.g. "2024-03-14T18:30:00-05:00".
+ *   - Every entry carries an explicit ISO 8601 "date", e.g.
+ *     "2024-03-14T18:35:00.000-05:00". Items are sorted newest-first.
+ *   - image/video entries also have a "file" in content/media/ (conventionally
+ *     named with the same timestamp, though the "date" field is authoritative).
  *
  * Why a generated .js (not the .json fetched at runtime): the page must work
  * over file:// where fetch() of separate files is blocked. A <script> works in
@@ -34,12 +33,6 @@ function warn(msg) { console.warn(`  ⚠ ${msg}`); warnings++; }
 
 async function exists(p) {
   try { await access(p); return true; } catch { return false; }
-}
-
-/** Strip the trailing file extension, leaving the ISO instant. */
-function isoFromFilename(file) {
-  const dot = file.lastIndexOf('.');
-  return dot === -1 ? file : file.slice(0, dot);
 }
 
 /** Build the display timestamp "YYYY.MM.DD HH:MM" from an ISO 8601 string. */
@@ -85,17 +78,15 @@ async function build() {
       continue;
     }
 
-    let iso;
+    if (!entry.date) { warn(`${where} — entry missing "date", skipped`); continue; }
+    const iso = entry.date;
     const item = { type: entry.type };
 
     if (entry.type === 'youtube') {
-      if (!entry.id)   { warn(`${where} — youtube entry missing "id", skipped`);   continue; }
-      if (!entry.date) { warn(`${where} — youtube entry missing "date", skipped`); continue; }
-      iso = entry.date;
+      if (!entry.id) { warn(`${where} — youtube entry missing "id", skipped`); continue; }
       item.id = entry.id;
     } else {
       if (!entry.file) { warn(`${where} — ${entry.type} entry missing "file", skipped`); continue; }
-      iso = isoFromFilename(entry.file);
       item.src = mediaSrc(entry.file);
       if (!(await exists(join(MEDIA_DIR, entry.file)))) {
         warn(`${where} — file not found: content/media/${entry.file}`);

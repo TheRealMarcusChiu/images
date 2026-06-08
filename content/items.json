@@ -1,82 +1,64 @@
 [
-  { "type": "image", "file": "2025-05-28T10:20:00.000-05:00.jpg",
-    "title": "Market Day",
+  { "type": "image", "date": "2025-05-28T10:20:00.000-05:00", "file": "2025-05-28T10:20:00.000-05:00.jpg",
     "desc": "Market day, the usual chaos, an unusual calm at its center.",
     "link": "https://en.wikipedia.org/wiki/Marketplace" },
 
-  { "type": "image", "file": "2025-05-19T07:45:00.000-05:00.jpg",
-    "title": "Scaffolding Down",
+  { "type": "image", "date": "2025-05-19T07:45:00.000-05:00", "file": "2025-05-19T07:45:00.000-05:00.jpg",
     "desc": "Scaffolding came down that morning. The building blinked in the sun." },
 
-  { "type": "image", "file": "2025-05-04T12:00:00.000-05:00.jpg",
-    "title": "Sovereign Territory",
+  { "type": "image", "date": "2025-05-04T12:00:00.000-05:00", "file": "2025-05-04T12:00:00.000-05:00.jpg",
     "desc": "The cat had claimed the entire kitchen as sovereign territory.",
     "link": "https://en.wikipedia.org/wiki/Cat_behavior" },
 
-  { "type": "image", "file": "2024-03-14T18:35:00.000-05:00.jpg",
-    "title": "Golden Hour, Warehouse",
+  { "type": "image", "date": "2024-03-14T18:35:00.000-05:00", "file": "2024-03-14T18:35:00.000-05:00.jpg",
     "desc": "Golden hour catches the dust suspended mid-air in the empty warehouse.",
     "link": "https://en.wikipedia.org/wiki/Golden_hour_(photography)" },
 
-  { "type": "image", "file": "2024-03-05T12:00:00.000-05:00.jpg",
-    "title": "She Had Been Sitting There",
+  { "type": "image", "date": "2024-03-05T12:00:00.000-05:00", "file": "2024-03-05T12:00:00.000-05:00.jpg",
     "desc": "She had been sitting there for hours before I noticed." },
 
-  { "type": "image", "file": "2024-01-18T06:50:00.000-05:00.jpg",
-    "title": "First Frost",
+  { "type": "image", "date": "2024-01-18T06:50:00.000-05:00", "file": "2024-01-18T06:50:00.000-05:00.jpg",
     "desc": "First frost of the season traced along the windowpane.",
     "link": "https://en.wikipedia.org/wiki/Frost" },
 
-  { "type": "image", "file": "2024-01-11T17:25:00.000-05:00.jpg",
-    "title": "The Water Became Silk",
+  { "type": "image", "date": "2024-01-11T17:25:00.000-05:00", "file": "2024-01-11T17:25:00.000-05:00.jpg",
     "desc": "Long exposure of the ferry crossing — the water became silk.",
     "link": "https://en.wikipedia.org/wiki/Long-exposure_photography" },
 
-  { "type": "image", "file": "2023-11-12T15:30:00.000-05:00.jpg",
-    "title": "Late Sunflowers",
+  { "type": "image", "date": "2023-11-12T15:30:00.000-05:00", "file": "2023-11-12T15:30:00.000-05:00.jpg",
     "desc": "Nobody told the sunflowers summer was nearly over.",
     "link": "https://en.wikipedia.org/wiki/Helianthus" },
 
-  { "type": "image", "file": "2023-11-07T16:05:00.000-05:00.jpg",
-    "title": "Storm Light",
+  { "type": "image", "date": "2023-11-07T16:05:00.000-05:00", "file": "2023-11-07T16:05:00.000-05:00.jpg",
     "desc": "Storm light over the reservoir just before the rain arrived." },
 
-  { "type": "image", "file": "2023-07-21T21:10:00.000-05:00.jpg",
-    "title": "Red Umbrella",
+  { "type": "image", "date": "2023-07-21T21:10:00.000-05:00", "file": "2023-07-21T21:10:00.000-05:00.jpg",
     "desc": "Rain-slicked cobblestones, a single red umbrella.",
     "link": "https://en.wikipedia.org/wiki/Street_photography" },
 
-  { "type": "image", "file": "2023-07-08T12:00:00.000-05:00.jpg",
-    "title": "One Suspicious Tennis Ball",
+  { "type": "image", "date": "2023-07-08T12:00:00.000-05:00", "file": "2023-07-08T12:00:00.000-05:00.jpg",
     "desc": "Three dogs, zero humans, one very suspicious tennis ball." },
 
-  { "type": "youtube", "id": "aqz-KE-bpKQ", "date": "2024-03-14T18:30:00-05:00",
-    "title": "Big Buck Bunny",
+  { "type": "youtube", "date": "2024-03-14T18:30:00.000-05:00", "id": "aqz-KE-bpKQ",
     "desc": "Golden hour catches the dust suspended mid-air in the empty warehouse." },
 
-  { "type": "youtube", "id": "YE7VzlLtp-4", "date": "2024-03-09T08:15:00-05:00",
-    "title": "Elephants Dream",
+  { "type": "youtube", "date": "2024-03-09T08:15:00.000-05:00", "id": "YE7VzlLtp-4",
     "desc": "The light changed and everyone looked up at once." },
 
-  { "type": "youtube", "id": "TKNjNatvOuA", "date": "2024-03-02T12:00:00-05:00",
-    "title": "Tears of Steel",
+  { "type": "youtube", "date": "2024-03-02T12:00:00.000-05:00", "id": "TKNjNatvOuA",
     "desc": "Storm light over the reservoir just before the rain arrived.",
     "link": "https://www.magnumphotos.com" },
 
-  { "type": "youtube", "id": "eRsGyueVLvQ", "date": "2024-01-22T16:40:00-05:00",
-    "title": "Cosmos Laundromat",
+  { "type": "youtube", "date": "2024-01-22T16:40:00.000-05:00", "id": "eRsGyueVLvQ",
     "desc": "First frost of the season traced along the windowpane." },
 
-  { "type": "youtube", "id": "WhWc3b3KhnY", "date": "2024-01-06T12:00:00-05:00",
-    "title": "Sintel",
+  { "type": "youtube", "date": "2024-01-06T12:00:00.000-05:00", "id": "WhWc3b3KhnY",
     "desc": "Rain-slicked cobblestones, a single red umbrella." },
 
-  { "type": "youtube", "id": "RR36BkHqAbo", "date": "2023-11-18T11:05:00-05:00",
-    "title": "Caminandes: Gran Desierto",
+  { "type": "youtube", "date": "2023-11-18T11:05:00.000-05:00", "id": "RR36BkHqAbo",
     "desc": "Nobody told the sunflowers summer was nearly over." },
 
-  { "type": "youtube", "id": "otiHE9D3dAI", "date": "2023-11-03T12:00:00-05:00",
-    "title": "Caminandes: Llamigos",
+  { "type": "youtube", "date": "2023-11-03T12:00:00.000-05:00", "id": "otiHE9D3dAI",
     "desc": "Three dogs, zero humans, one very suspicious tennis ball.",
     "link": "https://www.lensculture.com" }
 ]
