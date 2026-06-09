@@ -49,8 +49,9 @@ node server.js          # then open http://127.0.0.1:3000/admin
 ```
 
 - **Add** a tile from an image upload, an image URL (downloaded and saved
-  locally), a video file (+ optional poster), or a YouTube link. The date is
-  auto-generated and uploaded files are saved as `<date><ext>`.
+  locally), a video file (+ optional poster — if none is given, the video's
+  first frame is captured in the browser and used), or a YouTube link. The date
+  is auto-generated and uploaded files are saved as `<date><ext>`.
 - **Manage** existing tiles: edit date / description / link, hide or show, or
   delete (which also removes the media files).
 

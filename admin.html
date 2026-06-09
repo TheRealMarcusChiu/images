@@ -140,7 +140,7 @@
         <input type="file" name="media2" accept="video/*">
       </label>
       <label class="field typed" data-for="video">
-        <span class="lbl">Poster image <span class="hint">(optional)</span></span>
+        <span class="lbl">Poster image <span class="hint">(optional — the video's first frame is used if left blank)</span></span>
         <input type="file" name="poster" accept="image/*">
       </label>
 
@@ -197,6 +197,36 @@
     r.innerHTML = html;
   }
 
+  /* Grab the first frame of a video file as a JPEG blob (browser-side decode). */
+  function extractFirstFrame(file) {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      video.muted = true; video.playsInline = true; video.preload = 'auto';
+      const url = URL.createObjectURL(file);
+      let done = false;
+      const finish = (blob) => { if (!done) { done = true; URL.revokeObjectURL(url); resolve(blob); } };
+      const capture = () => {
+        const w = video.videoWidth, h = video.videoHeight;
+        if (!w || !h) return finish(null);
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+          canvas.toBlob((b) => finish(b), 'image/jpeg', 0.9);
+        } catch { finish(null); }
+      };
+      video.onloadeddata = () => {
+        // Nudge past the very start so a frame is guaranteed to be decoded.
+        try { video.currentTime = Math.min(0.1, (video.duration || 1) / 2); }
+        catch { capture(); }
+      };
+      video.onseeked = capture;
+      video.onerror = () => finish(null);
+      video.src = url;
+      setTimeout(() => finish(null), 8000); // give up gracefully
+    });
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const type = form.querySelector('input[name=type]:checked').value;
@@ -218,7 +248,15 @@
     } else if (type === 'video') {
       if (!form.media2.files[0]) return showResult(false, 'Choose a video file.');
       fd.append('media', form.media2.files[0]);
-      if (form.poster.files[0]) fd.append('poster', form.poster.files[0]);
+      if (form.poster.files[0]) {
+        fd.append('poster', form.poster.files[0]);
+      } else {
+        // No poster given — grab the video's first frame in the browser.
+        const sbtn = $('#submit');
+        sbtn.disabled = true; sbtn.textContent = 'Reading first frame…';
+        const frame = await extractFirstFrame(form.media2.files[0]);
+        if (frame) fd.append('poster', frame, 'poster.jpg');
+      }
     } else {
       if (!form.youtube.value.trim()) return showResult(false, 'Paste a YouTube URL or ID.');
       fd.append('youtube', form.youtube.value.trim());
