@@ -232,7 +232,7 @@
       if (res.ok) {
         const what = data.entry.file ? `<code>${data.entry.file}</code>` : `id <code>${data.entry.id}</code>`;
         showResult(true, `Added ${data.entry.type} ${what} · dated <code>${data.entry.date}</code>` +
-          (data.entry.hidden ? ' · <em>hidden</em>' : '') + ' · <a href="/">view →</a>');
+          (data.entry.hidden ? ' · <em>hidden</em>' : '') + gitNote(data.git) + ' · <a href="/">view →</a>');
         form.reset(); syncType();
       } else showResult(false, data.error || 'Something went wrong.');
     } catch (err) { showResult(false, String(err)); }
@@ -242,6 +242,18 @@
   /* ── Manage list ── */
   const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const mediaUrl = (f) => 'content/media/' + encodeURIComponent(f);
+
+  /* Render the auto commit+push outcome inline. */
+  function gitNote(g) {
+    if (!g) return '';
+    if (g.pushed) return ' · <span style="color:var(--accent)">pushed to GitHub ✓</span>';
+    if (g.reason) return ` · <span class="hint">git: ${esc(g.reason)}</span>`;
+    if (g.error)  return ` · <span style="color:#e0b0b0">push failed: ${esc(g.error)}</span>`;
+    return '';
+  }
+  function gitAlert(g) {
+    if (g && g.error) alert('Saved, but git push failed:\n' + g.error);
+  }
 
   function thumbHTML(it) {
     if (it.type === 'youtube') return `<img src="https://img.youtube.com/vi/${esc(it.id)}/default.jpg" alt="">`;
@@ -298,6 +310,7 @@
       });
       const data = await res.json();
       if (!res.ok) { alert(data.error || 'Update failed'); }
+      else gitAlert(data.git);
       await loadList();
     } catch (e) { alert(String(e)); btn.disabled = false; btn.textContent = 'Save'; }
   }
@@ -311,6 +324,7 @@
       });
       const data = await res.json();
       if (!res.ok) alert(data.error || 'Delete failed');
+      else gitAlert(data.git);
       await loadList();
     } catch (e) { alert(String(e)); }
   }

@@ -27,7 +27,11 @@ import { join, extname, normalize as normPath, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { get as httpsGet } from 'node:https';
 import { get as httpGet } from 'node:http';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import vm from 'node:vm';
+
+const pexecFile = promisify(execFile);
 
 const ROOT       = dirname(fileURLToPath(import.meta.url));
 const MEDIA_DIR  = join(ROOT, 'content', 'media');
@@ -116,6 +120,34 @@ async function writeItems(items) {
   } catch { /* use default header */ }
   const body = items.map(serializeEntry).join('\n\n');
   await writeFile(ITEMS_FILE, `${prefix}window.GALLERY_ITEMS = [\n${body}\n];\n`);
+}
+
+/* ── Auto commit + push after each change (serialized; scoped to content) ── */
+let gitQueue = Promise.resolve();
+function gitCommitPush(message) {
+  const run = () => doGitCommitPush(message);
+  const result = gitQueue.then(run, run);
+  gitQueue = result.catch(() => {});
+  return result;
+}
+async function doGitCommitPush(message) {
+  const opts = { cwd: ROOT };
+  try {
+    await pexecFile('git', ['add', '-A', '--', 'content/items.js', 'content/media'], opts);
+    try {
+      await pexecFile('git', ['commit', '-m', message], opts);
+    } catch (e) {
+      const out = `${e.stdout || ''}${e.stderr || ''}`;
+      if (/nothing to commit|no changes added/i.test(out)) return { committed: false, reason: 'nothing to commit' };
+      throw e;
+    }
+    await pexecFile('git', ['push'], opts);
+    return { committed: true, pushed: true };
+  } catch (e) {
+    const msg = (e.stderr || e.stdout || e.message || String(e)).toString().trim();
+    console.error('git auto-push failed:', msg);
+    return { committed: false, error: msg };
+  }
 }
 
 /* ── Download a remote file (follows redirects, size-capped) ── */
@@ -238,7 +270,8 @@ async function handleAdd(req, res, body) {
   const items = await readItems();
   items.unshift(entry);
   await writeItems(items);
-  return sendJSON(res, 200, { ok: true, entry });
+  const git = await gitCommitPush(`admin: add ${entry.type} tile ${entry.date}`);
+  return sendJSON(res, 200, { ok: true, entry, git });
 }
 
 /* ── POST /api/tiles/update : edit desc/date/link/hidden ── */
@@ -266,7 +299,8 @@ async function handleUpdate(res, body) {
   }
 
   await writeItems(items);
-  return sendJSON(res, 200, { ok: true, entry });
+  const git = await gitCommitPush(`admin: update tile ${entry.date}`);
+  return sendJSON(res, 200, { ok: true, entry, git });
 }
 
 /* ── POST /api/tiles/delete : remove entry + media files ── */
@@ -284,7 +318,8 @@ async function handleDelete(res, body) {
   await tryUnlink(entry.file);
   await tryUnlink(entry.poster);
   await writeItems(items);
-  return sendJSON(res, 200, { ok: true, removed: entry });
+  const git = await gitCommitPush(`admin: delete tile ${entry.date}`);
+  return sendJSON(res, 200, { ok: true, removed: entry, git });
 }
 
 async function handleList(res) {
