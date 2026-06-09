@@ -16,9 +16,6 @@
      poster filename in content/media/ for a local video thumbnail (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-06-09T13:02:29.217-05:00", file: "2026-06-09T13:02:29.217-05:00.webp",
-    desc: "italics", hidden: true },
-
   { type: "image", date: "2026-06-08T23:25:28.249-05:00", file: "2026-06-08T23:25:28.249-05:00.jpg",
     hidden: true },
 
