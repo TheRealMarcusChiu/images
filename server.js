@@ -329,8 +329,9 @@ async function handleList(res) {
 /* ── Static file serving (path-traversal safe) ── */
 function serveStatic(req, res) {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
-  if (urlPath === '/')      urlPath = '/index.html';
+  if (urlPath === '/')      urlPath = '/admin.html';
   if (urlPath === '/admin') urlPath = '/admin.html';
+  if (urlPath === '/index') urlPath = '/index.html';
   const filePath = normPath(join(ROOT, urlPath));
   if (!filePath.startsWith(ROOT)) return send(res, 403, 'Forbidden');
   if (!existsSync(filePath) || !statSync(filePath).isFile()) return send(res, 404, 'Not found');
@@ -381,6 +382,6 @@ const server = createServer((req, res) => {
 
 server.listen(PORT, HOST, () => {
   console.log('Mosaic Gallery admin server');
-  console.log(`  gallery:  http://${HOST}:${PORT}/`);
-  console.log(`  admin:    http://${HOST}:${PORT}/admin`);
+  console.log(`  admin:    http://${HOST}:${PORT}/`);
+  console.log(`  gallery:  http://${HOST}:${PORT}/index`);
 });

@@ -110,6 +110,9 @@
   .row-actions { display:flex; gap:8px; flex-shrink:0; }
   .manage-edit .manage-body { display:flex; flex-direction:column; gap:10px; }
   .manage-edit .row-actions { flex-direction:column; }
+  .edit-check { display:flex; flex-direction:row; align-items:center; gap:9px; cursor:pointer;
+    font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
+  .edit-check input { width:15px; height:15px; accent-color:var(--accent); flex-shrink:0; }
   .empty-msg { text-align:center; padding:60px 24px; font-size:10px; letter-spacing:0.18em;
     text-transform:uppercase; color:var(--muted); }
 
@@ -122,7 +125,7 @@
   <p class="eyebrow">Admin</p>
   <h1>Gallery admin</h1>
   <nav class="nav header-links">
-    <a href="/">View local</a>
+    <a href="/index">View local</a>
     <a href="http://git.marcuschiu.com/images/" target="_blank" rel="noopener">View production</a>
   </nav>
   <nav class="tabs" role="tablist">
@@ -332,7 +335,7 @@
         const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>` : `id <code>${esc(data.entry.id)}</code>`;
         showNotice(`Added ${esc(data.entry.type)} ${what}` + (data.entry.hidden ? ' · hidden' : '') +
           gitNote(data.git) +
-          ` · <a href="/">local →</a> · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`, false);
+          ` · <a href="/index">local →</a> · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`, false);
         form.reset(); syncFields();
       } else showNotice(esc(data.error) || 'Something went wrong.', true);
     } catch (err) {
@@ -400,6 +403,7 @@
         <input type="text" name="date" value="${esc(it.date)}" spellcheck="false">
         <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
         <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
+        <label class="edit-check"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> Hidden</label>
       </div>
       <div class="row-actions">
         <button type="submit" class="btn btn-primary">Save</button>
@@ -412,7 +416,7 @@
         newDate: el.elements.date.value.trim(),
         desc: el.elements.desc.value,
         link: el.elements.link.value,
-        hidden: !!it.hidden,
+        hidden: el.elements.hidden.checked,
       };
       const res = await fetch('/api/tiles/update', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
