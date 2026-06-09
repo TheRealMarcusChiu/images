@@ -3,375 +3,450 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin · Mosaic Gallery</title>
+<title>Gallery admin</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap');
 
   :root {
-    --bg:#0e0d0b; --surface:#161512; --border:#2a2720;
-    --text:#e8e0d0; --muted:#6b6456; --accent:#c8a96e;
+    --bg:#0e0d0b; --text:#e8e0d0; --muted:#6b6456; --accent:#c8a96e; --border:#2a2720;
   }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Mono',monospace;
-         min-height:100vh; display:flex; justify-content:center; padding:38px 20px; }
-  main { width:100%; max-width:680px; }
-  h1 { font-family:'DM Serif Display',serif; font-weight:400; font-size:28px; }
-  .sub { color:var(--muted); font-size:12px; margin:4px 0 24px; }
-  .sub a { color:var(--accent); text-decoration:none; }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html, body { min-height:100%; background:var(--bg); color:var(--text); font-family:'DM Mono',monospace; }
 
-  .tabs { display:flex; gap:8px; margin-bottom:24px; }
-  .tabs button { flex:0 0 auto; padding:9px 18px; background:var(--surface);
-    border:1px solid var(--border); color:var(--muted); border-radius:3px;
-    font-family:inherit; font-size:12px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
-  .tabs button.active { color:var(--accent); border-color:var(--accent); background:#1d1b16; }
+  header { text-align:center; padding:72px 24px 48px; }
+  header .eyebrow { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+  header h1 { font-family:'DM Serif Display',serif; font-style:italic; font-weight:400; font-size:clamp(28px,4vw,46px); }
 
-  .panel { display:none; }
-  .panel.on { display:block; }
+  .nav { display:flex; gap:28px; justify-content:center; }
+  .nav a { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent);
+    text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:border-color .2s; }
+  .nav a:hover { border-color:var(--accent); }
+  .header-links { margin-top:20px; }
 
-  form { display:flex; flex-direction:column; gap:20px; }
-  label.field { display:flex; flex-direction:column; gap:7px; }
-  .lbl { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
-  .hint { color:var(--muted); }
+  .tabs { display:flex; gap:8px; justify-content:center; margin-top:32px; }
+  .tab { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
+    padding:10px 22px; background:transparent; border:1px solid var(--border); border-radius:2px;
+    color:var(--muted); cursor:pointer; transition:border-color .2s,color .2s; }
+  .tab:hover { color:var(--text); }
+  .tab.is-active { color:var(--accent); border-color:var(--accent); }
 
-  input[type=text], input[type=url], input[type=datetime-local], textarea, input[type=file] {
-    background:var(--surface); border:1px solid var(--border); color:var(--text);
-    font-family:inherit; font-size:13px; padding:10px 12px; border-radius:3px; width:100%; }
-  input:focus, textarea:focus { outline:none; border-color:var(--accent); }
-  textarea { resize:vertical; min-height:64px; line-height:1.5; }
-  input[type=file] { padding:9px; cursor:pointer; }
-  input[type=file]::file-selector-button { background:var(--border); color:var(--text);
-    border:none; font-family:inherit; font-size:12px; padding:6px 11px; border-radius:2px;
-    margin-right:11px; cursor:pointer; }
+  .admin { max-width:620px; margin:0 auto; padding:0 24px 100px; }
+  .panel { animation:fadeUp 0.3s ease both; }
 
+  /* Forms */
+  .admin-form { display:flex; flex-direction:column; gap:22px; }
+  .admin-form label { display:flex; flex-direction:column; gap:8px; }
+  .admin-form label[hidden] { display:none; }
+  .admin-form label > span { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
+  .admin-form label > span em { font-style:normal; color:var(--accent); opacity:0.7; margin-left:6px; }
+
+  .admin-form input[type=text], .admin-form input[type=url], .admin-form textarea,
+  .manage-edit input, .manage-edit textarea {
+    width:100%; padding:12px 14px; background:transparent; border:1px solid var(--border);
+    border-radius:2px; color:var(--text); font-family:'DM Mono',monospace; font-size:13px;
+    letter-spacing:0.04em; outline:none; transition:border-color .2s; }
+  .admin-form textarea, .manage-edit textarea { resize:vertical; line-height:1.6; }
+  .admin-form input:focus, .admin-form textarea:focus,
+  .manage-edit input:focus, .manage-edit textarea:focus { border-color:var(--accent); }
+  .admin-form input::placeholder, .manage-edit input::placeholder, .manage-edit textarea::placeholder { color:var(--muted); }
+
+  input[type=file] { width:100%; padding:10px 12px; background:transparent; border:1px solid var(--border);
+    border-radius:2px; color:var(--text); font-family:'DM Mono',monospace; font-size:12px; cursor:pointer; }
+  input[type=file]::file-selector-button { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.16em;
+    text-transform:uppercase; padding:6px 12px; margin-right:12px; background:transparent;
+    border:1px solid var(--border); border-radius:2px; color:var(--text); cursor:pointer; }
+  input[type=file]::file-selector-button:hover { border-color:var(--accent); }
+
+  /* Segmented toggles */
   .seg { display:flex; gap:8px; }
-  .seg label { flex:1; text-align:center; padding:10px 6px; border-radius:3px;
-    border:1px solid var(--border); background:var(--surface); font-size:12px; cursor:pointer; }
-  .seg input { display:none; }
-  .seg label:has(input:checked) { border-color:var(--accent); background:#1d1b16; color:var(--accent); }
+  .seg-btn { flex:1; text-align:center; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em;
+    text-transform:uppercase; padding:11px 8px; background:transparent; border:1px solid var(--border);
+    border-radius:2px; color:var(--muted); cursor:pointer; transition:border-color .2s,color .2s; }
+  .seg-btn input { display:none; }
+  .seg-btn:has(input:checked) { color:var(--accent); border-color:var(--accent); }
 
-  .field.typed, .field.srcd { display:none; }
-  .field.typed.on, .field.srcd.on { display:flex; }
+  /* Checkbox row */
+  .admin-form label.check-row { flex-direction:row; align-items:center; gap:11px; cursor:pointer; }
+  .check-row input { flex-shrink:0; }
+  .check-row input { width:15px; height:15px; accent-color:var(--accent); }
+  .check-row > span { color:var(--muted); }
 
-  .row { display:flex; align-items:center; gap:10px; }
-  .check { display:flex; align-items:center; gap:9px; font-size:12px; color:var(--muted); cursor:pointer; }
-  .check input { width:15px; height:15px; accent-color:var(--accent); }
+  .form-actions { display:flex; gap:14px; margin-top:4px; }
 
-  button.primary { background:var(--accent); color:#0e0d0b; border:none; font-family:inherit;
-    font-size:13px; letter-spacing:.1em; text-transform:uppercase; padding:13px; border-radius:3px;
-    cursor:pointer; }
-  button.primary:hover { filter:brightness(1.08); }
-  button.primary:disabled { opacity:.5; cursor:default; }
+  /* Buttons */
+  .btn { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase;
+    padding:11px 20px; border-radius:2px; border:1px solid var(--border); background:transparent;
+    color:var(--text); cursor:pointer; transition:border-color .2s,color .2s; }
+  .btn:hover { border-color:var(--accent); }
+  .btn:disabled { opacity:0.5; cursor:default; }
+  .btn-primary { border-color:var(--accent); color:var(--accent); }
+  .btn-ghost { color:var(--muted); }
+  .btn-danger:hover { border-color:#b4654a; color:#cf7a5d; }
 
-  .result { font-size:12px; line-height:1.6; border-radius:3px; padding:12px 14px; display:none; margin-top:4px; }
-  .result.show { display:block; }
-  .result.ok { background:#15201550; border:1px solid #3a5a3a; color:#bcd8bc; }
-  .result.err { background:#2a161650; border:1px solid #5a3a3a; color:#e0b0b0; }
-  .result code, code { color:var(--accent); word-break:break-all; }
+  /* Notice */
+  .notice { font-size:10px; letter-spacing:0.12em; line-height:1.7; text-transform:uppercase;
+    color:var(--accent); animation:fadeUp 0.3s ease both; }
+  .notice a { color:var(--accent); }
+  .notice code { color:var(--text); text-transform:none; letter-spacing:0; }
+  .notice-error { color:#cf7a5d; }
 
   /* Manage list */
-  #list { display:flex; flex-direction:column; gap:12px; }
-  .tile-row { display:grid; grid-template-columns:84px 1fr; gap:14px; padding:12px;
-    background:var(--surface); border:1px solid var(--border); border-radius:4px; }
-  .tile-row.hidden-row { opacity:.55; }
-  .thumb { width:84px; height:84px; border-radius:3px; object-fit:cover; background:#000;
-    display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:10px; overflow:hidden; }
-  .thumb img { width:100%; height:100%; object-fit:cover; }
-  .meta { display:flex; flex-direction:column; gap:8px; min-width:0; }
-  .meta .type-badge { font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
-    border:1px solid rgba(200,169,110,.4); border-radius:2px; padding:1px 6px; width:fit-content; }
-  .meta input, .meta textarea { font-size:12px; padding:7px 9px; }
-  .meta .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-  .meta button { font-family:inherit; font-size:11px; letter-spacing:.06em; padding:7px 12px;
-    border-radius:3px; cursor:pointer; border:1px solid var(--border); background:#1d1b16; color:var(--text); }
-  .meta button.save { border-color:var(--accent); color:var(--accent); }
-  .meta button.del { border-color:#5a3a3a; color:#e0b0b0; }
-  .meta button:hover { filter:brightness(1.15); }
-  .empty { color:var(--muted); font-size:13px; padding:20px 0; }
+  .count { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:18px; }
+  .manage-list { display:flex; flex-direction:column; }
+  .manage-row { display:flex; gap:18px; align-items:center; justify-content:space-between;
+    padding:20px 0; border-bottom:1px solid var(--border); }
+  .manage-row:first-child { border-top:1px solid var(--border); }
+  .manage-row.is-hidden { opacity:0.5; }
+  .manage-thumb { width:64px; height:64px; flex-shrink:0; border:1px solid var(--border); border-radius:2px;
+    object-fit:cover; background:#000; display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:8px; letter-spacing:0.14em; text-transform:uppercase; overflow:hidden; }
+  .manage-thumb img { width:100%; height:100%; object-fit:cover; }
+  .manage-body { flex:1; min-width:0; }
+  .manage-text { font-family:'DM Serif Display',serif; font-style:italic; font-size:16px; line-height:1.6;
+    color:var(--text); overflow-wrap:anywhere; }
+  .manage-text .muted { font-family:'DM Mono',monospace; font-style:normal; font-size:12px; color:var(--muted); }
+  .manage-meta { margin-top:8px; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent); }
+  .row-actions { display:flex; gap:8px; flex-shrink:0; }
+  .manage-edit .manage-body { display:flex; flex-direction:column; gap:10px; }
+  .manage-edit .row-actions { flex-direction:column; }
+  .empty-msg { text-align:center; padding:60px 24px; font-size:10px; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--muted); }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
-<main>
-  <h1>Admin</h1>
-  <p class="sub">Manage the gallery · view:
-    <a href="/">local →</a> ·
-    <a href="http://git.marcuschiu.com/images/" target="_blank" rel="noopener">production →</a></p>
 
-  <div class="tabs">
-    <button id="tab-add" class="active" onclick="switchTab('add')">Add tile</button>
-    <button id="tab-manage" onclick="switchTab('manage')">Manage tiles</button>
-  </div>
+<header>
+  <p class="eyebrow">Admin</p>
+  <h1>Gallery admin</h1>
+  <nav class="nav header-links">
+    <a href="/">View local</a>
+    <a href="http://git.marcuschiu.com/images/" target="_blank" rel="noopener">View production</a>
+  </nav>
+  <nav class="tabs" role="tablist">
+    <button class="tab is-active" data-tab="add" role="tab">Add</button>
+    <button class="tab" data-tab="manage" role="tab">Manage</button>
+  </nav>
+</header>
 
-  <!-- ── ADD ── -->
-  <section id="panel-add" class="panel on">
-    <form id="form">
-      <div class="field">
-        <span class="lbl">Type</span>
-        <div class="seg" id="typeSeg">
-          <label><input type="radio" name="type" value="image" checked>Image</label>
-          <label><input type="radio" name="type" value="youtube">YouTube</label>
-          <label><input type="radio" name="type" value="video">Video</label>
+<main class="admin">
+
+  <!-- Add tab -->
+  <section id="panel-add" class="panel" data-panel="add">
+    <form id="add-form" class="admin-form" autocomplete="off">
+      <label>
+        <span>Type <em>required</em></span>
+        <div class="seg">
+          <label class="seg-btn"><input type="radio" name="type" value="image" checked>Image</label>
+          <label class="seg-btn"><input type="radio" name="type" value="youtube">YouTube</label>
+          <label class="seg-btn"><input type="radio" name="type" value="video">Video</label>
         </div>
-      </div>
+      </label>
 
       <!-- image -->
-      <div class="field typed on" data-for="image">
-        <span class="lbl">Image source</span>
-        <div class="seg" id="srcSeg">
-          <label><input type="radio" name="imgsrc" value="upload" checked>Upload file</label>
-          <label><input type="radio" name="imgsrc" value="url">From URL</label>
+      <label class="typed" data-for="image">
+        <span>Image source</span>
+        <div class="seg">
+          <label class="seg-btn"><input type="radio" name="imgsrc" value="upload" checked>Upload file</label>
+          <label class="seg-btn"><input type="radio" name="imgsrc" value="url">From URL</label>
         </div>
-      </div>
-      <label class="field srcd on" data-src="upload" data-for="image">
-        <span class="lbl">Image file</span>
+      </label>
+      <label class="typed srcd" data-for="image" data-src="upload">
+        <span>Image file</span>
         <input type="file" name="media" accept="image/*">
       </label>
-      <label class="field srcd" data-src="url" data-for="image">
-        <span class="lbl">Image URL <span class="hint">(downloaded &amp; saved locally)</span></span>
+      <label class="typed srcd" data-for="image" data-src="url" hidden>
+        <span>Image URL <em>downloaded &amp; saved locally</em></span>
         <input type="url" name="imageUrl" placeholder="https://example.com/photo.jpg">
       </label>
 
       <!-- youtube -->
-      <label class="field typed" data-for="youtube">
-        <span class="lbl">YouTube URL or ID</span>
+      <label class="typed" data-for="youtube" hidden>
+        <span>YouTube URL or ID</span>
         <input type="text" name="youtube" placeholder="https://youtu.be/aqz-KE-bpKQ  ·  or  ·  aqz-KE-bpKQ">
       </label>
 
       <!-- video -->
-      <label class="field typed" data-for="video">
-        <span class="lbl">Video file</span>
+      <label class="typed" data-for="video" hidden>
+        <span>Video file</span>
         <input type="file" name="media2" accept="video/*">
       </label>
-      <label class="field typed" data-for="video">
-        <span class="lbl">Poster image <span class="hint">(optional — the video's first frame is used if left blank)</span></span>
+      <label class="typed" data-for="video" hidden>
+        <span>Poster <em>optional · first frame used if blank</em></span>
         <input type="file" name="poster" accept="image/*">
       </label>
 
-      <label class="field">
-        <span class="lbl">Description <span class="hint">(optional)</span></span>
-        <textarea name="desc" placeholder="Shown on hover and in the lightbox."></textarea>
+      <label>
+        <span>Description <em>optional</em></span>
+        <textarea name="desc" rows="3" placeholder="Shown on hover and in the lightbox."></textarea>
       </label>
-      <label class="field">
-        <span class="lbl">External link <span class="hint">(optional)</span></span>
+      <label>
+        <span>External link <em>optional</em></span>
         <input type="url" name="link" placeholder="https://example.com">
       </label>
-      <label class="check"><input type="checkbox" name="hidden"> Add as hidden</label>
+      <label class="check-row">
+        <input type="checkbox" name="hidden">
+        <span>Add as hidden</span>
+      </label>
 
-      <button class="primary" id="submit" type="submit">Add tile</button>
-      <div id="result" class="result"></div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Add tile</button>
+        <button type="reset" class="btn btn-ghost">Clear</button>
+      </div>
+
+      <p id="notice" class="notice" hidden></p>
     </form>
   </section>
 
-  <!-- ── MANAGE ── -->
-  <section id="panel-manage" class="panel">
-    <div id="list"><p class="empty">Loading…</p></div>
+  <!-- Manage tab -->
+  <section id="panel-manage" class="panel" data-panel="manage" hidden>
+    <p id="count" class="count"></p>
+    <div id="rows" class="manage-list"></div>
+    <p id="empty" class="empty-msg" hidden>No tiles yet.</p>
   </section>
+
 </main>
 
 <script>
-  const $ = (s, r = document) => r.querySelector(s);
+(() => {
+  'use strict';
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const PROD_URL = 'http://git.marcuschiu.com/images/';
+  const OFFLINE = 'is the server running?';
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  const mediaUrl = (f) => 'content/media/' + encodeURIComponent(f);
+  const fmtDate = (d) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(d || '');
+    return m ? `${m[1]}.${m[2]}.${m[3]} ${m[4]}:${m[5]}` : (d || '');
+  };
 
-  /* ── Tabs ── */
-  function switchTab(name) {
-    $('#tab-add').classList.toggle('active', name === 'add');
-    $('#tab-manage').classList.toggle('active', name === 'manage');
-    $('#panel-add').classList.toggle('on', name === 'add');
-    $('#panel-manage').classList.toggle('on', name === 'manage');
-    if (name === 'manage') loadList();
+  /* ---------- Tabs ---------- */
+  const tabs = $$('.tab'), panels = $$('.panel');
+  function activate(name) {
+    tabs.forEach((t) => t.classList.toggle('is-active', t.dataset.tab === name));
+    panels.forEach((p) => (p.hidden = p.dataset.panel !== name));
+    if (name === 'manage') refresh();
   }
+  tabs.forEach((t) => t.addEventListener('click', () => activate(t.dataset.tab)));
 
-  /* ── Add form: conditional fields ── */
-  const form = $('#form');
-  function syncType() {
-    const type = form.querySelector('input[name=type]:checked').value;
-    document.querySelectorAll('.field.typed').forEach(el => el.classList.toggle('on', el.dataset.for === type));
-    if (type === 'image') syncSrc(); // re-evaluate src sub-fields
-  }
-  function syncSrc() {
-    const src = form.querySelector('input[name=imgsrc]:checked').value;
-    document.querySelectorAll('.field.srcd').forEach(el => el.classList.toggle('on', el.dataset.src === src));
-  }
-  form.querySelectorAll('input[name=type]').forEach(r => r.addEventListener('change', syncType));
-  form.querySelectorAll('input[name=imgsrc]').forEach(r => r.addEventListener('change', syncSrc));
+  /* ---------- Add form ---------- */
+  const form = $('#add-form');
+  const F = form.elements;
+  const notice = $('#notice');
+  const currentType = () => F.type.value;
+  const currentSrc  = () => F.imgsrc.value;
 
-  function showResult(ok, html) {
-    const r = $('#result');
-    r.className = 'result show ' + (ok ? 'ok' : 'err');
-    r.innerHTML = html;
+  function syncFields() {
+    const type = currentType(), src = currentSrc();
+    $$('[data-for]', form).forEach((el) => {
+      const show = el.dataset.for === type &&
+        (!el.classList.contains('srcd') || el.dataset.src === src);
+      el.hidden = !show;
+    });
   }
+  $$('input[name=type]', form).forEach((r) => r.addEventListener('change', syncFields));
+  $$('input[name=imgsrc]', form).forEach((r) => r.addEventListener('change', syncFields));
 
-  /* Grab the first frame of a video file as a JPEG blob (browser-side decode). */
+  function showNotice(html, isError) {
+    notice.innerHTML = html;
+    notice.className = isError ? 'notice notice-error' : 'notice';
+    notice.hidden = false;
+  }
+  function gitNote(g) {
+    if (!g) return '';
+    if (g.pushed) return ' · pushed to GitHub';
+    if (g.reason) return ` · git: ${esc(g.reason)}`;
+    if (g.error)  return ` · push failed: ${esc(g.error)}`;
+    return '';
+  }
+  function gitAlert(g) { if (g && g.error) alert('Saved, but git push failed:\n' + g.error); }
+
+  /* Grab a video's first frame as a JPEG blob (browser-side decode). */
   function extractFirstFrame(file) {
     return new Promise((resolve) => {
       const video = document.createElement('video');
       video.muted = true; video.playsInline = true; video.preload = 'auto';
       const url = URL.createObjectURL(file);
       let done = false;
-      const finish = (blob) => { if (!done) { done = true; URL.revokeObjectURL(url); resolve(blob); } };
+      const finish = (b) => { if (!done) { done = true; URL.revokeObjectURL(url); resolve(b); } };
       const capture = () => {
         const w = video.videoWidth, h = video.videoHeight;
         if (!w || !h) return finish(null);
         try {
-          const canvas = document.createElement('canvas');
-          canvas.width = w; canvas.height = h;
-          canvas.getContext('2d').drawImage(video, 0, 0, w, h);
-          canvas.toBlob((b) => finish(b), 'image/jpeg', 0.9);
+          const c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          c.getContext('2d').drawImage(video, 0, 0, w, h);
+          c.toBlob((b) => finish(b), 'image/jpeg', 0.9);
         } catch { finish(null); }
       };
-      video.onloadeddata = () => {
-        // Nudge past the very start so a frame is guaranteed to be decoded.
-        try { video.currentTime = Math.min(0.1, (video.duration || 1) / 2); }
-        catch { capture(); }
-      };
+      video.onloadeddata = () => { try { video.currentTime = Math.min(0.1, (video.duration || 1) / 2); } catch { capture(); } };
       video.onseeked = capture;
       video.onerror = () => finish(null);
       video.src = url;
-      setTimeout(() => finish(null), 8000); // give up gracefully
+      setTimeout(() => finish(null), 8000);
     });
   }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const type = form.querySelector('input[name=type]:checked').value;
+    const type = currentType();
+    const submitBtn = form.querySelector('button[type=submit]');
     const fd = new FormData();
     fd.append('type', type);
-    fd.append('desc', form.desc.value);
-    fd.append('link', form.link.value);
-    if (form.hidden.checked) fd.append('hidden', 'true');
+    fd.append('desc', F.desc.value);
+    fd.append('link', F.link.value);
+    if (F.hidden.checked) fd.append('hidden', 'true');
 
     if (type === 'image') {
-      const src = form.querySelector('input[name=imgsrc]:checked').value;
-      if (src === 'upload') {
-        if (!form.media.files[0]) return showResult(false, 'Choose an image file.');
-        fd.append('media', form.media.files[0]);
+      if (currentSrc() === 'upload') {
+        if (!F.media.files[0]) return showNotice('Choose an image file.', true);
+        fd.append('media', F.media.files[0]);
       } else {
-        if (!form.imageUrl.value.trim()) return showResult(false, 'Paste an image URL.');
-        fd.append('imageUrl', form.imageUrl.value.trim());
+        if (!F.imageUrl.value.trim()) return showNotice('Paste an image URL.', true);
+        fd.append('imageUrl', F.imageUrl.value.trim());
       }
     } else if (type === 'video') {
-      if (!form.media2.files[0]) return showResult(false, 'Choose a video file.');
-      fd.append('media', form.media2.files[0]);
-      if (form.poster.files[0]) {
-        fd.append('poster', form.poster.files[0]);
+      if (!F.media2.files[0]) return showNotice('Choose a video file.', true);
+      fd.append('media', F.media2.files[0]);
+      if (F.poster.files[0]) {
+        fd.append('poster', F.poster.files[0]);
       } else {
-        // No poster given — grab the video's first frame in the browser.
-        const sbtn = $('#submit');
-        sbtn.disabled = true; sbtn.textContent = 'Reading first frame…';
-        const frame = await extractFirstFrame(form.media2.files[0]);
+        submitBtn.disabled = true; submitBtn.textContent = 'Reading first frame…';
+        const frame = await extractFirstFrame(F.media2.files[0]);
         if (frame) fd.append('poster', frame, 'poster.jpg');
       }
     } else {
-      if (!form.youtube.value.trim()) return showResult(false, 'Paste a YouTube URL or ID.');
-      fd.append('youtube', form.youtube.value.trim());
+      if (!F.youtube.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
+      fd.append('youtube', F.youtube.value.trim());
     }
 
-    const btn = $('#submit');
-    btn.disabled = true; btn.textContent = 'Adding…';
+    submitBtn.disabled = true; submitBtn.textContent = 'Adding…';
     try {
       const res = await fetch('/api/tiles', { method: 'POST', body: fd });
       const data = await res.json();
       if (res.ok) {
-        const what = data.entry.file ? `<code>${data.entry.file}</code>` : `id <code>${data.entry.id}</code>`;
-        showResult(true, `Added ${data.entry.type} ${what} · dated <code>${data.entry.date}</code>` +
-          (data.entry.hidden ? ' · <em>hidden</em>' : '') + gitNote(data.git) +
-          ` · view: <a href="/">local →</a> · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`);
-        form.reset(); syncType();
-      } else showResult(false, data.error || 'Something went wrong.');
-    } catch (err) { showResult(false, String(err)); }
-    finally { btn.disabled = false; btn.textContent = 'Add tile'; }
+        const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>` : `id <code>${esc(data.entry.id)}</code>`;
+        showNotice(`Added ${esc(data.entry.type)} ${what}` + (data.entry.hidden ? ' · hidden' : '') +
+          gitNote(data.git) +
+          ` · <a href="/">local →</a> · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`, false);
+        form.reset(); syncFields();
+      } else showNotice(esc(data.error) || 'Something went wrong.', true);
+    } catch (err) {
+      showNotice(`Could not save — ${OFFLINE}`, true);
+    } finally {
+      submitBtn.disabled = false; submitBtn.textContent = 'Add tile';
+    }
   });
 
-  /* ── Manage list ── */
-  const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const mediaUrl = (f) => 'content/media/' + encodeURIComponent(f);
+  /* ---------- Manage list ---------- */
+  const rowsEl = $('#rows'), countEl = $('#count'), emptyMsg = $('#empty');
+  let editingDate = null;
+  let cache = [];
 
-  /* Render the auto commit+push outcome inline. */
-  function gitNote(g) {
-    if (!g) return '';
-    if (g.pushed) return ' · <span style="color:var(--accent)">pushed to GitHub ✓</span>';
-    if (g.reason) return ` · <span class="hint">git: ${esc(g.reason)}</span>`;
-    if (g.error)  return ` · <span style="color:#e0b0b0">push failed: ${esc(g.error)}</span>`;
-    return '';
+  async function refresh() {
+    try { cache = (await (await fetch('/api/tiles')).json()).items; }
+    catch (e) {
+      rowsEl.replaceChildren(); countEl.textContent = '';
+      emptyMsg.textContent = `Could not load — ${OFFLINE}`; emptyMsg.hidden = false;
+      return;
+    }
+    render();
   }
-  function gitAlert(g) {
-    if (g && g.error) alert('Saved, but git push failed:\n' + g.error);
+  function render() {
+    countEl.textContent = `${cache.length} tile${cache.length === 1 ? '' : 's'}`;
+    rowsEl.replaceChildren();
+    cache.forEach((it) => rowsEl.appendChild(it.date === editingDate ? editRow(it) : viewRow(it)));
+    emptyMsg.textContent = 'No tiles yet.';
+    emptyMsg.hidden = cache.length > 0;
   }
-
   function thumbHTML(it) {
     if (it.type === 'youtube') return `<img src="https://img.youtube.com/vi/${esc(it.id)}/default.jpg" alt="">`;
     if (it.type === 'image')   return `<img src="${esc(mediaUrl(it.file))}" alt="">`;
     if (it.poster)             return `<img src="${esc(mediaUrl(it.poster))}" alt="">`;
     return 'video';
   }
-
-  async function loadList() {
-    const box = $('#list');
-    box.innerHTML = '<p class="empty">Loading…</p>';
-    let items;
-    try { items = (await (await fetch('/api/tiles')).json()).items; }
-    catch (e) { box.innerHTML = `<p class="empty">Failed to load: ${esc(e)}</p>`; return; }
-    if (!items.length) { box.innerHTML = '<p class="empty">No tiles yet.</p>'; return; }
-
-    box.innerHTML = '';
-    items.forEach((it) => {
-      const row = document.createElement('div');
-      row.className = 'tile-row' + (it.hidden ? ' hidden-row' : '');
-      row.innerHTML = `
-        <div class="thumb">${thumbHTML(it)}</div>
-        <div class="meta">
-          <span class="type-badge">${esc(it.type)}${it.hidden ? ' · hidden' : ''}</span>
-          <input class="f-date" type="text" value="${esc(it.date)}" spellcheck="false">
-          <textarea class="f-desc" placeholder="description">${esc(it.desc || '')}</textarea>
-          <input class="f-link" type="url" value="${esc(it.link || '')}" placeholder="external link">
-          <div class="controls">
-            <label class="check"><input type="checkbox" class="f-hidden" ${it.hidden ? 'checked' : ''}> hidden</label>
-            <button class="save">Save</button>
-            <button class="del">Delete</button>
-          </div>
-        </div>`;
-      const origDate = it.date;
-      row.querySelector('.save').addEventListener('click', () => saveRow(row, origDate));
-      row.querySelector('.del').addEventListener('click', () => delRow(origDate, it));
-      box.appendChild(row);
-    });
+  function viewRow(it) {
+    const el = document.createElement('div');
+    el.className = 'manage-row' + (it.hidden ? ' is-hidden' : '');
+    const title = it.desc ? esc(it.desc) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
+    const meta = [it.type + (it.hidden ? ' · hidden' : ''), fmtDate(it.date), it.link ? 'link' : '']
+      .filter(Boolean).join(' · ');
+    el.innerHTML = `
+      <div class="manage-thumb">${thumbHTML(it)}</div>
+      <div class="manage-body">
+        <p class="manage-text">${title}</p>
+        <p class="manage-meta">${esc(meta)}</p>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-ghost" data-act="edit">Edit</button>
+        <button class="btn btn-ghost" data-act="toggle">${it.hidden ? 'Show' : 'Hide'}</button>
+        <button class="btn btn-danger" data-act="delete">Delete</button>
+      </div>`;
+    el.querySelector('[data-act=edit]').addEventListener('click', () => { editingDate = it.date; render(); });
+    el.querySelector('[data-act=toggle]').addEventListener('click', () => toggleHidden(it));
+    el.querySelector('[data-act=delete]').addEventListener('click', () => del(it));
+    return el;
   }
-
-  async function saveRow(row, origDate) {
-    const payload = {
-      date: origDate,
-      newDate: row.querySelector('.f-date').value.trim(),
-      desc: row.querySelector('.f-desc').value,
-      link: row.querySelector('.f-link').value,
-      hidden: row.querySelector('.f-hidden').checked,
-    };
-    const btn = row.querySelector('.save');
-    btn.disabled = true; btn.textContent = 'Saving…';
-    try {
+  function editRow(it) {
+    const el = document.createElement('form');
+    el.className = 'manage-row manage-edit';
+    el.innerHTML = `
+      <div class="manage-thumb">${thumbHTML(it)}</div>
+      <div class="manage-body">
+        <input type="text" name="date" value="${esc(it.date)}" spellcheck="false">
+        <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
+        <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
+      </div>
+      <div class="row-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-ghost" data-act="cancel">Cancel</button>
+      </div>`;
+    el.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        date: it.date,
+        newDate: el.elements.date.value.trim(),
+        desc: el.elements.desc.value,
+        link: el.elements.link.value,
+        hidden: !!it.hidden,
+      };
       const res = await fetch('/api/tiles/update', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) { alert(data.error || 'Update failed'); }
-      else gitAlert(data.git);
-      await loadList();
-    } catch (e) { alert(String(e)); btn.disabled = false; btn.textContent = 'Save'; }
+      if (!res.ok) { alert(data.error || 'Update failed'); return; }
+      gitAlert(data.git);
+      editingDate = null; refresh();
+    });
+    el.querySelector('[data-act=cancel]').addEventListener('click', () => { editingDate = null; render(); });
+    return el;
   }
-
-  async function delRow(date, it) {
-    const label = it.desc ? `“${it.desc.slice(0, 40)}”` : (it.file || it.id || date);
+  async function toggleHidden(it) {
+    const res = await fetch('/api/tiles/update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date: it.date, hidden: !it.hidden }),
+    });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Update failed'); return; }
+    gitAlert(data.git); refresh();
+  }
+  async function del(it) {
+    const label = it.desc ? `“${it.desc.slice(0, 40)}”` : (it.file || it.id || it.date);
     if (!confirm(`Delete this ${it.type} tile (${label})?\nIts media files will also be removed.`)) return;
-    try {
-      const res = await fetch('/api/tiles/delete', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date }),
-      });
-      const data = await res.json();
-      if (!res.ok) alert(data.error || 'Delete failed');
-      else gitAlert(data.git);
-      await loadList();
-    } catch (e) { alert(String(e)); }
+    const res = await fetch('/api/tiles/delete', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: it.date }),
+    });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Delete failed'); return; }
+    gitAlert(data.git); refresh();
   }
 
-  syncType();
+  syncFields();
+})();
 </script>
 </body>
 </html>
