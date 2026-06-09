@@ -19,7 +19,7 @@ window.GALLERY_ITEMS = [
   { type: "youtube", date: "2026-06-08T23:01:12.757-05:00", id: "PP9BjKnDaFk" },
 
   { type: "video", date: "2026-06-08T22:59:41.513-05:00", file: "2026-06-08T22:59:41.513-05:00.mov",
-    desc: "jellyfish", poster: "2026-06-08T22:59:41.513-05:00-poster.jpg" },
+    desc: "jellyfish", poster: "2026-06-08T22:59:41.513-05:00-poster.jpg", hidden: true },
 
   { type: "image", date: "2026-06-08T19:58:33.441-05:00", file: "2026-06-08T19:58:33.441-05:00.jpg" },
 
