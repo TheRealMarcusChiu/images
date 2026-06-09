@@ -92,7 +92,9 @@
 <body>
 <main>
   <h1>Admin</h1>
-  <p class="sub">Manage the gallery · <a href="/">view gallery →</a></p>
+  <p class="sub">Manage the gallery · view:
+    <a href="/">local →</a> ·
+    <a href="http://git.marcuschiu.com/images/" target="_blank" rel="noopener">production →</a></p>
 
   <div class="tabs">
     <button id="tab-add" class="active" onclick="switchTab('add')">Add tile</button>
@@ -167,6 +169,7 @@
 
 <script>
   const $ = (s, r = document) => r.querySelector(s);
+  const PROD_URL = 'http://git.marcuschiu.com/images/';
 
   /* ── Tabs ── */
   function switchTab(name) {
@@ -270,7 +273,8 @@
       if (res.ok) {
         const what = data.entry.file ? `<code>${data.entry.file}</code>` : `id <code>${data.entry.id}</code>`;
         showResult(true, `Added ${data.entry.type} ${what} · dated <code>${data.entry.date}</code>` +
-          (data.entry.hidden ? ' · <em>hidden</em>' : '') + gitNote(data.git) + ' · <a href="/">view →</a>');
+          (data.entry.hidden ? ' · <em>hidden</em>' : '') + gitNote(data.git) +
+          ` · view: <a href="/">local →</a> · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`);
         form.reset(); syncType();
       } else showResult(false, data.error || 'Something went wrong.');
     } catch (err) { showResult(false, String(err)); }
