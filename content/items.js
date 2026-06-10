@@ -20,7 +20,7 @@ window.GALLERY_ITEMS = [
     link: "https://www.youtube.com/watch?v=xa-4IAR_9Yw" },
 
   { type: "image", date: "2026-06-09T20:38:35.308-05:00", file: "2026-06-09T20:38:35.308-05:00.webp",
-    desc: "the most personal is the most creative" },
+    desc: "the most personal is the most creative", link: "https://archive.org/details/MereChristianityCSL/page/n125/mode/2up#:~:text=you%20will%20never,find%20eternal%20life." },
 
   { type: "image", date: "2026-06-09T20:33:23.754-05:00", file: "2026-06-09T20:33:23.754-05:00.webp" },
 
