@@ -74,7 +74,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-08T12:02:00.000-05:00", file: "2026-06-08T12:02:00.000-05:00.webp",
     desc: "Geodude Hanger" },
 
-  { type: "image", date: "2026-06-08T12:01:00.000-05:00", file: "2026-06-08T12:01:00.000-05:00.webp" },
+  { type: "image", date: "2026-06-08T12:01:00.000-05:00", file: "2026-06-08T12:01:00.000-05:00.webp",
+    link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
 
   { type: "image", date: "2026-06-08T12:00:00.000-05:00", file: "2026-06-08T12:00:00.000-05:00.webp" },
 ];
