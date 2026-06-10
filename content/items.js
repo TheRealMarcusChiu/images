@@ -72,7 +72,7 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-08T12:03:00.000-05:00", file: "2026-06-08T12:03:00.000-05:00.webp" },
 
   { type: "image", date: "2026-06-08T12:02:00.000-05:00", file: "2026-06-08T12:02:00.000-05:00.webp",
-    desc: "Geodude Hanger" },
+    desc: "Geodude Hanger", link: "https://www.etsy.com/market/geodude_hanger" },
 
   { type: "image", date: "2026-06-08T12:01:00.000-05:00", file: "2026-06-08T12:01:00.000-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
