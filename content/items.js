@@ -59,7 +59,8 @@ window.GALLERY_ITEMS = [
 
   { type: "image", date: "2026-06-08T19:58:33.441-05:00", file: "2026-06-08T19:58:33.441-05:00.jpg" },
 
-  { type: "image", date: "2026-06-08T19:58:17.091-05:00", file: "2026-06-08T19:58:17.091-05:00.jpeg" },
+  { type: "image", date: "2026-06-08T19:58:17.091-05:00", file: "2026-06-08T19:58:17.091-05:00.jpeg",
+    link: "https://www.imdb.com/title/tt1913273" },
 
   { type: "image", date: "2026-06-08T19:57:48.626-05:00", file: "2026-06-08T19:57:48.626-05:00.jpeg",
     desc: "mich star boba", link: "https://share.google/8Kedbj52NAAyVMJmW" },
