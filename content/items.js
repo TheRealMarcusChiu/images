@@ -16,9 +16,6 @@
      poster filename in content/media/ for a local video thumbnail (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-06-10T00:50:51.885-05:00", file: "2026-06-10T00:50:51.885-05:00.jpg",
-    link: "https://discord.com/channels/1302816934508630047/1304107876096413696" },
-
   { type: "image", date: "2026-06-09T23:51:28.050-05:00", file: "2026-06-09T23:51:28.050-05:00.webp",
     link: "https://www.youtube.com/watch?v=xa-4IAR_9Yw" },
 
