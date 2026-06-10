@@ -368,6 +368,18 @@ const ROUTES = {
 };
 
 const server = createServer((req, res) => {
+  // CORS — lets the Chrome extension (and other local tools) call the API.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Vary', 'Origin');
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    });
+    return res.end();
+  }
+
   const key = `${req.method} ${req.url.split('?')[0]}`;
   if (req.method === 'GET' && req.url.split('?')[0] === '/api/tiles') return handleList(res);
   if (ROUTES[key]) {
