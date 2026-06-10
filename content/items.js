@@ -16,6 +16,8 @@
      poster filename in content/media/ for a local video thumbnail (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-06-10T16:15:34.054-05:00", id: "uzDKm990MvQ" },
+
   { type: "video", date: "2026-06-10T10:01:07.122-05:00", file: "2026-06-10T10:01:07.122-05:00.mov",
     desc: "Zhuhai Grand Theater", link: "https://share.google/wVzluW3nDm4GxOoLl", poster: "2026-06-10T10:01:07.122-05:00-poster.jpg" },
 
