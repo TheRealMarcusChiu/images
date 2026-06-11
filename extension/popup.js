@@ -78,6 +78,32 @@ function showNotice(html, isError) {
   notice.hidden = false;
 }
 
+/* Grab a video's first frame as a JPEG blob (browser-side decode). */
+function extractFirstFrame(file) {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.muted = true; video.playsInline = true; video.preload = 'auto';
+    const url = URL.createObjectURL(file);
+    let done = false;
+    const finish = (b) => { if (!done) { done = true; URL.revokeObjectURL(url); resolve(b); } };
+    const capture = () => {
+      const w = video.videoWidth, h = video.videoHeight;
+      if (!w || !h) return finish(null);
+      try {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(video, 0, 0, w, h);
+        c.toBlob((b) => finish(b), 'image/jpeg', 0.9);
+      } catch { finish(null); }
+    };
+    video.onloadeddata = () => { try { video.currentTime = Math.min(0.1, (video.duration || 1) / 2); } catch { capture(); } };
+    video.onseeked = capture;
+    video.onerror = () => finish(null);
+    video.src = url;
+    setTimeout(() => finish(null), 8000);
+  });
+}
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const type = currentType();
@@ -95,6 +121,16 @@ form.addEventListener('submit', async (e) => {
     } else {
       if (!F.media.files[0]) return showNotice('Choose an image file.', true);
       fd.append('media', F.media.files[0]);
+    }
+  } else if (type === 'video') {
+    if (!F.media2.files[0]) return showNotice('Choose a video file.', true);
+    fd.append('media', F.media2.files[0]);
+    if (F.poster.files[0]) {
+      fd.append('poster', F.poster.files[0]);
+    } else {
+      submitBtn.disabled = true; submitBtn.textContent = 'Reading first frame…';
+      const frame = await extractFirstFrame(F.media2.files[0]);
+      if (frame) fd.append('poster', frame, 'poster.jpg');
     }
   } else {
     if (!F.youtube.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);

@@ -111,6 +111,7 @@
         <div class="seg">
           <label class="seg-btn"><input type="radio" name="type" value="image" checked>Image</label>
           <label class="seg-btn"><input type="radio" name="type" value="youtube">YouTube</label>
+          <label class="seg-btn"><input type="radio" name="type" value="video">Video</label>
         </div>
       </label>
 
@@ -133,6 +134,15 @@
       <label class="typed" data-for="youtube" hidden>
         <span>YouTube URL or ID</span>
         <input type="text" name="youtube" placeholder="https://youtu.be/aqz-KE-bpKQ">
+      </label>
+
+      <label class="typed" data-for="video" hidden>
+        <span>Video file</span>
+        <input type="file" name="media2" accept="video/*">
+      </label>
+      <label class="typed" data-for="video" hidden>
+        <span>Poster <em>optional · first frame used if blank</em></span>
+        <input type="file" name="poster" accept="image/*">
       </label>
 
       <label>

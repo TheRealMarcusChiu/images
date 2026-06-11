@@ -17,7 +17,9 @@
  * The server is the source of truth for content/items.js: it parses the file,
  * mutates the array, and rewrites it in a normalized format.
  *
- * Intended for local use; binds to 127.0.0.1 only and has no auth.
+ * Intended for local use and has no auth. Binds to 127.0.0.1 by default; set
+ * HOST=0.0.0.0 (and PORT to taste) to accept remote connections — do this only
+ * on a trusted network, since the admin API is unauthenticated.
  */
 
 import { createServer } from 'node:http';
@@ -36,7 +38,7 @@ const pexecFile = promisify(execFile);
 const ROOT       = dirname(fileURLToPath(import.meta.url));
 const MEDIA_DIR  = join(ROOT, 'content', 'media');
 const ITEMS_FILE = join(ROOT, 'content', 'items.js');
-const HOST       = '127.0.0.1';
+const HOST       = process.env.HOST || '127.0.0.1';
 const PORT       = process.env.PORT || 3000;
 const MAX_BODY   = 512 * 1024 * 1024; // 512 MB ceiling
 

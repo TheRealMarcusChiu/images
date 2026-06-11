@@ -1,8 +1,8 @@
 # Mosaic Gallery Admin — Chrome extension
 
-Add images & YouTube videos to your gallery, manage existing tiles, and
-right-click any image on the web to submit it — all talking to your running
-admin server (`node server.js`).
+Add images, uploaded videos & YouTube videos to your gallery, manage existing
+tiles, and right-click any image on the web to submit it — all talking to your
+running admin server (`node server.js`).
 
 ## Install (unpacked)
 
@@ -15,8 +15,9 @@ admin server (`node server.js`).
 ## Use
 
 - **Popup → Add**: add an *Image* (by URL — the server downloads it — or by file
-  upload) or a *YouTube* video, with optional description, external link, and a
-  "hidden" flag.
+  upload), a *Video* (file upload, with an optional poster — the first frame is
+  captured automatically if left blank), or a *YouTube* video, with optional
+  description, external link, and a "hidden" flag.
 - **Popup → Manage**: list every tile with inline editing of date / description /
   link, a hide/show toggle, and delete (removes the media files too).
 - **Right-click an image** on any page → **Add image to Mosaic Gallery**: opens
