@@ -17,9 +17,6 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "quote", date: "2026-06-12T12:35:45.551-05:00",
-    quote: "TEST", author: "TEST", desc: "TEST" },
-
   { type: "image", date: "2026-06-12T03:19:29.244-05:00", file: "2026-06-12T03:19:29.244-05:00.jpg",
     desc: "Downtown Dallas - circa 2017", hidden: true },
 
