@@ -95,6 +95,7 @@ const LINK_ICON_SVG = `
 const PLAY_ICON_SVG  = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
 const PAUSE_ICON_SVG = `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
 const NEXT_ICON_SVG  = `<svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><rect x="16" y="4" width="3" height="16"/></svg>`;
+const PREV_ICON_SVG  = `<svg viewBox="0 0 24 24"><rect x="5" y="4" width="3" height="16"/><polygon points="19,4 9,12 19,20"/></svg>`;
 const QUEUE_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
   stroke-linecap="round"><line x1="12" y1="6" x2="12" y2="18"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`;
 const TRASH_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -171,6 +172,8 @@ const lightbox = (() => {
   el.setAttribute('aria-hidden', 'true');
   el.innerHTML = `
     <button class="lightbox-close" aria-label="Close">&times;</button>
+    <button class="lightbox-nav lightbox-prev" aria-label="Newer (←)">&#8249;</button>
+    <button class="lightbox-nav lightbox-next" aria-label="Older (→)">&#8250;</button>
     <figure class="lightbox-figure"></figure>`;
   document.body.appendChild(el);
   const figure = el.querySelector('.lightbox-figure');
@@ -234,9 +237,16 @@ const lightbox = (() => {
     if (badge) badge.innerHTML = player.isActive(item) ? PAUSE_ICON_SVG : PLAY_ICON_SVG;
   }
 
+  const prevBtn = el.querySelector('.lightbox-prev');
+  const nextBtn = el.querySelector('.lightbox-next');
+
   function open(it) {
     item = it;
     lbHosted = false;
+    // Position within the gallery (newest-first) drives left/right navigation.
+    const idx = ITEMS.indexOf(it);
+    prevBtn.disabled = idx <= 0;                 // ← newer
+    nextBtn.disabled = idx < 0 || idx >= ITEMS.length - 1; // → older
     figure.innerHTML = stageHTML(it) +
       (PLAYABLE.has(it.type)
         ? `<button class="lb-queue-badge audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>`
@@ -268,25 +278,41 @@ const lightbox = (() => {
     el.setAttribute('aria-hidden', 'false');
     syncPlayState();
   }
-  function close() {
-    // Hand any video/youtube we hosted back to its tile so it keeps playing
-    // there; audio was never moved (it plays through the now-playing bar).
+  // Hand any video/youtube we hosted back to its tile so it keeps playing there;
+  // audio was never moved (it plays through the now-playing bar).
+  function releaseHosted() {
     if (lbHosted && item && player.isLoaded(item)) {
       const tile = mediaTile(item);
       const wrap = tile && tile.querySelector('.video-wrap');
       if (wrap) player.rehost(wrap); else player.stop();
     }
     lbHosted = false;
+  }
+  function close() {
+    releaseHosted();
     item = null;
     el.classList.remove('open');
     el.setAttribute('aria-hidden', 'true');
     figure.innerHTML = ''; // release any decoded bitmap / players
   }
+  // Step to an adjacent gallery tile: dir −1 = newer (left), +1 = older (right).
+  function navigate(dir) {
+    if (!item) return;
+    const ni = ITEMS.indexOf(item) + dir;
+    if (ni < 0 || ni >= ITEMS.length) return;
+    releaseHosted();
+    open(ITEMS[ni]);
+  }
 
   el.addEventListener('click', (e) => { if (e.target === el) close(); });
   el.querySelector('.lightbox-close').addEventListener('click', close);
+  prevBtn.addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
+  nextBtn.addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && el.classList.contains('open')) close();
+    if (!el.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft')  { e.preventDefault(); navigate(-1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); navigate(1); }
   });
 
   return { open, close, syncPlayState };
@@ -356,6 +382,7 @@ const player = (() => {
       <span class="player-time player-dur">0:00</span>
     </div>
     <div class="player-controls">
+      <button class="player-btn" data-act="prev" aria-label="Previous track">${PREV_ICON_SVG}</button>
       <button class="player-btn player-toggle" data-act="toggle" aria-label="Play or pause">${PLAY_ICON_SVG}</button>
       <button class="player-btn" data-act="next" aria-label="Next track">${NEXT_ICON_SVG}</button>
       <div class="player-vol">
@@ -386,6 +413,7 @@ const player = (() => {
   let media   = null;   // its controller, or null
   let mediaHost = null; // where the current video/youtube renders (tile or expanded view)
   const queue = [];
+  const history = [];   // tracks already played, for the previous button
 
   const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch { /* ignore */ } };
@@ -400,11 +428,11 @@ const player = (() => {
     (item.src ? decodeURIComponent(item.src.split('/').pop().replace(/\.[^.]+$/, ''))
               : (item.id ? `YouTube ${item.id}` : 'Untitled'));
 
-  /* Player volume — persisted; applied to whatever controller is current. */
+  /* Player volume — persisted; defaults to 50%. Applied to the live controller. */
   let volume = parseFloat(lsGet('player-vol'));
-  if (!(volume >= 0 && volume <= 1)) volume = 1;
+  if (!(volume >= 0 && volume <= 1)) volume = 0.5;
   let muted = lsGet('player-muted') === '1';
-  let lastVol = volume > 0 ? volume : 1;
+  let lastVol = volume > 0 ? volume : 0.5;
 
   function paintVol() {
     const v = muted ? 0 : volume;
@@ -571,7 +599,12 @@ const player = (() => {
     updateTileStates();
     lightbox.syncPlayState();      // keep the expanded view's play badge in step
   }
-  function start(item, host) {
+  function start(item, host, fromHistory) {
+    // Remember the outgoing track so the previous button can return to it.
+    if (!fromHistory && current && current.date !== item.date) {
+      history.push(current);
+      if (history.length > 50) history.shift();
+    }
     if (media) media.destroy();        // stop whatever was playing (audio or video)
     progEl.style.width = '0%';
     curEl.textContent = '0:00'; durEl.textContent = '0:00';
@@ -584,6 +617,15 @@ const player = (() => {
     el.setAttribute('aria-hidden', 'false');
     document.body.classList.add('player-active');
     render(); syncToggle();
+  }
+  // Previous: restart if we're past the first few seconds; otherwise step back
+  // through history (without re-recording it).
+  function playPrev() {
+    if (!current) return;
+    if (media && media.time() > 3) { media.seekFrac(0); return; }
+    const prev = history.pop();
+    if (prev) start(prev, null, true);
+    else if (media) media.seekFrac(0);
   }
   /* Move the live video/youtube to a new frame (tile ⇄ expanded view) while it
      keeps playing. A <video> re-parents seamlessly; a YouTube iframe can't be
@@ -671,23 +713,36 @@ const player = (() => {
     if (media.paused()) { if (media.ended()) media.seekFrac(0); media.play(); }
     else media.pause();
   });
+  el.querySelector('[data-act=prev]').addEventListener('click', playPrev);
   el.querySelector('[data-act=next]').addEventListener('click', playNext);
   el.querySelector('[data-act=close]').addEventListener('click', close);
   el.querySelector('[data-act=queue]').addEventListener('click', () => {
     if (!queue.length) return;
     pop.hidden = !pop.hidden;
   });
-  // Scroll the gallery to the playing tile, then flash it so the eye lands on it.
+  // Scroll the gallery to the playing tile, then — once the scroll settles —
+  // flash it so the eye lands on where the track lives.
   el.querySelector('[data-act=locate]').addEventListener('click', () => {
     if (!current) return;
     const tile = mediaTile(current);
     if (!tile) { toast('That tile isn’t on the page'); return; }
+    const flash = () => {
+      tile.classList.remove('is-located');
+      void tile.offsetWidth;            // restart the flash if it's mid-animation
+      tile.classList.add('is-located');
+      setTimeout(() => tile.classList.remove('is-located'), 1500);
+    };
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    tile.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-    tile.classList.remove('is-located');
-    void tile.offsetWidth;              // restart the flash if it's mid-animation
-    tile.classList.add('is-located');
-    setTimeout(() => tile.classList.remove('is-located'), 1500);
+    const gwRect = galWrap.getBoundingClientRect();
+    const tRect  = tile.getBoundingClientRect();
+    const inView = tRect.top >= gwRect.top && tRect.bottom <= gwRect.bottom;
+    if (reduce || inView) { tile.scrollIntoView({ block: 'center' }); flash(); return; }
+    // Wait for the smooth scroll to finish (scrollend), with a timeout fallback.
+    let fired = false;
+    const done = () => { if (fired) return; fired = true; galWrap.removeEventListener('scrollend', done); clearTimeout(t); flash(); };
+    galWrap.addEventListener('scrollend', done);
+    const t = setTimeout(done, 1200);
+    tile.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
   /* Scrub — click or drag anywhere on the track to seek; arrow keys nudge.
@@ -916,20 +971,15 @@ function makeQuoteTile(item, i) {
   const author = item.author
     ? `<div class="quote-by"><span class="quote-dash">—</span>${escapeHTML(item.author)}</div>`
     : '';
-  // Hover meta: date always; description when present.
-  const meta = `
-    <div class="quote-meta">
-      <div class="quote-ts">${escapeHTML(item.ts)}</div>
-      ${item.desc ? `<div class="quote-desc">${escapeHTML(item.desc)}</div>` : ''}
-    </div>`;
-
+  // Hover reveals date + description in the same bottom overlay as image tiles —
+  // the quote itself stays fully readable underneath.
   tile.innerHTML = `
     <div class="quote-card ${size}">
       <div class="quote-body">
         <p class="quote-text">${escapeHTML(item.quote)}</p>
         ${author}
       </div>
-      ${meta}
+      ${overlayHTML(item, null)}
     </div>`;
 
   // The link opens via its corner badge; clicking the tile body expands it.

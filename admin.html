@@ -113,6 +113,9 @@
   .edit-check { display:flex; flex-direction:row; align-items:center; gap:9px; cursor:pointer;
     font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
   .edit-check input { width:15px; height:15px; accent-color:var(--accent); flex-shrink:0; }
+  .edit-file { display:flex; flex-direction:column; gap:6px; }
+  .edit-file > span { font-size:8px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
+  .edit-file input[type=file] { font-size:11px; padding:7px 9px; }
   .empty-msg { text-align:center; padding:60px 24px; font-size:10px; letter-spacing:0.18em;
     text-transform:uppercase; color:var(--muted); }
 
@@ -467,6 +470,8 @@
         <input type="text" name="author" value="${esc(it.author || '')}" placeholder="Author">` : ''}
         <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
         <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
+        ${it.type === 'image' ? `<label class="edit-file"><span>Replace photo</span><input type="file" name="image" accept="image/*"></label>` : ''}
+        ${(it.type === 'video' || it.type === 'audio') ? `<label class="edit-file"><span>${it.type === 'audio' ? 'Cover image' : 'Poster image'}</span><input type="file" name="image" accept="image/*"></label>` : ''}
         <label class="edit-check"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> Hidden</label>
       </div>
       <div class="row-actions">
@@ -475,6 +480,18 @@
       </div>`;
     el.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const saveBtn = el.querySelector('button[type=submit]');
+      // Replace the image first (uses the current date), then apply field edits.
+      const imgInput = el.elements.image;
+      if (imgInput && imgInput.files[0]) {
+        saveBtn.disabled = true; saveBtn.textContent = 'Uploading…';
+        const slot = it.type === 'image' ? 'file' : 'poster';
+        const mfd = new FormData();
+        mfd.append('date', it.date); mfd.append('slot', slot); mfd.append('media', imgInput.files[0]);
+        const mr = await fetch('/api/tiles/media', { method: 'POST', body: mfd });
+        const md = await mr.json();
+        if (!mr.ok) { alert(md.error || 'Image update failed'); saveBtn.disabled = false; saveBtn.textContent = 'Save'; return; }
+      }
       const payload = {
         date: it.date,
         newDate: el.elements.date.value.trim(),

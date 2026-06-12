@@ -13,6 +13,10 @@
   .eyebrow { font-size:8px; letter-spacing:0.24em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
   h1 { font-size:20px; font-weight:400; letter-spacing:0.02em; font-style:italic; font-family:Georgia,serif; }
 
+  .header-links { display:flex; gap:22px; justify-content:center; margin-top:12px; }
+  .header-links a { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent);
+    text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:border-color .2s; }
+  .header-links a:hover { border-color:var(--accent); }
   .tabs { display:flex; gap:8px; justify-content:center; margin-top:16px; }
   .tab { font-family:inherit; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; padding:8px 18px;
     background:transparent; border:1px solid var(--border); border-radius:2px; color:var(--muted); cursor:pointer;
@@ -84,6 +88,8 @@
   .edit-check { flex-direction:row; align-items:center; gap:8px; font-size:8px; letter-spacing:0.14em;
     text-transform:uppercase; color:var(--muted); cursor:pointer; }
   .edit-check input { width:13px; height:13px; accent-color:var(--accent); }
+  .edit-file { display:flex; flex-direction:column; gap:5px; }
+  .edit-file > span { font-size:8px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
   .empty { text-align:center; padding:30px 10px; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
 
   footer { padding:12px 20px 16px; border-top:1px solid var(--border); font-size:8px; letter-spacing:0.1em;
@@ -96,6 +102,10 @@
 <header>
   <p class="eyebrow">Mosaic Gallery</p>
   <h1>Admin</h1>
+  <nav class="header-links">
+    <a id="view-local" href="#" target="_blank" rel="noopener">View local</a>
+    <a href="http://git.marcuschiu.com/images" target="_blank" rel="noopener">View production</a>
+  </nav>
   <nav class="tabs">
     <button class="tab is-active" data-tab="add">Add</button>
     <button class="tab" data-tab="manage">Manage</button>
@@ -113,7 +123,17 @@
           <label class="seg-btn"><input type="radio" name="type" value="youtube">YouTube</label>
           <label class="seg-btn"><input type="radio" name="type" value="video">Video</label>
           <label class="seg-btn"><input type="radio" name="type" value="audio">Audio</label>
+          <label class="seg-btn"><input type="radio" name="type" value="quote">Quote</label>
         </div>
+      </label>
+
+      <label class="typed" data-for="quote" hidden>
+        <span>Quote <em>required</em></span>
+        <textarea name="quote" rows="3" placeholder="The line worth keeping."></textarea>
+      </label>
+      <label class="typed" data-for="quote" hidden>
+        <span>Author <em>optional</em></span>
+        <input type="text" name="author" placeholder="Who said it">
       </label>
 
       <label class="typed" data-for="image">

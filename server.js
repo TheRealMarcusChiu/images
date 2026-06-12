@@ -415,6 +415,40 @@ async function handleUpdate(res, body) {
   return sendJSON(res, 200, { ok: true, entry, git });
 }
 
+/* ── POST /api/tiles/media : replace/add an image on an existing tile ──
+   multipart: date, slot ("file" | "poster"), media (the image). */
+async function handleMedia(req, res, body) {
+  const ct = req.headers['content-type'] || '';
+  const boundary = /boundary=(.+)$/.exec(ct)?.[1];
+  if (!boundary) return sendJSON(res, 400, { error: 'Expected multipart/form-data' });
+
+  const { fields, files } = parseMultipart(body, boundary.replace(/^"|"$/g, ''));
+  const date = fields.date;
+  const slot = fields.slot === 'poster' ? 'poster' : 'file';
+  if (!date) return sendJSON(res, 400, { error: 'Missing tile date (id)' });
+  const up = files.media;
+  if (!up) return sendJSON(res, 400, { error: 'No image provided' });
+  const ext = pickExt(up.filename, up.contentType);
+  if (!ext) return sendJSON(res, 400, { error: 'Could not determine image type' });
+
+  const items = await readItems();
+  const entry = items.find((e) => e.date === date);
+  if (!entry) return sendJSON(res, 404, { error: 'Tile not found' });
+  if (slot === 'file' && entry.type === 'youtube') {
+    return sendJSON(res, 400, { error: 'A YouTube tile has no image file to replace' });
+  }
+
+  const baseName = slot === 'poster' ? `${entry.date}-poster` : entry.date;
+  const newName = await saveMediaFromBuffer(up.data, ext, baseName);
+  const old = entry[slot];
+  if (old && old !== newName) await tryUnlink(old); // drop the previous file if renamed
+  entry[slot] = newName;
+
+  await writeItems(items);
+  const git = await gitCommitPush(`admin: update ${slot} for tile ${entry.date}`);
+  return sendJSON(res, 200, { ok: true, entry, git });
+}
+
 /* ── POST /api/tiles/delete : remove entry + media files ── */
 async function handleDelete(res, body) {
   let req;
@@ -500,6 +534,7 @@ function collectBody(req, res, done) {
 const ROUTES = {
   'POST /api/tiles':        (req, res, body) => handleAdd(req, res, body),
   'POST /api/tiles/update': (req, res, body) => handleUpdate(res, body),
+  'POST /api/tiles/media':  (req, res, body) => handleMedia(req, res, body),
   'POST /api/tiles/delete': (req, res, body) => handleDelete(res, body),
 };
 

@@ -114,11 +114,9 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   opacity: 1;
   transform: scale(1);
 }
-/* subtle border glow for linked tiles */
-.tile.has-link {
-  cursor: pointer;
-}
-.tile.has-link::after {
+.tile.has-link { cursor: pointer; }
+/* Every tile gets a gold inset border on hover (linked tiles read the same). */
+.tile::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -128,7 +126,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   pointer-events: none;
   z-index: 6;
 }
-.tile.has-link:hover::after {
+.tile:hover::after {
   box-shadow: inset 0 0 0 1.5px rgba(200, 169, 110, 0.45);
 }
 
@@ -200,7 +198,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   inset: 0;
   border-radius: 50%;
   box-shadow: 0 0 0 0 rgba(200,169,110,0.4);
-  animation: badge-ambient 2.1s ease-out infinite;
+  animation: badge-ambient 1.15s ease-out infinite;
   pointer-events: none;
 }
 @keyframes badge-ambient {
@@ -380,7 +378,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
 /* Quote → a framed inscription. */
 .lb-quote {
   position: relative;
-  max-width: min(80vw, 30ch);
+  max-width: min(90vw, 52ch);
   padding: 12px 8px 8px;
   text-align: center;
 }
@@ -481,6 +479,36 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   background: rgba(200, 169, 110, 0.9);
   color: #0e0d0b;
   transform: rotate(90deg);
+}
+/* Prev/next navigation — newer (←) on the left, older (→) on the right. */
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(20, 18, 15, 0.7);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--accent);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+.lightbox-prev { left: 18px; }
+.lightbox-next { right: 18px; }
+.lightbox-nav:hover { background: rgba(200, 169, 110, 0.92); color: #0e0d0b; border-color: var(--accent); }
+.lightbox-nav:disabled { opacity: 0.25; cursor: default; }
+.lightbox-nav:disabled:hover { background: rgba(20, 18, 15, 0.7); color: var(--accent); border-color: var(--border); }
+.lightbox-nav:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 720px) {
+  .lightbox-nav { width: 40px; height: 40px; font-size: 22px; }
+  .lightbox-prev { left: 8px; }
+  .lightbox-next { right: 8px; }
 }
 
 /* ── Sentinel ── */
@@ -635,9 +663,6 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   color: var(--accent);
   opacity: 0.55;
 }
-.quote-body {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
 .quote-text {
   font-family: 'DM Serif Display', serif;
   font-style: italic;
@@ -657,37 +682,9 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   color: var(--accent);
 }
 .quote-dash { color: var(--muted); margin-right: 7px; }
-
-/* Hover meta — date always, description when present. The body recedes so the
-   provenance can take the foreground (an inversion of the media-tile overlay). */
-.quote-meta {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 22px;
-  background: linear-gradient(180deg, rgba(14,13,11,0.86) 0%, rgba(14,13,11,0.96) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-.quote-tile:hover .quote-meta,
-.quote-tile:focus-within .quote-meta { opacity: 1; }
-.quote-tile:hover .quote-body { opacity: 0.12; transform: translateY(-2px); }
-.quote-ts {
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.quote-desc {
-  font-size: 12px;
-  line-height: 1.6;
-  font-weight: 300;
-  color: var(--text);
-}
+/* Hover reveals date + description in the shared overlay; the quote stays read-
+   able beneath it — so the overlay sits above the quote body. */
+.quote-card .overlay { z-index: 6; }
 .quote-tile { cursor: pointer; } /* the whole tile expands on click */
 
 /* ── Now-playing bar ─────────────────────────────────────────────────────── */

@@ -16,6 +16,8 @@ async function loadServer() {
   const { serverUrl } = await chrome.storage.sync.get({ serverUrl: DEFAULT_SERVER });
   SERVER = (serverUrl || DEFAULT_SERVER).replace(/\/+$/, '');
   $('#server').textContent = SERVER;
+  const local = $('#view-local');
+  if (local) local.href = `${SERVER}/index`;
 }
 const mediaUrl = (f) => `${SERVER}/content/media/${encodeURIComponent(f)}`;
 
@@ -146,6 +148,10 @@ form.addEventListener('submit', async (e) => {
     }
     if (F.audioCover.files[0]) fd.append('poster', F.audioCover.files[0]);
     if (F.title.value.trim()) fd.append('title', F.title.value.trim());
+  } else if (type === 'quote') {
+    if (!F.quote.value.trim()) return showNotice('Write the quote text.', true);
+    fd.append('quote', F.quote.value.trim());
+    if (F.author.value.trim()) fd.append('author', F.author.value.trim());
   } else {
     if (!F.youtube.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
     fd.append('youtube', F.youtube.value.trim());
@@ -156,7 +162,9 @@ form.addEventListener('submit', async (e) => {
   try {
     const { ok, data } = await apiAdd(fd);
     if (ok) {
-      const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>` : `id <code>${esc(data.entry.id)}</code>`;
+      const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>`
+        : data.entry.id ? `id <code>${esc(data.entry.id)}</code>`
+        : data.entry.quote ? `<code>“${esc(data.entry.quote.slice(0, 40))}”</code>` : '';
       showNotice(`Added ${esc(data.entry.type)} ${what}` + (data.entry.hidden ? ' · hidden' : '') + gitNote(data.git) +
         ` · <a href="${SERVER}/index" target="_blank">view →</a>`, false);
       form.reset(); syncFields();
@@ -193,12 +201,13 @@ function thumbHTML(it) {
   if (it.type === 'youtube') return `<img src="https://img.youtube.com/vi/${esc(it.id)}/default.jpg" alt="">`;
   if (it.type === 'image')   return `<img src="${esc(mediaUrl(it.file))}" alt="">`;
   if (it.poster)             return `<img src="${esc(mediaUrl(it.poster))}" alt="">`;
+  if (it.type === 'quote')   return '&ldquo;';
   return it.type === 'audio' ? 'audio' : 'video';
 }
 function viewRow(it) {
   const el = document.createElement('div');
   el.className = 'row' + (it.hidden ? ' is-hidden' : '');
-  const display = it.title || it.desc;
+  const display = it.title || it.quote || it.desc;
   const title = display ? esc(display) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
   const meta = [it.type + (it.hidden ? ' · hidden' : ''), fmtDate(it.date), it.link ? 'link' : '']
     .filter(Boolean).join(' · ');
@@ -223,8 +232,12 @@ function editRow(it) {
     <div class="body edit-fields">
       <input type="text" name="date" value="${esc(it.date)}" spellcheck="false">
       ${it.type === 'audio' ? `<input type="text" name="title" value="${esc(it.title || '')}" placeholder="Title — shown in the player">` : ''}
+      ${it.type === 'quote' ? `<textarea name="quote" rows="2" placeholder="Quote">${esc(it.quote || '')}</textarea>
+      <input type="text" name="author" value="${esc(it.author || '')}" placeholder="Author">` : ''}
       <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
       <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
+      ${it.type === 'image' ? `<label class="edit-file"><span>Replace photo</span><input type="file" name="image" accept="image/*"></label>` : ''}
+      ${(it.type === 'video' || it.type === 'audio') ? `<label class="edit-file"><span>${it.type === 'audio' ? 'Cover image' : 'Poster image'}</span><input type="file" name="image" accept="image/*"></label>` : ''}
       <label class="edit-check"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> Hidden</label>
     </div>
     <div class="row-actions">
@@ -233,6 +246,16 @@ function editRow(it) {
     </div>`;
   el.addEventListener('submit', async (e) => {
     e.preventDefault();
+    // Replace the image first (uses the current date), then apply field edits.
+    const imgInput = el.elements.image;
+    if (imgInput && imgInput.files[0]) {
+      const slot = it.type === 'image' ? 'file' : 'poster';
+      const mfd = new FormData();
+      mfd.append('date', it.date); mfd.append('slot', slot); mfd.append('media', imgInput.files[0]);
+      const mr = await fetch(`${SERVER}/api/tiles/media`, { method: 'POST', body: mfd });
+      const md = await mr.json();
+      if (!mr.ok) { alert(md.error || 'Image update failed'); return; }
+    }
     const payload = {
       date: it.date,
       newDate: el.elements.date.value.trim(),
@@ -241,6 +264,8 @@ function editRow(it) {
       hidden: el.elements.hidden.checked,
     };
     if (el.elements.title) payload.title = el.elements.title.value;
+    if (el.elements.quote) payload.quote = el.elements.quote.value;
+    if (el.elements.author) payload.author = el.elements.author.value;
     const { ok, data } = await apiJSON('/api/tiles/update', payload);
     if (!ok) { alert(data.error || 'Update failed'); return; }
     gitAlert(data.git);
