@@ -16,6 +16,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "audio", date: "2026-06-12T00:13:23.834-05:00", file: "2026-06-12T00:13:23.834-05:00.mp4" },
+
   { type: "image", date: "2026-06-11T19:23:01.691-05:00", file: "2026-06-11T19:23:01.691-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
 
