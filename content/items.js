@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "audio", date: "2026-06-12T13:22:07.684-05:00", file: "2026-06-12T13:22:07.684-05:00.mp3",
+    title: "Charli XCX - Forever", poster: "2026-06-12T13:22:07.684-05:00-poster.jpeg" },
+
   { type: "image", date: "2026-06-12T13:18:24.248-05:00", file: "2026-06-12T13:18:24.248-05:00.webp" },
 
   { type: "audio", date: "2026-06-12T13:00:36.453-05:00", file: "2026-06-12T13:00:36.453-05:00.mp3",
