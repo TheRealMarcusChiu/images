@@ -5,8 +5,9 @@
  *   node server.js            # then open http://127.0.0.1:3000
  *
  * Serves the static gallery and an admin UI at /admin. The admin can:
- *   - add a tile from an uploaded image/video, an image URL to download, or a
- *     YouTube link; the submission timestamp (ISO 8601, fixed -05:00 offset) is
+ *   - add a tile from an uploaded image/video/audio, an image URL to download,
+ *     a YouTube link to embed, or a YouTube link whose audio is extracted via
+ *     yt-dlp into an audio tile; the submission timestamp (ISO 8601, -05:00) is
  *     auto-generated and an uploaded/downloaded file is saved to content/media/
  *     named as <timestamp><ext>.
  *   - edit a tile's description, date (which renames its media files), and link.
@@ -23,7 +24,7 @@
  */
 
 import { createServer } from 'node:http';
-import { readFile, writeFile, mkdir, rename, unlink } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, rename, unlink, readdir } from 'node:fs/promises';
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { join, extname, normalize as normPath, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,7 +47,8 @@ const DEFAULT_HEADER =
 `/* ──────────────────────────────────────────────────────────────────────────
    Gallery content — managed by server.js (the admin at /admin).
    Loaded directly by index.html via <script>; no build step.
-   Entry fields: type, date, file|id, desc?, link?, poster?, hidden?
+   Entry fields: type (image|video|audio|youtube), date, file|id, desc?, link?,
+                 poster? (video frame / audio cover art), hidden?
    ────────────────────────────────────────────────────────────────────────── */
 `;
 
@@ -58,12 +60,19 @@ const MIME = {
   '.webp': 'image/webp', '.gif': 'image/gif', '.avif': 'image/avif',
   '.svg': 'image/svg+xml', '.mp4': 'video/mp4', '.webm': 'video/webm',
   '.mov': 'video/quicktime', '.ogv': 'video/ogg',
+  '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.wav': 'audio/wav',
+  '.ogg': 'audio/ogg', '.oga': 'audio/ogg', '.opus': 'audio/opus',
+  '.flac': 'audio/flac', '.aac': 'audio/aac', '.weba': 'audio/webm',
 };
 const EXT_BY_TYPE = {
   'image/png': '.png', 'image/jpeg': '.jpg', 'image/jpg': '.jpg',
   'image/webp': '.webp', 'image/gif': '.gif', 'image/avif': '.avif',
   'image/svg+xml': '.svg', 'video/mp4': '.mp4', 'video/webm': '.webm',
   'video/quicktime': '.mov', 'video/ogg': '.ogv',
+  'audio/mpeg': '.mp3', 'audio/mp3': '.mp3', 'audio/mp4': '.m4a',
+  'audio/x-m4a': '.m4a', 'audio/aac': '.aac', 'audio/wav': '.wav',
+  'audio/x-wav': '.wav', 'audio/ogg': '.ogg', 'audio/opus': '.opus',
+  'audio/flac': '.flac', 'audio/x-flac': '.flac', 'audio/webm': '.weba',
 };
 
 /* ── Timestamp: ISO 8601 wall-clock at UTC-5, with milliseconds ── */
@@ -87,6 +96,46 @@ function youtubeId(input) {
   if (m) return m[1];
   if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
   return null;
+}
+
+/* ── Extract a YouTube video's audio via yt-dlp (no ffmpeg needed) ──
+   Downloads the best audio-only stream straight to content/media/ named
+   <baseName>.<ext> — m4a/webm/opus, all browser-playable. Returns the saved
+   filename plus the video title and thumbnail URL for caption/cover. Requires
+   yt-dlp on PATH; throws a clear, actionable error if it is missing. */
+async function extractYouTubeAudio(url, baseName) {
+  await mkdir(MEDIA_DIR, { recursive: true });
+  const outTpl = join(MEDIA_DIR, `${baseName}.%(ext)s`);
+  let stdout = '';
+  try {
+    const r = await pexecFile('yt-dlp', [
+      // Prefer m4a/AAC (the broadest <audio> support, incl. Safari/iOS, which
+      // can't play webm/opus); fall back to any best audio, then any stream.
+      // With ffmpeg present yt-dlp auto-remuxes DASH into a clean container.
+      '-f', 'bestaudio[ext=m4a]/bestaudio/best',
+      '--no-playlist',
+      '--no-progress',
+      '--max-filesize', '512M',
+      '-o', outTpl,
+      '--no-simulate',
+      '--print', '%(title)s\n%(thumbnail)s',
+      url,
+    ], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 });
+    stdout = r.stdout || '';
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      throw new Error('yt-dlp is not installed on the server — install it to extract YouTube audio (e.g. brew install yt-dlp)');
+    }
+    const tail = (e.stderr || e.stdout || e.message || 'yt-dlp failed').toString().trim().split('\n').pop();
+    throw new Error(`yt-dlp failed: ${tail}`);
+  }
+
+  const produced = (await readdir(MEDIA_DIR))
+    .find((f) => f.startsWith(`${baseName}.`) && !f.includes('-poster'));
+  if (!produced) throw new Error('yt-dlp produced no audio file');
+
+  const [title, thumb] = stdout.split('\n').map((s) => (s || '').trim());
+  return { file: produced, title: title || '', thumb: /^https?:\/\//.test(thumb || '') ? thumb : '' };
 }
 
 /* ── content/items.js as data ── */
@@ -236,8 +285,8 @@ async function handleAdd(req, res, body) {
 
   const { fields, files } = parseMultipart(body, boundary.replace(/^"|"$/g, ''));
   const type = fields.type;
-  if (!['image', 'video', 'youtube'].includes(type)) {
-    return sendJSON(res, 400, { error: 'type must be image, video, or youtube' });
+  if (!['image', 'video', 'youtube', 'audio'].includes(type)) {
+    return sendJSON(res, 400, { error: 'type must be image, video, audio, or youtube' });
   }
 
   const date = nowMinus5ISO();
@@ -257,13 +306,33 @@ async function handleAdd(req, res, body) {
     const ext = pickExt(dl.url, dl.contentType);
     if (!ext) return sendJSON(res, 400, { error: 'Could not determine image type from URL' });
     entry.file = await saveMediaFromBuffer(dl.data, ext, date);
+  } else if (type === 'audio' && fields.audioUrl?.trim()) {
+    const id = youtubeId(fields.audioUrl);
+    if (!id) return sendJSON(res, 400, { error: 'Could not parse a YouTube video ID' });
+    let ex;
+    try { ex = await extractYouTubeAudio(`https://www.youtube.com/watch?v=${id}`, date); }
+    catch (e) { return sendJSON(res, 400, { error: e.message }); }
+    entry.file = ex.file;
+    if (!entry.desc && ex.title) entry.desc = ex.title;
+    // Cover art: an uploaded image wins; otherwise fall back to the video thumbnail.
+    if (files.poster) {
+      const pext = pickExt(files.poster.filename, files.poster.contentType);
+      entry.poster = await saveMediaFromBuffer(files.poster.data, pext, `${date}-poster`);
+    } else if (ex.thumb) {
+      try {
+        const dl = await download(ex.thumb);
+        const pext = pickExt(dl.url, dl.contentType) || '.jpg';
+        entry.poster = await saveMediaFromBuffer(dl.data, pext, `${date}-poster`);
+      } catch { /* no cover — tile falls back to its waveform */ }
+    }
   } else {
     const up = files.media;
     if (!up) return sendJSON(res, 400, { error: `No ${type} file (or image URL) provided` });
     const ext = pickExt(up.filename, up.contentType);
     if (!ext) return sendJSON(res, 400, { error: 'Could not determine file extension' });
     entry.file = await saveMediaFromBuffer(up.data, ext, date);
-    if (type === 'video' && files.poster) {
+    // video: poster frame; audio: optional cover art — both stored as <date>-poster
+    if ((type === 'video' || type === 'audio') && files.poster) {
       const pext = pickExt(files.poster.filename, files.poster.contentType);
       entry.poster = await saveMediaFromBuffer(files.poster.data, pext, `${date}-poster`);
     }

@@ -7,6 +7,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 const VIDEO_AR = 0.5625; // 16:9 height/width, for youtube + posterless video
+const AUDIO_AR = 0.80;   // height/width for a coverless audio card (a squat artifact)
 
 /** "YYYY.MM.DD HH:MM" from an ISO 8601 string. */
 function displayTS(iso) {
@@ -35,8 +36,11 @@ function normalize(raw) {
         if (e.type === 'video') {
           if (e.poster) it.poster = mediaSrc(e.poster); // ar measured from poster
           else it.ar = VIDEO_AR;
+        } else if (e.type === 'audio') {
+          if (e.poster) it.poster = mediaSrc(e.poster); // cover art; ar from cover
+          else it.ar = AUDIO_AR;
         }
-        // image (and video-with-poster) ar is measured lazily before placement
+        // image (and video/audio-with-poster) ar is measured lazily before placement
       }
       return it;
     })
@@ -69,7 +73,8 @@ function measureAR(url) {
 /** Ensure item.ar is set (no-op for youtube / posterless video). */
 async function ensureAR(it) {
   if (it.ar != null) return;
-  it.ar = await measureAR(it.type === 'video' ? it.poster : it.src);
+  const fromPoster = it.type === 'video' || it.type === 'audio';
+  it.ar = await measureAR(fromPoster ? it.poster : it.src);
 }
 
 // External-link SVG icon (arrow-up-right style)
@@ -80,7 +85,40 @@ const LINK_ICON_SVG = `
     <line x1="10" y1="14" x2="21" y2="3"/>
   </svg>`;
 
-const PLAY_ICON_SVG = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
+const PLAY_ICON_SVG  = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
+const PAUSE_ICON_SVG = `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
+const NEXT_ICON_SVG  = `<svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><rect x="16" y="4" width="3" height="16"/></svg>`;
+const QUEUE_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+  stroke-linecap="round"><line x1="12" y1="6" x2="12" y2="18"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`;
+
+/* ── Deterministic waveform: stable per recording, drawn from its filename ──
+   A tiny FNV-style hash seeds a repeatable PRNG so a given audio file always
+   prints the same gold waveform — its visual signature in the archive.       */
+function seedHash(s) {
+  let h = 2166136261;
+  for (let i = 0; i < String(s).length; i++) {
+    h ^= String(s).charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function waveformSVG(seed, n = 44) {
+  let h = seedHash(seed);
+  const W = 100, H = 40, slot = W / n;
+  let rects = '';
+  for (let i = 0; i < n; i++) {
+    h = (Math.imul(h, 1103515245) + 12345) & 0x7fffffff;
+    const r = (h % 1000) / 1000;                       // 0..1 repeatable
+    const env = 0.30 + 0.70 * Math.sin(((i + 0.5) / n) * Math.PI); // taller mid
+    const bh = Math.max(0.10, r * env) * H;
+    const x = i * slot + slot * 0.20;
+    const y = (H - bh) / 2;
+    const w = slot * 0.60;
+    rects += `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}"`
+           + ` height="${bh.toFixed(2)}" rx="${(w / 2).toFixed(2)}"/>`;
+  }
+  return `<svg class="wave" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${rects}</svg>`;
+}
 
 /* ── Scroll position persistence via sessionStorage ── */
 galWrap.addEventListener('scroll', () => {
@@ -158,6 +196,240 @@ const lightbox = (() => {
 })();
 
 function openLightbox(item) { lightbox.open(item); }
+
+/* ── Transient toast (queue confirmations) ── */
+const toast = (() => {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.setAttribute('aria-live', 'polite');
+  document.body.appendChild(t);
+  let timer = null;
+  return (msg) => {
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(() => t.classList.remove('show'), 1900);
+  };
+})();
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Now-playing bar — a persistent dock for audio tiles. One <audio> drives a
+   single track plus an up-next queue; finishing a track auto-advances. The
+   gold equalizer mirrors the static waveform printed on each tile.
+   ────────────────────────────────────────────────────────────────────────── */
+const player = (() => {
+  const el = document.createElement('div');
+  el.className = 'player';
+  el.setAttribute('aria-hidden', 'true');
+  el.innerHTML = `
+    <div class="player-eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="player-meta">
+      <div class="player-title"></div>
+      <div class="player-sub"></div>
+    </div>
+    <div class="player-seek">
+      <span class="player-time player-cur">0:00</span>
+      <div class="player-track"><div class="player-prog"></div></div>
+      <span class="player-time player-dur">0:00</span>
+    </div>
+    <div class="player-controls">
+      <button class="player-btn player-toggle" data-act="toggle" aria-label="Play or pause">${PLAY_ICON_SVG}</button>
+      <button class="player-btn" data-act="next" aria-label="Next track">${NEXT_ICON_SVG}</button>
+    </div>
+    <button class="player-queue" data-act="queue" aria-label="Show queue">
+      <span class="player-queue-label">Up next</span><span class="player-qcount">0</span>
+    </button>
+    <button class="player-close" data-act="close" aria-label="Close player">&times;</button>
+    <div class="player-pop" hidden></div>`;
+  document.body.appendChild(el);
+
+  const audio = new Audio();
+  audio.preload = 'metadata';
+
+  const titleEl  = el.querySelector('.player-title');
+  const subEl    = el.querySelector('.player-sub');
+  const curEl    = el.querySelector('.player-cur');
+  const durEl    = el.querySelector('.player-dur');
+  const progEl   = el.querySelector('.player-prog');
+  const trackEl  = el.querySelector('.player-track');
+  const toggleBt = el.querySelector('.player-toggle');
+  const qCountEl = el.querySelector('.player-qcount');
+  const pop      = el.querySelector('.player-pop');
+
+  let current = null;
+  const queue = [];
+
+  const fmt = (t) => {
+    if (!isFinite(t) || t < 0) t = 0;
+    return `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+  };
+  const label = (item) =>
+    item.desc || decodeURIComponent((item.src || '').split('/').pop().replace(/\.[^.]+$/, ''));
+
+  function render() {
+    if (current) { titleEl.textContent = label(current); subEl.textContent = current.ts || ''; }
+    qCountEl.textContent = String(queue.length);
+    el.classList.toggle('has-queue', queue.length > 0);
+    if (queue.length === 0) pop.hidden = true;
+    renderPop();
+  }
+  function syncToggle() {
+    toggleBt.innerHTML = audio.paused ? PLAY_ICON_SVG : PAUSE_ICON_SVG;
+    el.classList.toggle('is-playing', !audio.paused);
+    updateTileStates();
+  }
+  function start(item) {
+    current = item;
+    audio.src = item.src;
+    audio.play().catch(() => {});
+    el.classList.add('open');
+    el.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('player-active');
+    render();
+  }
+  function playNow(item) { start(item); }     // interrupt current, keep queue
+  function enqueue(item) {
+    if (!current) { start(item); return 0; }  // nothing playing → start it
+    queue.push(item);
+    render();
+    updateTileStates();
+    return queue.length;
+  }
+  function playNext() {
+    const nx = queue.shift();
+    if (nx) start(nx);
+    render();
+    updateTileStates();
+  }
+  function close() {
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+    current = null;
+    queue.length = 0;
+    el.classList.remove('open', 'is-playing', 'has-queue');
+    el.setAttribute('aria-hidden', 'true');
+    pop.hidden = true;
+    document.body.classList.remove('player-active');
+    updateTileStates();
+  }
+  function renderPop() {
+    pop.replaceChildren();
+    if (!queue.length) return;
+    const head = document.createElement('div');
+    head.className = 'pop-head';
+    head.textContent = 'Up next';
+    pop.appendChild(head);
+    queue.forEach((it, idx) => {
+      const row = document.createElement('button');
+      row.className = 'pop-row';
+      row.innerHTML = `<span class="pop-i">${String(idx + 1).padStart(2, '0')}</span>`
+                    + `<span class="pop-t">${escapeHTML(label(it))}</span>`;
+      row.addEventListener('click', () => { queue.splice(idx, 1); start(it); });
+      pop.appendChild(row);
+    });
+    const clear = document.createElement('button');
+    clear.className = 'pop-clear';
+    clear.textContent = 'Clear queue';
+    clear.addEventListener('click', () => { queue.length = 0; render(); updateTileStates(); });
+    pop.appendChild(clear);
+  }
+
+  audio.addEventListener('timeupdate', () => {
+    const d = audio.duration || 0;
+    progEl.style.width = d ? `${(audio.currentTime / d) * 100}%` : '0%';
+    curEl.textContent = fmt(audio.currentTime);
+  });
+  audio.addEventListener('loadedmetadata', () => { durEl.textContent = fmt(audio.duration); });
+  audio.addEventListener('play',  syncToggle);
+  audio.addEventListener('pause', syncToggle);
+  audio.addEventListener('ended', () => { if (queue.length) playNext(); else syncToggle(); });
+
+  toggleBt.addEventListener('click', () => {
+    if (!current) return;
+    if (audio.paused) audio.play().catch(() => {}); else audio.pause();
+  });
+  el.querySelector('[data-act=next]').addEventListener('click', playNext);
+  el.querySelector('[data-act=close]').addEventListener('click', close);
+  el.querySelector('[data-act=queue]').addEventListener('click', () => {
+    if (!queue.length) return;
+    pop.hidden = !pop.hidden;
+  });
+  trackEl.addEventListener('click', (e) => {
+    if (!audio.duration) return;
+    const r = trackEl.getBoundingClientRect();
+    audio.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * audio.duration;
+  });
+
+  return {
+    playNow, enqueue,
+    isCurrent: (item) => !!current && current.date === item.date,
+    isQueued:  (item) => queue.some((q) => q.date === item.date),
+    isPlaying: () => !audio.paused,
+  };
+})();
+
+/* Reflect player state onto any audio tiles currently in the DOM. */
+function updateTileStates() {
+  document.querySelectorAll('.audio-tile').forEach((t) => {
+    const ref = { date: t.dataset.audioDate };
+    const cur = player.isCurrent(ref);
+    t.classList.toggle('is-current', cur);
+    t.classList.toggle('is-playing', cur && player.isPlaying());
+    t.classList.toggle('is-queued', player.isQueued(ref));
+  });
+}
+
+/* ── Audio tile (waveform card or cover; click to play, + to queue) ── */
+function makeAudioTile(item, i) {
+  const tile = document.createElement('div');
+  tile.className = 'tile audio-tile';
+  tile.dataset.audioDate = item.date;
+  tile.style.animationDelay = `${(i % 5) * 55}ms`;
+
+  const cover = item.poster
+    ? `<div class="audio-cover"><img src="${escapeAttr(item.poster)}" alt="" loading="lazy"></div>`
+    : '';
+
+  tile.innerHTML = `
+    <div class="audio-card${item.poster ? ' has-cover' : ''}"
+         style="aspect-ratio:${1 / (item.ar || AUDIO_AR)}">
+      ${cover}
+      ${waveformSVG(item.src || item.date)}
+      <div class="audio-eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="play-badge">${PLAY_ICON_SVG}</div>
+      <button class="audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>
+    </div>
+    ${overlayHTML(item, 'audio')}`;
+
+  // External link: a clickable corner badge (top-right), mirroring image tiles —
+  // so the card body stays dedicated to playback.
+  if (item.link) {
+    tile.classList.add('has-link');
+    const a = document.createElement('a');
+    a.className = 'link-badge link-badge-active';
+    a.href = item.link;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.setAttribute('aria-label', 'Open source');
+    a.innerHTML = LINK_ICON_SVG;
+    a.addEventListener('click', (e) => e.stopPropagation());
+    tile.appendChild(a);
+  }
+
+  const card = tile.querySelector('.audio-card');
+  const qBtn = tile.querySelector('.audio-queue-badge');
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('.audio-queue-badge')) return;
+    player.playNow(item);
+  });
+  qBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const n = player.enqueue(item);
+    toast(n ? `Queued · ${n} up next` : 'Now playing');
+  });
+  return tile;
+}
 
 /* ── Image tile (click to open in the lightbox) ── */
 function makeImageTile(item, i) {
@@ -267,6 +539,7 @@ function makeTile(item, i) {
   if (item.type === 'image')   return makeImageTile(item, i);
   if (item.type === 'video')   return makeVideoTile(item, i);
   if (item.type === 'youtube') return makeYouTubeTile(item, i);
+  if (item.type === 'audio')   return makeAudioTile(item, i);
   return null;
 }
 
@@ -331,6 +604,7 @@ function relayout() {
   const revealed = cursor;
   setupColumns();
   for (let i = 0; i < revealed; i++) placeItem(ITEMS[i], i);
+  updateTileStates(); // re-apply now-playing / queued marks to rebuilt tiles
 }
 
 /* ── Reveal the next batch of items ── */
@@ -350,6 +624,7 @@ async function loadMore() {
     placeItem(ITEMS[cursor], cursor);
     cursor++;
   }
+  updateTileStates();
   loading = false;
 
   if (cursor >= ITEMS.length) finish();
