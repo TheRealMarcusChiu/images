@@ -139,6 +139,34 @@ async function extractYouTubeAudio(url, baseName) {
   return { file: produced, title: title || '', thumb: /^https?:\/\//.test(thumb || '') ? thumb : '' };
 }
 
+/* ── Grab a still from the YouTube video itself as cover art ──
+   yt-dlp resolves a low-res video stream URL; ffmpeg reads only the opening
+   frames and picks the most representative one (the literal first frame is
+   usually a black fade-in). Saves <baseName>-poster.jpg; returns the filename,
+   or null if anything goes wrong (the tile then falls back to its waveform). */
+async function extractYouTubeFrame(url, baseName) {
+  await mkdir(MEDIA_DIR, { recursive: true });
+  let vurl = '';
+  try {
+    const { stdout } = await pexecFile('yt-dlp', [
+      '-f', 'bestvideo[height<=480][ext=mp4]/bestvideo[height<=480]/worstvideo/worst',
+      '--no-playlist', '--get-url', url,
+    ], { cwd: ROOT, maxBuffer: 8 * 1024 * 1024, timeout: 60000 });
+    vurl = (stdout || '').trim().split('\n')[0];
+  } catch { return null; }
+  if (!vurl) return null;
+
+  const fname = `${baseName}-poster.jpg`;
+  try {
+    await pexecFile('ffmpeg', [
+      '-y', '-loglevel', 'error', '-i', vurl,
+      '-vf', 'thumbnail=n=100', '-frames:v', '1', '-q:v', '3',
+      join(MEDIA_DIR, fname),
+    ], { cwd: ROOT, maxBuffer: 8 * 1024 * 1024, timeout: 60000 });
+  } catch { return null; }
+  return fname;
+}
+
 /* ── content/items.js as data ── */
 async function readItems() {
   let text = '';
@@ -312,21 +340,20 @@ async function handleAdd(req, res, body) {
   } else if (type === 'audio' && fields.audioUrl?.trim()) {
     const id = youtubeId(fields.audioUrl);
     if (!id) return sendJSON(res, 400, { error: 'Could not parse a YouTube video ID' });
+    const canon = `https://www.youtube.com/watch?v=${id}`;
     let ex;
-    try { ex = await extractYouTubeAudio(`https://www.youtube.com/watch?v=${id}`, date); }
+    try { ex = await extractYouTubeAudio(canon, date); }
     catch (e) { return sendJSON(res, 400, { error: e.message }); }
     entry.file = ex.file;
-    if (!entry.desc && ex.title) entry.desc = ex.title;
-    // Cover art: an uploaded image wins; otherwise fall back to the video thumbnail.
+    if (!entry.title && ex.title) entry.title = ex.title; // video title → track title
+    if (!entry.link) entry.link = canon;                  // YouTube link as default external link
+    // Cover art: an uploaded image wins; otherwise a still from the video itself.
     if (files.poster) {
       const pext = pickExt(files.poster.filename, files.poster.contentType);
       entry.poster = await saveMediaFromBuffer(files.poster.data, pext, `${date}-poster`);
-    } else if (ex.thumb) {
-      try {
-        const dl = await download(ex.thumb);
-        const pext = pickExt(dl.url, dl.contentType) || '.jpg';
-        entry.poster = await saveMediaFromBuffer(dl.data, pext, `${date}-poster`);
-      } catch { /* no cover — tile falls back to its waveform */ }
+    } else {
+      const frame = await extractYouTubeFrame(canon, date);
+      if (frame) entry.poster = frame;
     }
   } else {
     const up = files.media;
@@ -410,10 +437,34 @@ function serveStatic(req, res) {
   const filePath = normPath(join(ROOT, urlPath));
   if (!filePath.startsWith(ROOT)) return send(res, 403, 'Forbidden');
   if (!existsSync(filePath) || !statSync(filePath).isFile()) return send(res, 404, 'Not found');
-  res.writeHead(200, {
+
+  const total = statSync(filePath).size;
+  const headers = {
     'Content-Type': MIME[extname(filePath).toLowerCase()] || 'application/octet-stream',
     'Cache-Control': 'no-cache',
-  });
+    'Accept-Ranges': 'bytes', // advertise seekability so media can be scrubbed
+  };
+  const isHead = req.method === 'HEAD';
+
+  // Honor a single byte range so <audio>/<video> can seek (else the browser
+  // refetches from 0 and playback restarts from the beginning).
+  const m = /^bytes=(\d*)-(\d*)$/.exec((req.headers.range || '').trim());
+  if (m && (m[1] || m[2])) {
+    let start, end;
+    if (m[1] === '') { start = Math.max(0, total - parseInt(m[2], 10)); end = total - 1; } // suffix
+    else { start = parseInt(m[1], 10); end = m[2] === '' ? total - 1 : parseInt(m[2], 10); }
+    if (Number.isNaN(start) || Number.isNaN(end) || start > end || start >= total) {
+      res.writeHead(416, { 'Content-Range': `bytes */${total}`, 'Accept-Ranges': 'bytes' });
+      return res.end();
+    }
+    end = Math.min(end, total - 1);
+    res.writeHead(206, { ...headers, 'Content-Range': `bytes ${start}-${end}/${total}`, 'Content-Length': end - start + 1 });
+    if (isHead) return res.end();
+    return createReadStream(filePath, { start, end }).pipe(res);
+  }
+
+  res.writeHead(200, { ...headers, 'Content-Length': total });
+  if (isHead) return res.end();
   createReadStream(filePath).pipe(res);
 }
 
@@ -448,7 +499,7 @@ const server = createServer((req, res) => {
   res.setHeader('Vary', 'Origin');
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Max-Age': '86400',
     });
@@ -463,7 +514,7 @@ const server = createServer((req, res) => {
         console.error(err); sendJSON(res, 500, { error: String(err.message || err) });
       }));
   }
-  if (req.method === 'GET') return serveStatic(req, res);
+  if (req.method === 'GET' || req.method === 'HEAD') return serveStatic(req, res);
   send(res, 405, 'Method not allowed');
 });
 

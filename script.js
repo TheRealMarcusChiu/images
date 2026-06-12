@@ -238,7 +238,7 @@ const player = (() => {
     </div>
     <div class="player-seek">
       <span class="player-time player-cur">0:00</span>
-      <div class="player-track"><div class="player-prog"></div></div>
+      <div class="player-track" tabindex="0" role="slider" aria-label="Seek"><div class="player-prog"></div></div>
       <span class="player-time player-dur">0:00</span>
     </div>
     <div class="player-controls">
@@ -271,8 +271,7 @@ const player = (() => {
   const volBtn   = el.querySelector('.player-vol-btn');
   const volSld   = el.querySelector('.player-vol-slider');
 
-  let current = null;
-  let stopped = false;   // track finished with nothing queued → tiles revert
+  let current = null;    // the loaded track (kept while paused, for resume)
   const queue = [];
 
   const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -328,7 +327,6 @@ const player = (() => {
   }
   function start(item) {
     current = item;
-    stopped = false;
     audio.src = item.src;
     audio.play().catch(() => {});
     el.classList.add('open');
@@ -336,7 +334,16 @@ const player = (() => {
     document.body.classList.add('player-active');
     render();
   }
-  function playNow(item) { start(item); }     // interrupt current, keep queue
+  // Clicking a tile: toggle the one that's loaded; otherwise start fresh.
+  function toggleTile(item) {
+    if (current && current.date === item.date) {
+      if (audio.ended) start(item);                  // finished → play again
+      else if (audio.paused) audio.play().catch(() => {}); // resume in place
+      else audio.pause();                            // pause → tile reverts
+    } else {
+      start(item);                                   // a different track → play now
+    }
+  }
   function enqueue(item) {
     if (!current) { start(item); return 0; }  // nothing playing → start it
     queue.push(item);
@@ -397,13 +404,10 @@ const player = (() => {
     curEl.textContent = fmt(audio.currentTime);
   });
   audio.addEventListener('loadedmetadata', () => { durEl.textContent = fmt(audio.duration); });
-  audio.addEventListener('play',  () => { stopped = false; syncToggle(); });
+  // Tiles track "actually playing", so any pause/end reverts them to normal.
+  audio.addEventListener('play',  syncToggle);
   audio.addEventListener('pause', syncToggle);
-  audio.addEventListener('ended', () => {
-    if (queue.length) { playNext(); return; }
-    stopped = true;           // nothing left to play → the tile returns to normal
-    syncToggle();
-  });
+  audio.addEventListener('ended', () => { if (queue.length) playNext(); else syncToggle(); });
 
   toggleBt.addEventListener('click', () => {
     if (!current) return;
@@ -416,15 +420,51 @@ const player = (() => {
     if (!queue.length) return;
     pop.hidden = !pop.hidden;
   });
-  trackEl.addEventListener('click', (e) => {
+
+  /* Scrub — click or drag anywhere on the track to seek; arrow keys nudge.
+     A drag holds playback (pausing if it was playing) and resumes on release
+     only if it had been playing; a paused track stays paused at the new spot. */
+  let scrubbing = false;
+  let resumeAfterScrub = false;
+  function seekToX(clientX) {
     if (!audio.duration) return;
     const r = trackEl.getBoundingClientRect();
-    audio.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * audio.duration;
+    const p = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    audio.currentTime = p * audio.duration;
+    progEl.style.width = `${p * 100}%`;
+    curEl.textContent = fmt(audio.currentTime);
+  }
+  trackEl.addEventListener('pointerdown', (e) => {
+    scrubbing = true;
+    resumeAfterScrub = !!current && !audio.paused; // was it playing when the drag began?
+    if (resumeAfterScrub) audio.pause();           // hold playback while scrubbing
+    try { trackEl.setPointerCapture(e.pointerId); } catch { /* older browsers */ }
+    seekToX(e.clientX);
+  });
+  trackEl.addEventListener('pointermove', (e) => { if (scrubbing) seekToX(e.clientX); });
+  const endScrub = () => {
+    if (!scrubbing) return;
+    scrubbing = false;
+    if (resumeAfterScrub) audio.play().catch(() => {}); // resume only if it had been playing
+    resumeAfterScrub = false;
+  };
+  trackEl.addEventListener('pointerup', endScrub);
+  trackEl.addEventListener('pointercancel', endScrub);
+  trackEl.addEventListener('keydown', (e) => {
+    if (!audio.duration) return;
+    let t = audio.currentTime;
+    if (e.key === 'ArrowRight') t += 5;
+    else if (e.key === 'ArrowLeft') t -= 5;
+    else if (e.key === 'Home') t = 0;
+    else if (e.key === 'End') t = audio.duration;
+    else return;
+    e.preventDefault();
+    audio.currentTime = Math.min(audio.duration, Math.max(0, t));
   });
 
   return {
-    playNow, enqueue,
-    isCurrent: (item) => !!current && !stopped && current.date === item.date,
+    toggleTile, enqueue,
+    isActive:  (item) => !!current && !audio.paused && current.date === item.date,
     isQueued:  (item) => queue.some((q) => q.date === item.date),
     isPlaying: () => !audio.paused,
   };
@@ -434,9 +474,9 @@ const player = (() => {
 function updateTileStates() {
   document.querySelectorAll('.audio-tile').forEach((t) => {
     const ref = { date: t.dataset.audioDate };
-    const cur = player.isCurrent(ref);
-    t.classList.toggle('is-current', cur);
-    t.classList.toggle('is-playing', cur && player.isPlaying());
+    const active = player.isActive(ref); // current AND actually playing
+    t.classList.toggle('is-current', active);
+    t.classList.toggle('is-playing', active);
     t.classList.toggle('is-queued', player.isQueued(ref));
   });
 }
@@ -461,7 +501,7 @@ function makeAudioTile(item, i) {
       <div class="play-badge">${PLAY_ICON_SVG}</div>
       <button class="audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>
     </div>
-    ${overlayHTML(item, 'audio')}`;
+    ${overlayHTML({ ...item, desc: item.title || item.desc }, 'audio')}`;
 
   // External link: a clickable corner badge (top-right), mirroring image tiles —
   // so the card body stays dedicated to playback.
@@ -482,7 +522,7 @@ function makeAudioTile(item, i) {
   const qBtn = tile.querySelector('.audio-queue-badge');
   card.addEventListener('click', (e) => {
     if (e.target.closest('.audio-queue-badge')) return;
-    player.playNow(item);
+    player.toggleTile(item);
   });
   qBtn.addEventListener('click', (e) => {
     e.stopPropagation();
