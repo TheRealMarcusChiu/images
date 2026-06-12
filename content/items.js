@@ -16,9 +16,6 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "audio", date: "2026-06-12T00:07:45.213-05:00", file: "2026-06-12T00:07:45.213-05:00.wav",
-    desc: "Test tone — eight-second sine" },
-
   { type: "image", date: "2026-06-11T19:23:01.691-05:00", file: "2026-06-11T19:23:01.691-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
 
