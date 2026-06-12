@@ -44,7 +44,7 @@ window.GALLERY_ITEMS = [
     desc: "1 year to a 10 year old is 10 percent of his life, but to a 100 year old it's 1 percent" },
 
   { type: "audio", date: "2026-06-12T12:44:24.297-05:00", file: "2026-06-12T12:44:24.297-05:00.mp3",
-    title: "Elijah Who - Hello" },
+    title: "Elijah Who - Hello", poster: "2026-06-12T12:44:24.297-05:00-poster.png" },
 
   { type: "image", date: "2026-06-12T12:43:20.600-05:00", file: "2026-06-12T12:43:20.600-05:00.webp" },
 
