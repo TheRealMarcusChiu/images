@@ -7,15 +7,18 @@
    builds the media URL from `file`, and measures each image's aspect ratio.
 
    To add an item, append an object below. Fields:
-     type   "image" | "video" | "youtube"           (required)
+     type   "image" | "video" | "audio" | "youtube"          (required)
      date   ISO 8601, e.g. "2025-04-02T09:15:00.000-05:00"   (required)
-     file   filename in content/media/   (required for image/video)
+     file   filename in content/media/   (required for image/video/audio)
      id     YouTube video id             (required for youtube)
-     desc   hover caption                (optional)
-     link   external URL; tile becomes clickable   (optional; image/video)
-     poster filename in content/media/ for a local video thumbnail (optional)
+     desc   hover caption / now-playing title   (optional)
+     link   external URL; tile becomes clickable   (optional; image/video/audio)
+     poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "audio", date: "2026-06-12T00:07:45.213-05:00", file: "2026-06-12T00:07:45.213-05:00.wav",
+    desc: "Test tone — eight-second sine" },
+
   { type: "image", date: "2026-06-11T19:23:01.691-05:00", file: "2026-06-11T19:23:01.691-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
 
