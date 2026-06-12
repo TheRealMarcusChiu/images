@@ -146,7 +146,18 @@
           <label class="seg-btn"><input type="radio" name="type" value="youtube">YouTube</label>
           <label class="seg-btn"><input type="radio" name="type" value="video">Video</label>
           <label class="seg-btn"><input type="radio" name="type" value="audio">Audio</label>
+          <label class="seg-btn"><input type="radio" name="type" value="quote">Quote</label>
         </div>
+      </label>
+
+      <!-- quote -->
+      <label class="typed" data-for="quote" hidden>
+        <span>Quote <em>required</em></span>
+        <textarea name="quote" rows="3" placeholder="The line worth keeping."></textarea>
+      </label>
+      <label class="typed" data-for="quote" hidden>
+        <span>Author <em>optional</em></span>
+        <input type="text" name="author" placeholder="Who said it">
       </label>
 
       <!-- image -->
@@ -362,6 +373,10 @@
       }
       if (F.audioCover.files[0]) fd.append('poster', F.audioCover.files[0]);
       if (F.title.value.trim()) fd.append('title', F.title.value.trim());
+    } else if (type === 'quote') {
+      if (!F.quote.value.trim()) return showNotice('Write the quote text.', true);
+      fd.append('quote', F.quote.value.trim());
+      if (F.author.value.trim()) fd.append('author', F.author.value.trim());
     } else {
       if (!F.youtube.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
       fd.append('youtube', F.youtube.value.trim());
@@ -374,7 +389,9 @@
       const res = await fetch('/api/tiles', { method: 'POST', body: fd });
       const data = await res.json();
       if (res.ok) {
-        const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>` : `id <code>${esc(data.entry.id)}</code>`;
+        const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>`
+          : data.entry.id ? `id <code>${esc(data.entry.id)}</code>`
+          : data.entry.quote ? `<code>“${esc(data.entry.quote.slice(0, 40))}”</code>` : '';
         showNotice(`Added ${esc(data.entry.type)} ${what}` + (data.entry.hidden ? ' · hidden' : '') +
           gitNote(data.git) +
           ` · <a href="/index">local →</a> · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`, false);
@@ -412,12 +429,13 @@
     if (it.type === 'youtube') return `<img src="https://img.youtube.com/vi/${esc(it.id)}/default.jpg" alt="">`;
     if (it.type === 'image')   return `<img src="${esc(mediaUrl(it.file))}" alt="">`;
     if (it.poster)             return `<img src="${esc(mediaUrl(it.poster))}" alt="">`;
+    if (it.type === 'quote')   return '&ldquo;';
     return it.type === 'audio' ? 'audio' : 'video';
   }
   function viewRow(it) {
     const el = document.createElement('div');
     el.className = 'manage-row' + (it.hidden ? ' is-hidden' : '');
-    const display = it.title || it.desc;
+    const display = it.title || it.quote || it.desc;
     const title = display ? esc(display) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
     const meta = [it.type + (it.hidden ? ' · hidden' : ''), fmtDate(it.date), it.link ? 'link' : '']
       .filter(Boolean).join(' · ');
@@ -445,6 +463,8 @@
       <div class="manage-body">
         <input type="text" name="date" value="${esc(it.date)}" spellcheck="false">
         ${it.type === 'audio' ? `<input type="text" name="title" value="${esc(it.title || '')}" placeholder="Title — shown in the player">` : ''}
+        ${it.type === 'quote' ? `<textarea name="quote" rows="2" placeholder="Quote">${esc(it.quote || '')}</textarea>
+        <input type="text" name="author" value="${esc(it.author || '')}" placeholder="Author">` : ''}
         <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
         <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
         <label class="edit-check"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> Hidden</label>
@@ -463,6 +483,8 @@
         hidden: el.elements.hidden.checked,
       };
       if (el.elements.title) payload.title = el.elements.title.value;
+      if (el.elements.quote) payload.quote = el.elements.quote.value;
+      if (el.elements.author) payload.author = el.elements.author.value;
       const res = await fetch('/api/tiles/update', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });

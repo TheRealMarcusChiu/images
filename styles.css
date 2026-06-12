@@ -146,6 +146,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   height: 100%;
   border: none;
   display: block;
+  z-index: 2;            /* below the click shield (z 5) and pause badge (z 7) */
 }
 .play-badge {
   position: absolute;
@@ -154,17 +155,59 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   transform: translate(-50%, -50%);
   width: 44px;
   height: 44px;
+  padding: 0;
+  border: none;
   border-radius: 50%;
   background: rgba(200,169,110,0.85);
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  z-index: 4;
+  cursor: pointer;
+  pointer-events: auto;          /* the play icon is its own click target */
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
+  z-index: 7;                    /* above the cover so it stays clickable */
 }
 .play-badge svg { width: 18px; height: 18px; fill: #0e0d0b; margin-left: 2px; stroke: none; }
-.tile.video-tile:hover .play-badge { opacity: 0; transform: translate(-50%,-50%) scale(0.8); }
+/* The pause icon is symmetric — drop the play triangle's optical nudge. */
+.audio-tile.is-playing .play-badge svg,
+.lb-audio.is-playing .play-badge svg,
+.video-tile.is-playing .play-badge svg { margin-left: 0; }
+/* Hover the play icon → it lifts and a gold ring pulses out, signalling click. */
+.play-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(200,169,110,0.55);
+}
+.play-badge:hover {
+  background: var(--accent);
+  transform: translate(-50%, -50%) scale(1.12);
+}
+.play-badge:hover::after { animation: badge-pulse 1.1s ease-out infinite; }
+.play-badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@keyframes badge-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(200,169,110,0.5); }
+  70%  { box-shadow: 0 0 0 14px rgba(200,169,110,0); }
+  100% { box-shadow: 0 0 0 0 rgba(200,169,110,0); }
+}
+/* Faint sonar pulse behind the badge while audio plays — a quiet "live" sign,
+   on both the gallery tile and the expanded view. */
+.audio-tile.is-playing .play-badge::before,
+.lb-audio.is-playing .play-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(200,169,110,0.4);
+  animation: badge-ambient 2.1s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes badge-ambient {
+  0%   { box-shadow: 0 0 0 0 rgba(200,169,110,0.4); }
+  70%  { box-shadow: 0 0 0 13px rgba(200,169,110,0); }
+  100% { box-shadow: 0 0 0 0 rgba(200,169,110,0); }
+}
 .video-cover {
   position: absolute;
   inset: 0;
@@ -257,8 +300,16 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   background: #000;
   z-index: 2;
 }
-.video-tile.media-live .video-cover,
-.video-tile.media-live .play-badge { opacity: 0; pointer-events: none; }
+/* While a video/youtube plays in place, hide its cover + play badge so the
+   media shows through. media-live is set on the frame (tile or expanded view). */
+.video-wrap.media-live > .video-cover,
+.video-wrap.media-live > .play-badge { opacity: 0; pointer-events: none; }
+/* …but hovering the playing video reveals the badge as a pause control. */
+.video-wrap.media-live:hover > .play-badge { opacity: 1; pointer-events: auto; }
+/* Click shield — above the playing media (z 2) but below the pause badge (z 7),
+   so a click on the video expands the tile; the iframe can't swallow it. */
+.media-shield { position: absolute; inset: 0; z-index: 5; pointer-events: none; cursor: pointer; }
+.video-wrap.media-live > .media-shield { pointer-events: auto; }
 
 /* ── Lightbox ── */
 .lightbox {
@@ -281,6 +332,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   visibility: visible;
 }
 .lightbox-figure {
+  position: relative;            /* anchors the corner queue badge */
   margin: 0;
   max-width: 92vw;
   max-height: 92vh;
@@ -299,6 +351,67 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   border-radius: 3px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
 }
+/* Playable stages — a bigger echo of the tile, hosting playback in place. */
+.lb-stage { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65); border-radius: 3px; overflow: hidden; }
+.lb-stage.video-wrap {
+  width: min(92vw, 1080px);
+  padding-bottom: 0;
+  aspect-ratio: 16 / 9;
+  max-height: 80vh;
+}
+.lb-audio {
+  position: relative;
+  width: min(82vw, 760px);
+  height: min(44vh, 320px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(125% 90% at 50% 50%, #1f1b14 0%, #100e0b 78%);
+}
+.lb-audio .wave { position: absolute; left: 9%; right: 9%; top: 50%; transform: translateY(-50%);
+  height: 56%; fill: rgba(200, 169, 110, 0.4); }
+.lb-audio.has-cover .wave { display: none; }
+.lb-audio .audio-cover { position: absolute; inset: 0; }
+.lb-audio .audio-cover img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55) saturate(0.85); }
+/* Corner queue badge — hover-gated in the expanded view, matching the tile:
+   hidden until you hover the expanded media, regardless of play state. */
+.lightbox .lb-queue-badge { z-index: 8; }
+.lightbox-figure:hover .lb-queue-badge { opacity: 1; transform: scale(1); }
+/* Quote → a framed inscription. */
+.lb-quote {
+  position: relative;
+  max-width: min(80vw, 30ch);
+  padding: 12px 8px 8px;
+  text-align: center;
+}
+.lb-quote::before {
+  content: '\201C';
+  display: block;
+  font-family: 'DM Serif Display', serif;
+  font-size: 46px;
+  line-height: 0.6;
+  color: var(--accent);
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+.lb-quote-text {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  color: var(--text);
+  text-wrap: balance;
+}
+.lb-quote.q-lg .lb-quote-text { font-size: clamp(26px, 4.4vw, 42px); line-height: 1.3; }
+.lb-quote.q-md .lb-quote-text { font-size: clamp(22px, 3.4vw, 32px); line-height: 1.36; }
+.lb-quote.q-sm .lb-quote-text { font-size: clamp(18px, 2.6vw, 25px); line-height: 1.5; }
+.lb-quote .quote-by {
+  margin-top: 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.lb-quote .quote-dash { color: var(--muted); margin-right: 7px; }
 .lightbox-cap {
   display: flex;
   flex-direction: column;
@@ -306,6 +419,21 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   gap: 6px;
   text-align: center;
   max-width: 70ch;
+}
+.lightbox-cap .lb-type {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(200, 169, 110, 0.4);
+  border-radius: 2px;
+  padding: 2px 7px;
+}
+.lightbox-cap .lb-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--text);
 }
 .lightbox-cap .lb-ts {
   font-size: 10px;
@@ -371,6 +499,17 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
 }
 .tile { animation: fadeUp 0.4s ease both; }
 
+/* Locator flash — after "scroll to tile", a gold ring blinks twice over the
+   tile so the eye lands on where the playing track lives. */
+.tile.is-located { z-index: 30; animation: locate-flash 1.4s ease-out; }
+@keyframes locate-flash {
+  0%   { box-shadow: 0 0 0 0 rgba(200, 169, 110, 0); }
+  12%  { box-shadow: 0 0 0 3px var(--accent), 0 0 24px 6px rgba(200, 169, 110, 0.55); }
+  32%  { box-shadow: 0 0 0 1px rgba(200, 169, 110, 0.35), 0 0 10px 2px rgba(200, 169, 110, 0.12); }
+  52%  { box-shadow: 0 0 0 3px var(--accent), 0 0 24px 6px rgba(200, 169, 110, 0.5); }
+  100% { box-shadow: 0 0 0 0 rgba(200, 169, 110, 0); }
+}
+
 /* ── Audio tile ──────────────────────────────────────────────────────────── */
 .audio-card {
   position: relative;
@@ -407,36 +546,10 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
 }
 .audio-tile:hover .audio-cover img { filter: brightness(0.4) saturate(0.95); }
 
-.audio-card .play-badge { z-index: 4; }
-.audio-tile.is-playing .play-badge { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+.audio-card .play-badge { z-index: 7; }
+/* While playing, the badge stays put and shows a pause icon (set in JS),
+   keeping its hover pulse — it's both the indicator and the pause control. */
 .audio-tile.is-current .audio-card { box-shadow: inset 0 0 0 1.5px rgba(200, 169, 110, 0.6); }
-
-/* Live equalizer — shown only while this tile is the playing track. */
-.audio-eq {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  align-items: flex-end;
-  gap: 3px;
-  height: 26px;
-  z-index: 5;
-}
-.audio-tile.is-playing .audio-eq { display: flex; }
-.audio-eq span {
-  width: 3px;
-  height: 100%;
-  background: var(--accent);
-  border-radius: 2px;
-  transform-origin: bottom;
-  transform: scaleY(0.35);
-  animation: eq 0.95s ease-in-out infinite;
-}
-.audio-eq span:nth-child(2) { animation-delay: -0.75s; }
-.audio-eq span:nth-child(3) { animation-delay: -0.40s; }
-.audio-eq span:nth-child(4) { animation-delay: -0.55s; }
-.audio-eq span:nth-child(5) { animation-delay: -0.20s; }
 
 /* Queue badge — top-left, opposite the link badge to avoid collision. */
 .audio-queue-badge {
@@ -460,8 +573,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   transform: scale(0.7);
   transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease, color 0.2s ease;
 }
-.media-tile:hover .audio-queue-badge,
-.media-tile.is-queued .audio-queue-badge { opacity: 1; transform: scale(1); }
+.media-tile:hover .audio-queue-badge { opacity: 1; transform: scale(1); }
 .audio-queue-badge svg { width: 13px; height: 13px; }
 .audio-queue-badge:hover { background: rgba(200, 169, 110, 0.92); color: #0e0d0b; }
 
@@ -497,6 +609,86 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
 }
 
 @keyframes eq { 0%, 100% { transform: scaleY(0.32); } 50% { transform: scaleY(1); } }
+
+/* ── Quote tile (text artifact) ──────────────────────────────────────────── */
+.quote-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 132px;
+  padding: 26px 22px 22px;
+  background:
+    linear-gradient(180deg, #181611 0%, #131109 100%);
+  border-top: 1px solid rgba(200, 169, 110, 0.22);
+}
+/* Hanging opening quotation mark — a small gold printer's ornament, not a
+   giant watermark. Sits just above the line it introduces. */
+.quote-card::before {
+  content: '\201C';
+  position: absolute;
+  top: 4px;
+  left: 16px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.55;
+}
+.quote-body {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.quote-text {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+.quote-card.q-lg .quote-text { font-size: 23px; line-height: 1.34; }
+.quote-card.q-md .quote-text { font-size: 18px; line-height: 1.42; }
+.quote-card.q-sm .quote-text { font-size: 15px; line-height: 1.5; }
+.quote-by {
+  margin-top: 14px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.quote-dash { color: var(--muted); margin-right: 7px; }
+
+/* Hover meta — date always, description when present. The body recedes so the
+   provenance can take the foreground (an inversion of the media-tile overlay). */
+.quote-meta {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(14,13,11,0.86) 0%, rgba(14,13,11,0.96) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.quote-tile:hover .quote-meta,
+.quote-tile:focus-within .quote-meta { opacity: 1; }
+.quote-tile:hover .quote-body { opacity: 0.12; transform: translateY(-2px); }
+.quote-ts {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.quote-desc {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: var(--text);
+}
+.quote-tile { cursor: pointer; } /* the whole tile expands on click */
 
 /* ── Now-playing bar ─────────────────────────────────────────────────────── */
 body.player-active #gallery-wrap { padding-bottom: 84px; }
@@ -537,7 +729,27 @@ body.player-active #gallery-wrap { padding-bottom: 84px; }
 .player-eq span:nth-child(4) { animation-delay: -0.55s; }
 .player-eq span:nth-child(5) { animation-delay: -0.20s; }
 
-.player-meta { min-width: 0; }
+.player-meta { min-width: 0; display: flex; align-items: center; gap: 11px; }
+.player-meta-text { min-width: 0; } /* lets the title ellipsize */
+/* Locate button — a viewfinder reticle that jumps the gallery to this track. */
+.player-locate {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.player-locate svg { width: 16px; height: 16px; }
+.player-locate:hover { color: var(--accent); border-color: rgba(200, 169, 110, 0.5); }
+.player-locate:active { transform: scale(0.92); }
+.player-locate:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .player-title {
   font-family: 'DM Serif Display', serif;
   font-style: italic;
@@ -812,5 +1024,13 @@ body.player-active #gallery-wrap { padding-bottom: 84px; }
 
 @media (prefers-reduced-motion: reduce) {
   .player { transition: none; }
-  .player-eq span, .audio-eq span { animation: none !important; }
+  .player-eq span { animation: none !important; }
+  .play-badge:hover::after,
+  .audio-tile.is-playing .play-badge::before,
+  .lb-audio.is-playing .play-badge::before { animation: none !important; }
+  /* Locator: hold a static gold ring instead of pulsing. */
+  .tile.is-located {
+    animation: none !important;
+    box-shadow: 0 0 0 3px var(--accent), 0 0 18px 4px rgba(200, 169, 110, 0.4);
+  }
 }

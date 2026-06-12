@@ -47,9 +47,9 @@ const DEFAULT_HEADER =
 `/* ──────────────────────────────────────────────────────────────────────────
    Gallery content — managed by server.js (the admin at /admin).
    Loaded directly by index.html via <script>; no build step.
-   Entry fields: type (image|video|audio|youtube), date, file|id, title?
-                 (audio: shown in the player/queue), desc?, link?,
-                 poster? (video frame / audio cover art), hidden?
+   Entry fields: type (image|video|audio|youtube|quote), date, file|id,
+                 quote?+author? (quote tiles), title? (audio: player/queue),
+                 desc?, link?, poster? (video frame / audio cover art), hidden?
    ────────────────────────────────────────────────────────────────────────── */
 `;
 
@@ -180,8 +180,11 @@ async function readItems() {
 function serializeEntry(entry) {
   const q = (v) => JSON.stringify(v);
   const head = [`type: ${q(entry.type)}`, `date: ${q(entry.date)}`];
-  head.push(entry.type === 'youtube' ? `id: ${q(entry.id)}` : `file: ${q(entry.file)}`);
+  if (entry.type === 'youtube') head.push(`id: ${q(entry.id)}`);
+  else if (entry.type !== 'quote') head.push(`file: ${q(entry.file)}`); // quote is text-only
   const tail = [];
+  if (entry.quote)  tail.push(`quote: ${q(entry.quote)}`);
+  if (entry.author) tail.push(`author: ${q(entry.author)}`);
   if (entry.title)  tail.push(`title: ${q(entry.title)}`);
   if (entry.desc)   tail.push(`desc: ${q(entry.desc)}`);
   if (entry.link)   tail.push(`link: ${q(entry.link)}`);
@@ -315,8 +318,8 @@ async function handleAdd(req, res, body) {
 
   const { fields, files } = parseMultipart(body, boundary.replace(/^"|"$/g, ''));
   const type = fields.type;
-  if (!['image', 'video', 'youtube', 'audio'].includes(type)) {
-    return sendJSON(res, 400, { error: 'type must be image, video, audio, or youtube' });
+  if (!['image', 'video', 'youtube', 'audio', 'quote'].includes(type)) {
+    return sendJSON(res, 400, { error: 'type must be image, video, audio, youtube, or quote' });
   }
 
   const date = nowMinus5ISO();
@@ -326,7 +329,12 @@ async function handleAdd(req, res, body) {
   if (fields.link?.trim()) entry.link = fields.link.trim();
   if (fields.hidden === 'true') entry.hidden = true;
 
-  if (type === 'youtube') {
+  if (type === 'quote') {
+    const quote = (fields.quote || '').trim();
+    if (!quote) return sendJSON(res, 400, { error: 'A quote needs text' });
+    entry.quote = quote;
+    if (fields.author?.trim()) entry.author = fields.author.trim();
+  } else if (type === 'youtube') {
     const id = youtubeId(fields.youtube);
     if (!id) return sendJSON(res, 400, { error: 'Could not parse a YouTube video ID' });
     entry.id = id;
@@ -386,6 +394,8 @@ async function handleUpdate(res, body) {
   const entry = items.find((e) => e.date === date);
   if (!entry) return sendJSON(res, 404, { error: 'Tile not found' });
 
+  if ('quote' in req) { const v = (req.quote || '').trim(); if (v) entry.quote = v; } // mandatory; keep prior if blank
+  if ('author' in req) { const v = (req.author || '').trim(); if (v) entry.author = v; else delete entry.author; }
   if ('title' in req) { const v = (req.title || '').trim(); if (v) entry.title = v; else delete entry.title; }
   if ('desc' in req) { const v = (req.desc || '').trim(); if (v) entry.desc = v; else delete entry.desc; }
   if ('link' in req) { const v = (req.link || '').trim(); if (v) entry.link = v; else delete entry.link; }

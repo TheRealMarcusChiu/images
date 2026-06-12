@@ -24,12 +24,18 @@ function mediaSrc(file) {
 function normalize(raw) {
   return raw
     .filter((e) => e && e.type && e.date && !e.hidden && !Number.isNaN(Date.parse(e.date)))
+    // A quote tile is text-only; it must carry quote text to be worth rendering.
+    .filter((e) => e.type !== 'quote' || (e.quote && String(e.quote).trim()))
     .map((e) => {
       const it = { type: e.type, date: e.date, ts: displayTS(e.date) };
       if (e.title) it.title = e.title;
       if (e.desc) it.desc = e.desc;
       if (e.link) it.link = e.link;
-      if (e.type === 'youtube') {
+      if (e.type === 'quote') {
+        it.quote = String(e.quote).trim();
+        if (e.author) it.author = e.author;
+        // no media; tile height is measured at placement (see placeItem)
+      } else if (e.type === 'youtube') {
         it.id = e.id;
         it.ar = VIDEO_AR;
       } else {
@@ -71,9 +77,9 @@ function measureAR(url) {
   });
 }
 
-/** Ensure item.ar is set (no-op for youtube / posterless video). */
+/** Ensure item.ar is set (no-op for youtube / posterless video / quote). */
 async function ensureAR(it) {
-  if (it.ar != null) return;
+  if (it.ar != null || it.type === 'quote') return; // quote height measured at placement
   const fromPoster = it.type === 'video' || it.type === 'audio';
   it.ar = await measureAR(fromPoster ? it.poster : it.src);
 }
@@ -93,6 +99,11 @@ const QUEUE_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColo
   stroke-linecap="round"><line x1="12" y1="6" x2="12" y2="18"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`;
 const TRASH_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
   stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>`;
+// Viewfinder reticle — "find the playing tile on the page".
+const LOCATE_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+  stroke-linecap="round"><circle cx="12" cy="12" r="6"/><line x1="12" y1="2" x2="12" y2="5"/>
+  <line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/>
+  <line x1="19" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>`;
 const VOL_ICON_SVG = `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9z"/>
   <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
   d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>`;
@@ -149,7 +160,9 @@ function overlayHTML(item, withMediaBadge) {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Lightbox — clicking an image enlarges it over a darkened backdrop.
+   Lightbox — clicking a tile expands it over a darkened backdrop. Images,
+   video posters and YouTube thumbnails enlarge as stills; an audio tile shows
+   its cover (or its gold waveform); a quote becomes a framed inscription.
    Dismiss by clicking the backdrop, the ✕ button, or pressing Escape.
    ────────────────────────────────────────────────────────────────────────── */
 const lightbox = (() => {
@@ -158,35 +171,116 @@ const lightbox = (() => {
   el.setAttribute('aria-hidden', 'true');
   el.innerHTML = `
     <button class="lightbox-close" aria-label="Close">&times;</button>
-    <figure class="lightbox-figure">
-      <img class="lightbox-img" alt="">
-      <figcaption class="lightbox-cap">
-        <span class="lb-ts"></span>
-        <span class="lb-desc"></span>
-        <a class="lb-link" target="_blank" rel="noopener">Source &nearr;</a>
-      </figcaption>
-    </figure>`;
+    <figure class="lightbox-figure"></figure>`;
   document.body.appendChild(el);
+  const figure = el.querySelector('.lightbox-figure');
 
-  const imgEl  = el.querySelector('.lightbox-img');
-  const tsEl   = el.querySelector('.lb-ts');
-  const descEl = el.querySelector('.lb-desc');
-  const linkEl = el.querySelector('.lb-link');
+  const ytThumb = (id) => `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  const PLAYABLE = new Set(['audio', 'video', 'youtube']);
 
-  function open(item) {
-    imgEl.src = item.src;
-    imgEl.alt = item.desc || 'photo';
-    tsEl.textContent   = item.ts || '';
-    descEl.textContent = item.desc || '';
-    if (item.link) { linkEl.href = item.link; linkEl.style.display = ''; }
-    else           { linkEl.removeAttribute('href'); linkEl.style.display = 'none'; }
+  let item = null;       // the item currently expanded
+  let lbHosted = false;  // did we start video/youtube playback inside this view?
+
+  // The visual: a quote becomes an inscription; playable types become a
+  // tile-like stage (cover/waveform + a centred play badge) that hosts
+  // playback in place; images just enlarge.
+  function stageHTML(it) {
+    if (it.type === 'quote') {
+      const len = it.quote.length;
+      const size = len <= 70 ? 'q-lg' : len <= 160 ? 'q-md' : 'q-sm';
+      const by = it.author
+        ? `<div class="quote-by"><span class="quote-dash">—</span>${escapeHTML(it.author)}</div>` : '';
+      return `<div class="lb-quote ${size}"><p class="lb-quote-text">${escapeHTML(it.quote)}</p>${by}</div>`;
+    }
+    if (it.type === 'video' || it.type === 'youtube') {
+      const src = it.type === 'youtube' ? ytThumb(it.id) : it.poster;
+      const cover = src
+        ? `<img src="${escapeAttr(src)}" alt="${escapeAttr(it.title || it.desc || '')}">`
+        : `<div class="video-placeholder"></div>`;
+      return `<div class="lb-stage video-wrap">
+        <div class="video-cover">${cover}</div>
+        <button class="play-badge" type="button" aria-label="Play">${PLAY_ICON_SVG}</button>
+      </div>`;
+    }
+    if (it.type === 'audio') {
+      const cover = it.poster
+        ? `<div class="audio-cover"><img src="${escapeAttr(it.poster)}" alt=""></div>` : '';
+      return `<div class="lb-stage lb-audio${it.poster ? ' has-cover' : ''}">
+        ${cover}${waveformSVG(it.src || it.date)}
+        <button class="play-badge" type="button" aria-label="Play">${PLAY_ICON_SVG}</button>
+      </div>`;
+    }
+    return `<img class="lightbox-img" src="${escapeAttr(it.src)}" alt="${escapeAttr(it.desc || '')}">`;
+  }
+
+  function capHTML(it) {
+    const eyebrow = (it.type !== 'image' && it.type !== 'quote')
+      ? `<span class="lb-type">${it.type}</span>` : '';
+    const title = it.title && it.type !== 'quote'
+      ? `<span class="lb-title">${escapeHTML(it.title)}</span>` : '';
+    const desc = it.desc ? `<span class="lb-desc">${escapeHTML(it.desc)}</span>` : '';
+    const link = it.link
+      ? `<a class="lb-link" href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Source &nearr;</a>` : '';
+    return `<figcaption class="lightbox-cap">${eyebrow}${title}` +
+           `<span class="lb-ts">${escapeHTML(it.ts || '')}</span>${desc}${link}</figcaption>`;
+  }
+
+  // Reflect the player's state onto the expanded view's play badge/stage.
+  function syncPlayState() {
+    if (!el.classList.contains('open') || !item || !PLAYABLE.has(item.type)) return;
+    const stage = figure.querySelector('.lb-stage');
+    if (stage) stage.classList.toggle('is-playing', player.isActive(item));
+    const badge = figure.querySelector('.play-badge');
+    if (badge) badge.innerHTML = player.isActive(item) ? PAUSE_ICON_SVG : PLAY_ICON_SVG;
+  }
+
+  function open(it) {
+    item = it;
+    lbHosted = false;
+    figure.innerHTML = stageHTML(it) +
+      (PLAYABLE.has(it.type)
+        ? `<button class="lb-queue-badge audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>`
+        : '') +
+      capHTML(it);
+
+    if (PLAYABLE.has(it.type)) {
+      const stage = figure.querySelector('.lb-stage');
+      // If a video/youtube is already loaded, move the live player into the
+      // expanded view so it keeps playing in place (no restart).
+      if (it.type !== 'audio' && player.isLoaded(it)) {
+        player.rehost(stage);
+        lbHosted = true;
+      }
+      figure.querySelector('.play-badge').addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Video/youtube render right here; audio plays through the bar.
+        const host = (it.type === 'audio') ? null : stage;
+        if (it.type !== 'audio') lbHosted = true;
+        player.toggleTile(it, host);
+      });
+      figure.querySelector('.lb-queue-badge').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const n = player.enqueue(it);
+        toast(n ? `Queued · ${n} up next` : 'Now playing');
+      });
+    }
     el.classList.add('open');
     el.setAttribute('aria-hidden', 'false');
+    syncPlayState();
   }
   function close() {
+    // Hand any video/youtube we hosted back to its tile so it keeps playing
+    // there; audio was never moved (it plays through the now-playing bar).
+    if (lbHosted && item && player.isLoaded(item)) {
+      const tile = mediaTile(item);
+      const wrap = tile && tile.querySelector('.video-wrap');
+      if (wrap) player.rehost(wrap); else player.stop();
+    }
+    lbHosted = false;
+    item = null;
     el.classList.remove('open');
     el.setAttribute('aria-hidden', 'true');
-    imgEl.removeAttribute('src'); // stop holding the decoded bitmap
+    figure.innerHTML = ''; // release any decoded bitmap / players
   }
 
   el.addEventListener('click', (e) => { if (e.target === el) close(); });
@@ -195,7 +289,7 @@ const lightbox = (() => {
     if (e.key === 'Escape' && el.classList.contains('open')) close();
   });
 
-  return { open, close };
+  return { open, close, syncPlayState };
 })();
 
 function openLightbox(item) { lightbox.open(item); }
@@ -249,8 +343,12 @@ const player = (() => {
   el.innerHTML = `
     <div class="player-eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
     <div class="player-meta">
-      <div class="player-title"></div>
-      <div class="player-sub"></div>
+      <button class="player-locate" data-act="locate" aria-label="Scroll to the playing tile"
+              title="Scroll to the playing tile">${LOCATE_ICON_SVG}</button>
+      <div class="player-meta-text">
+        <div class="player-title"></div>
+        <div class="player-sub"></div>
+      </div>
     </div>
     <div class="player-seek">
       <span class="player-time player-cur">0:00</span>
@@ -286,6 +384,7 @@ const player = (() => {
 
   let current = null;   // the loaded item (kept while paused, for resume)
   let media   = null;   // its controller, or null
+  let mediaHost = null; // where the current video/youtube renders (tile or expanded view)
   const queue = [];
 
   const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -365,13 +464,12 @@ const player = (() => {
     };
   }
 
-  function videoController(item) {
-    const tile = mediaTile(item);
-    const wrap = tile && tile.querySelector('.video-wrap');
+  function videoController(item, host) {
+    let curHost = host;
     const v = document.createElement('video');
     v.className = 'inline-media';
     v.src = item.src; v.playsInline = true; v.preload = 'metadata';
-    if (wrap) { wrap.appendChild(v); tile.classList.add('media-live'); }
+    if (curHost) { curHost.appendChild(v); curHost.classList.add('media-live'); }
     v.addEventListener('timeupdate', () => hooks.time(v.currentTime, v.duration || 0));
     v.addEventListener('loadedmetadata', () => hooks.ready(v.duration || 0));
     v.addEventListener('play', hooks.play);
@@ -384,16 +482,20 @@ const player = (() => {
       time: () => v.currentTime, dur: () => v.duration || 0,
       paused: () => v.paused, ended: () => v.ended,
       setVol: (val) => { v.volume = val; }, setMuted: (m) => { v.muted = m; },
-      destroy: () => { v.pause(); v.remove(); if (tile) tile.classList.remove('media-live'); },
+      // Moving the <video> element preserves playback — no reload.
+      reparent: (newHost) => {
+        if (curHost) curHost.classList.remove('media-live');
+        curHost = newHost;
+        if (curHost) { curHost.appendChild(v); curHost.classList.add('media-live'); }
+      },
+      destroy: () => { v.pause(); v.remove(); if (curHost) curHost.classList.remove('media-live'); },
     };
   }
 
-  function youtubeController(item) {
-    const tile = mediaTile(item);
-    const wrap = tile && tile.querySelector('.video-wrap');
-    const host = document.createElement('div');
-    host.className = 'inline-media yt-host';
-    if (wrap) { wrap.appendChild(host); tile.classList.add('media-live'); }
+  function youtubeController(item, host, startAt = 0) {
+    const ytHost = document.createElement('div');
+    ytHost.className = 'inline-media yt-host';
+    if (host) { host.appendChild(ytHost); host.classList.add('media-live'); }
     let yt = null, ready = false, want = true, dur = 0, poll = null, dead = false;
     let pVol = volume, pMuted = muted;
 
@@ -404,13 +506,14 @@ const player = (() => {
 
     loadYouTubeAPI().then(() => {
       if (dead) return;
-      yt = new YT.Player(host, {
+      yt = new YT.Player(ytHost, {
         videoId: item.id,
         playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1, controls: 0 },
         events: {
           onReady: (e) => {
             ready = true; dur = e.target.getDuration() || 0;
             e.target.setVolume(pVol * 100); pMuted ? e.target.mute() : e.target.unMute();
+            if (startAt > 0) e.target.seekTo(startAt, true); // resume where it left off
             hooks.ready(dur);
             want ? e.target.playVideo() : e.target.pauseVideo();
           },
@@ -436,14 +539,22 @@ const player = (() => {
       ended: () => stateIs(0),
       setVol: (v) => { pVol = v; if (ready && yt) { yt.unMute(); yt.setVolume(v * 100); } },
       setMuted: (m) => { pMuted = m; if (ready && yt) { m ? yt.mute() : yt.unMute(); } },
-      destroy: () => { dead = true; stopPoll(); try { yt && yt.destroy && yt.destroy(); } catch { /* gone */ } host.remove(); if (tile) tile.classList.remove('media-live'); },
+      destroy: () => { dead = true; stopPoll(); try { yt && yt.destroy && yt.destroy(); } catch { /* gone */ } ytHost.remove(); if (host) host.classList.remove('media-live'); },
     };
   }
 
-  function makeController(item) {
-    if (item.type === 'video')   return videoController(item);
-    if (item.type === 'youtube') return youtubeController(item);
+  function makeController(item, host, startAt = 0) {
+    if (item.type === 'video')   return videoController(item, host);
+    if (item.type === 'youtube') return youtubeController(item, host, startAt);
     return audioController(item);
+  }
+  // Where a video/youtube renders: an explicit host (e.g. the expanded view),
+  // else the tile's own frame. Audio has no visual surface.
+  function resolveHost(item, host) {
+    if (item.type === 'audio') return null;
+    if (host) return host;
+    const tile = mediaTile(item);
+    return (tile && tile.querySelector('.video-wrap')) || null;
   }
 
   function render() {
@@ -458,13 +569,15 @@ const player = (() => {
     toggleBt.innerHTML = paused ? PLAY_ICON_SVG : PAUSE_ICON_SVG;
     el.classList.toggle('is-playing', !paused);
     updateTileStates();
+    lightbox.syncPlayState();      // keep the expanded view's play badge in step
   }
-  function start(item) {
+  function start(item, host) {
     if (media) media.destroy();        // stop whatever was playing (audio or video)
     progEl.style.width = '0%';
     curEl.textContent = '0:00'; durEl.textContent = '0:00';
     current = item;
-    media = makeController(item);
+    mediaHost = resolveHost(item, host);
+    media = makeController(item, mediaHost);
     applyVol();
     media.play();
     el.classList.add('open');
@@ -472,14 +585,35 @@ const player = (() => {
     document.body.classList.add('player-active');
     render(); syncToggle();
   }
-  // Clicking a tile: toggle the one that's loaded; otherwise start fresh.
-  function toggleTile(item) {
-    if (current && media && current.date === item.date) {
-      if (media.ended()) start(item);            // finished → play again
+  /* Move the live video/youtube to a new frame (tile ⇄ expanded view) while it
+     keeps playing. A <video> re-parents seamlessly; a YouTube iframe can't be
+     moved without reloading, so it's recreated at the same time + state. */
+  function rehost(newHost) {
+    const h = newHost || (mediaTile(current) && mediaTile(current).querySelector('.video-wrap'));
+    if (!current || !media || !h || mediaHost === h) return;
+    if (current.type === 'video' && media.reparent) {
+      media.reparent(h);
+      mediaHost = h;
+    } else if (current.type === 'youtube') {
+      const at = media.time(); const wasPlaying = !media.paused();
+      media.destroy();
+      mediaHost = h;
+      media = makeController(current, h, at);
+      applyVol();
+      if (!wasPlaying) media.pause();
+      syncToggle();
+    }
+  }
+  // Toggle the loaded item when it's in the same surface; otherwise start fresh.
+  // `host` lets the expanded view render video/youtube into itself.
+  function toggleTile(item, host = null) {
+    const h = resolveHost(item, host);
+    if (current && media && current.date === item.date && mediaHost === h) {
+      if (media.ended()) start(item, host);      // finished → play again
       else if (media.paused()) media.play();     // resume in place
-      else media.pause();                        // pause → tile reverts
+      else media.pause();                        // pause → reverts
     } else {
-      start(item);                               // a different item → play now
+      start(item, host);                         // different item or surface → play now
     }
   }
   function enqueue(item) {
@@ -543,6 +677,18 @@ const player = (() => {
     if (!queue.length) return;
     pop.hidden = !pop.hidden;
   });
+  // Scroll the gallery to the playing tile, then flash it so the eye lands on it.
+  el.querySelector('[data-act=locate]').addEventListener('click', () => {
+    if (!current) return;
+    const tile = mediaTile(current);
+    if (!tile) { toast('That tile isn’t on the page'); return; }
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    tile.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    tile.classList.remove('is-located');
+    void tile.offsetWidth;              // restart the flash if it's mid-animation
+    tile.classList.add('is-located');
+    setTimeout(() => tile.classList.remove('is-located'), 1500);
+  });
 
   /* Scrub — click or drag anywhere on the track to seek; arrow keys nudge.
      A drag holds playback (pausing if it was playing) and resumes on release
@@ -589,8 +735,9 @@ const player = (() => {
   });
 
   return {
-    toggleTile, enqueue,
+    toggleTile, enqueue, stop: close, rehost,
     isActive:  (item) => !!current && !!media && !media.paused() && current.date === item.date,
+    isLoaded:  (item) => !!current && current.date === item.date,
     isQueued:  (item) => queue.some((q) => q.date === item.date),
   };
 })();
@@ -603,6 +750,12 @@ function updateTileStates() {
     t.classList.toggle('is-current', active);
     t.classList.toggle('is-playing', active);
     t.classList.toggle('is-queued', player.isQueued(ref));
+    // The badge becomes a pause control while the tile plays (audio + video).
+    const badge = t.querySelector('.play-badge');
+    if (badge) {
+      badge.innerHTML = active ? PAUSE_ICON_SVG : PLAY_ICON_SVG;
+      badge.setAttribute('aria-label', active ? 'Pause' : 'Play');
+    }
   });
 }
 
@@ -622,14 +775,12 @@ function makeAudioTile(item, i) {
          style="aspect-ratio:${1 / (item.ar || AUDIO_AR)}">
       ${cover}
       ${waveformSVG(item.src || item.date)}
-      <div class="audio-eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="play-badge">${PLAY_ICON_SVG}</div>
+      <button class="play-badge" type="button" aria-label="Play">${PLAY_ICON_SVG}</button>
       <button class="audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>
     </div>
     ${overlayHTML({ ...item, desc: item.title || item.desc }, 'audio')}`;
 
-  // External link: a clickable corner badge (top-right), mirroring image tiles —
-  // so the card body stays dedicated to playback.
+  // External link as a clickable corner badge (top-right), like image tiles.
   if (item.link) {
     tile.classList.add('has-link');
     const a = document.createElement('a');
@@ -643,11 +794,14 @@ function makeAudioTile(item, i) {
     tile.appendChild(a);
   }
 
-  const card = tile.querySelector('.audio-card');
-  const qBtn = tile.querySelector('.audio-queue-badge');
+  const card  = tile.querySelector('.audio-card');
+  const pBtn  = tile.querySelector('.play-badge');
+  const qBtn  = tile.querySelector('.audio-queue-badge');
+  // The play icon plays/pauses; clicking anywhere else expands the tile.
+  pBtn.addEventListener('click', (e) => { e.stopPropagation(); player.toggleTile(item); });
   card.addEventListener('click', (e) => {
-    if (e.target.closest('.audio-queue-badge')) return;
-    player.toggleTile(item);
+    if (e.target.closest('.play-badge, .audio-queue-badge, .link-badge')) return;
+    openLightbox(item);
   });
   qBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -686,8 +840,8 @@ function makeImageTile(item, i) {
   return tile;
 }
 
-/* ── Video tile (local or YouTube): plays in place, driven by the now-playing
-   bar. Click toggles play/pause; the + badge queues it; the bar scrubs it. ── */
+/* ── Video tile (local or YouTube): plays in place via the now-playing bar.
+   The play icon plays/pauses; clicking the tile expands it; + queues it. ── */
 function makeMediaVideoTile(item, i, coverHTML) {
   const tile = document.createElement('div');
   tile.className = 'tile video-tile media-tile';
@@ -696,7 +850,10 @@ function makeMediaVideoTile(item, i, coverHTML) {
   tile.innerHTML = `
     <div class="video-wrap">
       <div class="video-cover">${coverHTML}</div>
-      <div class="play-badge">${PLAY_ICON_SVG}</div>
+      <!-- While playing, catches clicks over the media (esp. a YouTube iframe,
+           which would otherwise swallow them) so the tile can expand. -->
+      <div class="media-shield"></div>
+      <button class="play-badge" type="button" aria-label="Play">${PLAY_ICON_SVG}</button>
     </div>
     <button class="audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>
     ${overlayHTML({ ...item, desc: item.title || item.desc }, 'video')}`;
@@ -714,9 +871,13 @@ function makeMediaVideoTile(item, i, coverHTML) {
   }
 
   const wrap = tile.querySelector('.video-wrap');
+  const pBtn = tile.querySelector('.play-badge');
+  // The play/pause badge controls playback; clicking anywhere else expands the
+  // tile — including while it plays in place.
+  pBtn.addEventListener('click', (e) => { e.stopPropagation(); player.toggleTile(item); });
   wrap.addEventListener('click', (e) => {
-    if (e.target.closest('.audio-queue-badge, .link-badge')) return;
-    player.toggleTile(item);
+    if (e.target.closest('.play-badge, .audio-queue-badge, .link-badge')) return;
+    openLightbox(item);
   });
   tile.querySelector('.audio-queue-badge').addEventListener('click', (e) => {
     e.stopPropagation();
@@ -740,11 +901,62 @@ function makeYouTubeTile(item, i) {
   return makeMediaVideoTile(item, i, `<img src="${thumbUrl}" alt="${escapeAttr(title)}">`);
 }
 
+/* ── Quote tile (text artifact; quote + author shown, meta on hover) ──
+   Default: the quote in serif italic with a hanging gold mark, the author in
+   gold mono caps, and a link badge if one exists. Hover reveals date + desc. ── */
+function makeQuoteTile(item, i) {
+  const tile = document.createElement('div');
+  tile.className = 'tile quote-tile';
+  tile.style.animationDelay = `${(i % 5) * 55}ms`;
+
+  // Shorter lines carry more weight, so set them larger — a real pull-quote.
+  const len = item.quote.length;
+  const size = len <= 70 ? 'q-lg' : len <= 160 ? 'q-md' : 'q-sm';
+
+  const author = item.author
+    ? `<div class="quote-by"><span class="quote-dash">—</span>${escapeHTML(item.author)}</div>`
+    : '';
+  // Hover meta: date always; description when present.
+  const meta = `
+    <div class="quote-meta">
+      <div class="quote-ts">${escapeHTML(item.ts)}</div>
+      ${item.desc ? `<div class="quote-desc">${escapeHTML(item.desc)}</div>` : ''}
+    </div>`;
+
+  tile.innerHTML = `
+    <div class="quote-card ${size}">
+      <div class="quote-body">
+        <p class="quote-text">${escapeHTML(item.quote)}</p>
+        ${author}
+      </div>
+      ${meta}
+    </div>`;
+
+  // The link opens via its corner badge; clicking the tile body expands it.
+  if (item.link) {
+    tile.classList.add('has-link');
+    const a = document.createElement('a');
+    a.className = 'link-badge link-badge-active';
+    a.href = item.link; a.target = '_blank'; a.rel = 'noopener';
+    a.setAttribute('aria-label', 'Open source');
+    a.innerHTML = LINK_ICON_SVG;
+    a.addEventListener('click', (e) => e.stopPropagation());
+    tile.appendChild(a);
+  }
+  tile.classList.add('expandable');
+  tile.addEventListener('click', (e) => {
+    if (e.target.closest('.link-badge')) return;
+    openLightbox(item);
+  });
+  return tile;
+}
+
 function makeTile(item, i) {
   if (item.type === 'image')   return makeImageTile(item, i);
   if (item.type === 'video')   return makeVideoTile(item, i);
   if (item.type === 'youtube') return makeYouTubeTile(item, i);
   if (item.type === 'audio')   return makeAudioTile(item, i);
+  if (item.type === 'quote')   return makeQuoteTile(item, i);
   return null;
 }
 
@@ -801,7 +1013,12 @@ function placeItem(item, i) {
   if (!tile) return;
   const c = shortestColumn();
   cols[c].appendChild(tile);
-  colHeights[c] += colWidth * (item.ar || 1) + GAP;
+  // Media tiles know their aspect ratio up front; a quote's height depends on
+  // its rendered text, so measure it once it's in the column.
+  const h = item.type === 'quote'
+    ? tile.getBoundingClientRect().height
+    : colWidth * (item.ar || 1);
+  colHeights[c] += h + GAP;
 }
 
 /** Rebuild all currently-revealed tiles from scratch (e.g. on column change). */
