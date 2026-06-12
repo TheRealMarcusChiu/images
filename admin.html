@@ -202,6 +202,10 @@
         <span>Cover art <em>optional · YouTube thumbnail or waveform if blank</em></span>
         <input type="file" name="audioCover" accept="image/*">
       </label>
+      <label class="typed" data-for="audio" hidden>
+        <span>Title <em>optional · shown in the player &amp; queue</em></span>
+        <input type="text" name="title" placeholder="Track name">
+      </label>
 
       <label>
         <span>Description <em>optional</em></span>
@@ -357,6 +361,7 @@
         fd.append('media', F.audio.files[0]);
       }
       if (F.audioCover.files[0]) fd.append('poster', F.audioCover.files[0]);
+      if (F.title.value.trim()) fd.append('title', F.title.value.trim());
     } else {
       if (!F.youtube.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
       fd.append('youtube', F.youtube.value.trim());
@@ -412,7 +417,8 @@
   function viewRow(it) {
     const el = document.createElement('div');
     el.className = 'manage-row' + (it.hidden ? ' is-hidden' : '');
-    const title = it.desc ? esc(it.desc) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
+    const display = it.title || it.desc;
+    const title = display ? esc(display) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
     const meta = [it.type + (it.hidden ? ' · hidden' : ''), fmtDate(it.date), it.link ? 'link' : '']
       .filter(Boolean).join(' · ');
     el.innerHTML = `
@@ -438,6 +444,7 @@
       <div class="manage-thumb">${thumbHTML(it)}</div>
       <div class="manage-body">
         <input type="text" name="date" value="${esc(it.date)}" spellcheck="false">
+        ${it.type === 'audio' ? `<input type="text" name="title" value="${esc(it.title || '')}" placeholder="Title — shown in the player">` : ''}
         <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
         <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
         <label class="edit-check"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> Hidden</label>
@@ -455,6 +462,7 @@
         link: el.elements.link.value,
         hidden: el.elements.hidden.checked,
       };
+      if (el.elements.title) payload.title = el.elements.title.value;
       const res = await fetch('/api/tiles/update', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });

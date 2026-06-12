@@ -26,6 +26,7 @@ function normalize(raw) {
     .filter((e) => e && e.type && e.date && !e.hidden && !Number.isNaN(Date.parse(e.date)))
     .map((e) => {
       const it = { type: e.type, date: e.date, ts: displayTS(e.date) };
+      if (e.title) it.title = e.title;
       if (e.desc) it.desc = e.desc;
       if (e.link) it.link = e.link;
       if (e.type === 'youtube') {
@@ -90,6 +91,14 @@ const PAUSE_ICON_SVG = `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" hei
 const NEXT_ICON_SVG  = `<svg viewBox="0 0 24 24"><polygon points="5,4 15,12 5,20"/><rect x="16" y="4" width="3" height="16"/></svg>`;
 const QUEUE_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
   stroke-linecap="round"><line x1="12" y1="6" x2="12" y2="18"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`;
+const TRASH_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+  stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>`;
+const VOL_ICON_SVG = `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9z"/>
+  <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+  d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>`;
+const MUTE_ICON_SVG = `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9z"/>
+  <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+  d="M16 9.5l5 5M21 9.5l-5 5"/></svg>`;
 
 /* ── Deterministic waveform: stable per recording, drawn from its filename ──
    A tiny FNV-style hash seeds a repeatable PRNG so a given audio file always
@@ -235,6 +244,10 @@ const player = (() => {
     <div class="player-controls">
       <button class="player-btn player-toggle" data-act="toggle" aria-label="Play or pause">${PLAY_ICON_SVG}</button>
       <button class="player-btn" data-act="next" aria-label="Next track">${NEXT_ICON_SVG}</button>
+      <div class="player-vol">
+        <button class="player-vol-btn" data-act="mute" aria-label="Mute">${VOL_ICON_SVG}</button>
+        <input class="player-vol-slider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+      </div>
     </div>
     <button class="player-queue" data-act="queue" aria-label="Show queue">
       <span class="player-queue-label">Up next</span><span class="player-qcount">0</span>
@@ -255,16 +268,51 @@ const player = (() => {
   const toggleBt = el.querySelector('.player-toggle');
   const qCountEl = el.querySelector('.player-qcount');
   const pop      = el.querySelector('.player-pop');
+  const volBtn   = el.querySelector('.player-vol-btn');
+  const volSld   = el.querySelector('.player-vol-slider');
 
   let current = null;
+  let stopped = false;   // track finished with nothing queued → tiles revert
   const queue = [];
+
+  const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch { /* ignore */ } };
 
   const fmt = (t) => {
     if (!isFinite(t) || t < 0) t = 0;
     return `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
   };
+  // A given title wins; otherwise the caption, then a cleaned-up filename.
   const label = (item) =>
-    item.desc || decodeURIComponent((item.src || '').split('/').pop().replace(/\.[^.]+$/, ''));
+    item.title || item.desc ||
+    decodeURIComponent((item.src || '').split('/').pop().replace(/\.[^.]+$/, ''));
+
+  /* Volume — persisted across sessions; the speaker glyph doubles as mute. */
+  let lastVol = parseFloat(lsGet('player-vol'));
+  if (!(lastVol >= 0 && lastVol <= 1)) lastVol = 1;
+  audio.volume = lastVol;
+  function paintVol() {
+    const v = audio.muted ? 0 : audio.volume;
+    volSld.value = v;
+    volSld.style.background = `linear-gradient(to right, var(--accent) ${v * 100}%, var(--border) ${v * 100}%)`;
+    const off = audio.muted || v === 0;
+    volBtn.innerHTML = off ? MUTE_ICON_SVG : VOL_ICON_SVG;
+    volBtn.classList.toggle('is-muted', off);
+    volBtn.setAttribute('aria-label', off ? 'Unmute' : 'Mute');
+  }
+  volSld.addEventListener('input', () => {
+    audio.muted = false;
+    audio.volume = parseFloat(volSld.value);
+    if (audio.volume > 0) lastVol = audio.volume;
+    lsSet('player-vol', String(audio.volume));
+  });
+  volBtn.addEventListener('click', () => {
+    if (audio.muted || audio.volume === 0) { audio.muted = false; audio.volume = lastVol > 0 ? lastVol : 1; }
+    else audio.muted = true;
+    lsSet('player-vol', String(audio.muted ? 0 : audio.volume));
+  });
+  audio.addEventListener('volumechange', paintVol);
+  paintVol();
 
   function render() {
     if (current) { titleEl.textContent = label(current); subEl.textContent = current.ts || ''; }
@@ -280,6 +328,7 @@ const player = (() => {
   }
   function start(item) {
     current = item;
+    stopped = false;
     audio.src = item.src;
     audio.play().catch(() => {});
     el.classList.add('open');
@@ -321,11 +370,18 @@ const player = (() => {
     head.textContent = 'Up next';
     pop.appendChild(head);
     queue.forEach((it, idx) => {
-      const row = document.createElement('button');
+      const row = document.createElement('div');
       row.className = 'pop-row';
-      row.innerHTML = `<span class="pop-i">${String(idx + 1).padStart(2, '0')}</span>`
-                    + `<span class="pop-t">${escapeHTML(label(it))}</span>`;
-      row.addEventListener('click', () => { queue.splice(idx, 1); start(it); });
+      row.innerHTML = `
+        <button class="pop-play" aria-label="Play now">
+          <span class="pop-i">${String(idx + 1).padStart(2, '0')}</span>
+          <span class="pop-t">${escapeHTML(label(it))}</span>
+        </button>
+        <button class="pop-del" aria-label="Remove from queue">${TRASH_ICON_SVG}</button>`;
+      row.querySelector('.pop-play').addEventListener('click', () => { queue.splice(idx, 1); start(it); });
+      row.querySelector('.pop-del').addEventListener('click', () => {
+        queue.splice(idx, 1); render(); updateTileStates();
+      });
       pop.appendChild(row);
     });
     const clear = document.createElement('button');
@@ -341,13 +397,18 @@ const player = (() => {
     curEl.textContent = fmt(audio.currentTime);
   });
   audio.addEventListener('loadedmetadata', () => { durEl.textContent = fmt(audio.duration); });
-  audio.addEventListener('play',  syncToggle);
+  audio.addEventListener('play',  () => { stopped = false; syncToggle(); });
   audio.addEventListener('pause', syncToggle);
-  audio.addEventListener('ended', () => { if (queue.length) playNext(); else syncToggle(); });
+  audio.addEventListener('ended', () => {
+    if (queue.length) { playNext(); return; }
+    stopped = true;           // nothing left to play → the tile returns to normal
+    syncToggle();
+  });
 
   toggleBt.addEventListener('click', () => {
     if (!current) return;
-    if (audio.paused) audio.play().catch(() => {}); else audio.pause();
+    if (audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play().catch(() => {}); }
+    else audio.pause();
   });
   el.querySelector('[data-act=next]').addEventListener('click', playNext);
   el.querySelector('[data-act=close]').addEventListener('click', close);
@@ -363,7 +424,7 @@ const player = (() => {
 
   return {
     playNow, enqueue,
-    isCurrent: (item) => !!current && current.date === item.date,
+    isCurrent: (item) => !!current && !stopped && current.date === item.date,
     isQueued:  (item) => queue.some((q) => q.date === item.date),
     isPlaying: () => !audio.paused,
   };

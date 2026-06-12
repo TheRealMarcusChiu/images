@@ -11,7 +11,8 @@
      date   ISO 8601, e.g. "2025-04-02T09:15:00.000-05:00"   (required)
      file   filename in content/media/   (required for image/video/audio)
      id     YouTube video id             (required for youtube)
-     desc   hover caption / now-playing title   (optional)
+     title  track name shown in the audio player & queue   (optional; audio)
+     desc   hover caption                (optional)
      link   external URL; tile becomes clickable   (optional; image/video/audio)
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */

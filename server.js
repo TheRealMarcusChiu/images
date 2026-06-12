@@ -47,7 +47,8 @@ const DEFAULT_HEADER =
 `/* ──────────────────────────────────────────────────────────────────────────
    Gallery content — managed by server.js (the admin at /admin).
    Loaded directly by index.html via <script>; no build step.
-   Entry fields: type (image|video|audio|youtube), date, file|id, desc?, link?,
+   Entry fields: type (image|video|audio|youtube), date, file|id, title?
+                 (audio: shown in the player/queue), desc?, link?,
                  poster? (video frame / audio cover art), hidden?
    ────────────────────────────────────────────────────────────────────────── */
 `;
@@ -153,6 +154,7 @@ function serializeEntry(entry) {
   const head = [`type: ${q(entry.type)}`, `date: ${q(entry.date)}`];
   head.push(entry.type === 'youtube' ? `id: ${q(entry.id)}` : `file: ${q(entry.file)}`);
   const tail = [];
+  if (entry.title)  tail.push(`title: ${q(entry.title)}`);
   if (entry.desc)   tail.push(`desc: ${q(entry.desc)}`);
   if (entry.link)   tail.push(`link: ${q(entry.link)}`);
   if (entry.poster) tail.push(`poster: ${q(entry.poster)}`);
@@ -291,6 +293,7 @@ async function handleAdd(req, res, body) {
 
   const date = nowMinus5ISO();
   const entry = { type, date };
+  if (fields.title?.trim()) entry.title = fields.title.trim();
   if (fields.desc?.trim()) entry.desc = fields.desc.trim();
   if (fields.link?.trim()) entry.link = fields.link.trim();
   if (fields.hidden === 'true') entry.hidden = true;
@@ -356,6 +359,7 @@ async function handleUpdate(res, body) {
   const entry = items.find((e) => e.date === date);
   if (!entry) return sendJSON(res, 404, { error: 'Tile not found' });
 
+  if ('title' in req) { const v = (req.title || '').trim(); if (v) entry.title = v; else delete entry.title; }
   if ('desc' in req) { const v = (req.desc || '').trim(); if (v) entry.desc = v; else delete entry.desc; }
   if ('link' in req) { const v = (req.link || '').trim(); if (v) entry.link = v; else delete entry.link; }
   if ('hidden' in req) { if (req.hidden) entry.hidden = true; else delete entry.hidden; }
@@ -462,6 +466,25 @@ const server = createServer((req, res) => {
   if (req.method === 'GET') return serveStatic(req, res);
   send(res, 405, 'Method not allowed');
 });
+
+/* ── Required external tools (audio extraction) — fail fast if absent ──
+   yt-dlp downloads YouTube audio; ffmpeg remuxes it into a clean, broadly
+   playable container. A command exists unless spawning it raises ENOENT. */
+async function hasCommand(cmd) {
+  try { await pexecFile(cmd, ['--version']); return true; }
+  catch (e) { return e.code !== 'ENOENT'; }
+}
+async function requireCommands(cmds) {
+  const checks = await Promise.all(cmds.map(async (c) => [c, await hasCommand(c)]));
+  const missing = checks.filter(([, ok]) => !ok).map(([c]) => c);
+  if (missing.length) {
+    for (const c of missing) console.error(`Error: required command not found: ${c}`);
+    console.error(`Install the missing command(s) and retry (e.g. brew install ${missing.join(' ')}).`);
+    process.exit(1);
+  }
+}
+
+await requireCommands(['yt-dlp', 'ffmpeg']);
 
 server.listen(PORT, HOST, () => {
   console.log('Mosaic Gallery admin server');
