@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "audio", date: "2026-06-12T12:54:34.201-05:00", file: "2026-06-12T12:54:34.201-05:00.mp3",
+    title: "Let It Be (Guitar)", poster: "2026-06-12T12:54:34.201-05:00-poster.jpeg" },
+
   { type: "image", date: "2026-06-12T12:50:35.247-05:00", file: "2026-06-12T12:50:35.247-05:00.webp" },
 
   { type: "quote", date: "2026-06-12T12:49:38.279-05:00",
