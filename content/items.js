@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-06-12T12:49:38.279-05:00",
+    quote: "Dead people receive more flowers than living ones, because regret is stronger than gratitude" },
+
   { type: "image", date: "2026-06-12T12:47:46.635-05:00", file: "2026-06-12T12:47:46.635-05:00.webp" },
 
   { type: "image", date: "2026-06-12T12:46:37.578-05:00", file: "2026-06-12T12:46:37.578-05:00.webp",
