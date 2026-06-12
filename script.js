@@ -147,12 +147,6 @@ function overlayHTML(item, withMediaBadge) {
   const desc  = item.desc ? `<div class="desc">${escapeHTML(item.desc)}</div>` : '';
   return `<div class="overlay"><div class="ts">${escapeHTML(item.ts)}</div>${badge}${desc}</div>`;
 }
-function applyLink(tile, item) {
-  if (!item.link) return;
-  tile.classList.add('has-link');
-  tile.insertAdjacentHTML('afterbegin', `<div class="link-badge">${LINK_ICON_SVG}</div>`);
-  tile.addEventListener('click', () => window.open(item.link, '_blank'));
-}
 
 /* ──────────────────────────────────────────────────────────────────────────
    Lightbox — clicking an image enlarges it over a darkened backdrop.
@@ -221,10 +215,32 @@ const toast = (() => {
   };
 })();
 
+/* The tile in the DOM for a given media item (audio / video / youtube). */
+function mediaTile(item) {
+  return document.querySelector(`.tile[data-media-date="${item.date}"]`);
+}
+
+/* ── YouTube IFrame API — loaded once, on first use ── */
+let ytApiPromise = null;
+function loadYouTubeAPI() {
+  if (window.YT && window.YT.Player) return Promise.resolve();
+  if (ytApiPromise) return ytApiPromise;
+  ytApiPromise = new Promise((resolve) => {
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { if (prev) prev(); resolve(); };
+    const s = document.createElement('script');
+    s.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(s);
+  });
+  return ytApiPromise;
+}
+
 /* ──────────────────────────────────────────────────────────────────────────
-   Now-playing bar — a persistent dock for audio tiles. One <audio> drives a
-   single track plus an up-next queue; finishing a track auto-advances. The
-   gold equalizer mirrors the static waveform printed on each tile.
+   Now-playing bar — a persistent transport for any time-based tile: local
+   audio, local video, or a YouTube embed. Each is wrapped in a small controller
+   with one shared interface (play/pause/seek/time/volume), so the bar, the
+   up-next queue, and the click-to-toggle tiles work the same across all three.
+   Starting anything stops whatever was playing before.
    ────────────────────────────────────────────────────────────────────────── */
 const player = (() => {
   const el = document.createElement('div');
@@ -256,9 +272,6 @@ const player = (() => {
     <div class="player-pop" hidden></div>`;
   document.body.appendChild(el);
 
-  const audio = new Audio();
-  audio.preload = 'metadata';
-
   const titleEl  = el.querySelector('.player-title');
   const subEl    = el.querySelector('.player-sub');
   const curEl    = el.querySelector('.player-cur');
@@ -271,7 +284,8 @@ const player = (() => {
   const volBtn   = el.querySelector('.player-vol-btn');
   const volSld   = el.querySelector('.player-vol-slider');
 
-  let current = null;    // the loaded track (kept while paused, for resume)
+  let current = null;   // the loaded item (kept while paused, for resume)
+  let media   = null;   // its controller, or null
   const queue = [];
 
   const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -281,37 +295,156 @@ const player = (() => {
     if (!isFinite(t) || t < 0) t = 0;
     return `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
   };
-  // A given title wins; otherwise the caption, then a cleaned-up filename.
+  // A given title wins; otherwise the caption, then a cleaned-up filename / id.
   const label = (item) =>
     item.title || item.desc ||
-    decodeURIComponent((item.src || '').split('/').pop().replace(/\.[^.]+$/, ''));
+    (item.src ? decodeURIComponent(item.src.split('/').pop().replace(/\.[^.]+$/, ''))
+              : (item.id ? `YouTube ${item.id}` : 'Untitled'));
 
-  /* Volume — persisted across sessions; the speaker glyph doubles as mute. */
-  let lastVol = parseFloat(lsGet('player-vol'));
-  if (!(lastVol >= 0 && lastVol <= 1)) lastVol = 1;
-  audio.volume = lastVol;
+  /* Player volume — persisted; applied to whatever controller is current. */
+  let volume = parseFloat(lsGet('player-vol'));
+  if (!(volume >= 0 && volume <= 1)) volume = 1;
+  let muted = lsGet('player-muted') === '1';
+  let lastVol = volume > 0 ? volume : 1;
+
   function paintVol() {
-    const v = audio.muted ? 0 : audio.volume;
+    const v = muted ? 0 : volume;
     volSld.value = v;
     volSld.style.background = `linear-gradient(to right, var(--accent) ${v * 100}%, var(--border) ${v * 100}%)`;
-    const off = audio.muted || v === 0;
-    volBtn.innerHTML = off ? MUTE_ICON_SVG : VOL_ICON_SVG;
-    volBtn.classList.toggle('is-muted', off);
-    volBtn.setAttribute('aria-label', off ? 'Unmute' : 'Mute');
+    volBtn.innerHTML = (muted || v === 0) ? MUTE_ICON_SVG : VOL_ICON_SVG;
+    volBtn.classList.toggle('is-muted', muted || v === 0);
+    volBtn.setAttribute('aria-label', (muted || v === 0) ? 'Unmute' : 'Mute');
   }
+  function applyVol() { if (media) { media.setVol(volume); media.setMuted(muted); } }
   volSld.addEventListener('input', () => {
-    audio.muted = false;
-    audio.volume = parseFloat(volSld.value);
-    if (audio.volume > 0) lastVol = audio.volume;
-    lsSet('player-vol', String(audio.volume));
+    muted = false;
+    volume = parseFloat(volSld.value);
+    if (volume > 0) lastVol = volume;
+    lsSet('player-vol', String(volume)); lsSet('player-muted', '0');
+    applyVol(); paintVol();
   });
   volBtn.addEventListener('click', () => {
-    if (audio.muted || audio.volume === 0) { audio.muted = false; audio.volume = lastVol > 0 ? lastVol : 1; }
-    else audio.muted = true;
-    lsSet('player-vol', String(audio.muted ? 0 : audio.volume));
+    if (muted || volume === 0) { muted = false; volume = lastVol > 0 ? lastVol : 1; }
+    else muted = true;
+    lsSet('player-vol', String(volume)); lsSet('player-muted', muted ? '1' : '0');
+    applyVol(); paintVol();
   });
-  audio.addEventListener('volumechange', paintVol);
   paintVol();
+
+  /* ── Shared hooks the controllers call back into ── */
+  const hooks = {
+    time: (t, d) => {
+      progEl.style.width = d ? `${Math.min(100, (t / d) * 100)}%` : '0%';
+      curEl.textContent = fmt(t);
+      if (d) durEl.textContent = fmt(d);
+    },
+    ready: (d) => { if (d) durEl.textContent = fmt(d); },
+    play:  syncToggle,
+    pause: syncToggle,
+    ended: () => { if (queue.length) playNext(); else syncToggle(); },
+  };
+
+  /* ── Controllers: one uniform interface over three very different players ── */
+  function audioController(item) {
+    const a = new Audio();
+    a.preload = 'metadata';
+    a.src = item.src;
+    a.addEventListener('timeupdate', () => hooks.time(a.currentTime, a.duration || 0));
+    a.addEventListener('loadedmetadata', () => hooks.ready(a.duration || 0));
+    a.addEventListener('play', hooks.play);
+    a.addEventListener('pause', hooks.pause);
+    a.addEventListener('ended', hooks.ended);
+    return {
+      play: () => a.play().catch(() => {}),
+      pause: () => a.pause(),
+      seekFrac: (p) => { if (a.duration) a.currentTime = p * a.duration; },
+      time: () => a.currentTime, dur: () => a.duration || 0,
+      paused: () => a.paused, ended: () => a.ended,
+      setVol: (v) => { a.volume = v; }, setMuted: (m) => { a.muted = m; },
+      destroy: () => { a.pause(); a.removeAttribute('src'); a.load(); },
+    };
+  }
+
+  function videoController(item) {
+    const tile = mediaTile(item);
+    const wrap = tile && tile.querySelector('.video-wrap');
+    const v = document.createElement('video');
+    v.className = 'inline-media';
+    v.src = item.src; v.playsInline = true; v.preload = 'metadata';
+    if (wrap) { wrap.appendChild(v); tile.classList.add('media-live'); }
+    v.addEventListener('timeupdate', () => hooks.time(v.currentTime, v.duration || 0));
+    v.addEventListener('loadedmetadata', () => hooks.ready(v.duration || 0));
+    v.addEventListener('play', hooks.play);
+    v.addEventListener('pause', hooks.pause);
+    v.addEventListener('ended', hooks.ended);
+    return {
+      play: () => v.play().catch(() => {}),
+      pause: () => v.pause(),
+      seekFrac: (p) => { if (v.duration) v.currentTime = p * v.duration; },
+      time: () => v.currentTime, dur: () => v.duration || 0,
+      paused: () => v.paused, ended: () => v.ended,
+      setVol: (val) => { v.volume = val; }, setMuted: (m) => { v.muted = m; },
+      destroy: () => { v.pause(); v.remove(); if (tile) tile.classList.remove('media-live'); },
+    };
+  }
+
+  function youtubeController(item) {
+    const tile = mediaTile(item);
+    const wrap = tile && tile.querySelector('.video-wrap');
+    const host = document.createElement('div');
+    host.className = 'inline-media yt-host';
+    if (wrap) { wrap.appendChild(host); tile.classList.add('media-live'); }
+    let yt = null, ready = false, want = true, dur = 0, poll = null, dead = false;
+    let pVol = volume, pMuted = muted;
+
+    const startPoll = () => { stopPoll(); poll = setInterval(() => {
+      if (yt && yt.getCurrentTime) { if (!dur) dur = yt.getDuration() || 0; hooks.time(yt.getCurrentTime() || 0, dur); }
+    }, 250); };
+    const stopPoll = () => { if (poll) { clearInterval(poll); poll = null; } };
+
+    loadYouTubeAPI().then(() => {
+      if (dead) return;
+      yt = new YT.Player(host, {
+        videoId: item.id,
+        playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1, controls: 0 },
+        events: {
+          onReady: (e) => {
+            ready = true; dur = e.target.getDuration() || 0;
+            e.target.setVolume(pVol * 100); pMuted ? e.target.mute() : e.target.unMute();
+            hooks.ready(dur);
+            want ? e.target.playVideo() : e.target.pauseVideo();
+          },
+          onStateChange: (e) => {
+            const S = window.YT.PlayerState;
+            if (!dur && yt) { dur = yt.getDuration() || 0; if (dur) hooks.ready(dur); }
+            if (e.data === S.PLAYING) { startPoll(); hooks.play(); }
+            else if (e.data === S.PAUSED) { stopPoll(); hooks.pause(); }
+            else if (e.data === S.ENDED) { stopPoll(); hooks.ended(); }
+          },
+        },
+      });
+    });
+
+    const stateIs = (...s) => ready && yt && yt.getPlayerState && s.includes(yt.getPlayerState());
+    return {
+      play: () => { want = true; if (ready && yt) yt.playVideo(); },
+      pause: () => { want = false; if (ready && yt) yt.pauseVideo(); },
+      seekFrac: (p) => { if (ready && yt && dur) yt.seekTo(p * dur, true); },
+      time: () => (ready && yt && yt.getCurrentTime) ? (yt.getCurrentTime() || 0) : 0,
+      dur: () => dur,
+      paused: () => ready ? !stateIs(1, 3) : !want,   // 1 playing, 3 buffering
+      ended: () => stateIs(0),
+      setVol: (v) => { pVol = v; if (ready && yt) { yt.unMute(); yt.setVolume(v * 100); } },
+      setMuted: (m) => { pMuted = m; if (ready && yt) { m ? yt.mute() : yt.unMute(); } },
+      destroy: () => { dead = true; stopPoll(); try { yt && yt.destroy && yt.destroy(); } catch { /* gone */ } host.remove(); if (tile) tile.classList.remove('media-live'); },
+    };
+  }
+
+  function makeController(item) {
+    if (item.type === 'video')   return videoController(item);
+    if (item.type === 'youtube') return youtubeController(item);
+    return audioController(item);
+  }
 
   function render() {
     if (current) { titleEl.textContent = label(current); subEl.textContent = current.ts || ''; }
@@ -321,48 +454,49 @@ const player = (() => {
     renderPop();
   }
   function syncToggle() {
-    toggleBt.innerHTML = audio.paused ? PLAY_ICON_SVG : PAUSE_ICON_SVG;
-    el.classList.toggle('is-playing', !audio.paused);
+    const paused = !media || media.paused();
+    toggleBt.innerHTML = paused ? PLAY_ICON_SVG : PAUSE_ICON_SVG;
+    el.classList.toggle('is-playing', !paused);
     updateTileStates();
   }
   function start(item) {
+    if (media) media.destroy();        // stop whatever was playing (audio or video)
+    progEl.style.width = '0%';
+    curEl.textContent = '0:00'; durEl.textContent = '0:00';
     current = item;
-    audio.src = item.src;
-    audio.play().catch(() => {});
+    media = makeController(item);
+    applyVol();
+    media.play();
     el.classList.add('open');
     el.setAttribute('aria-hidden', 'false');
     document.body.classList.add('player-active');
-    render();
+    render(); syncToggle();
   }
   // Clicking a tile: toggle the one that's loaded; otherwise start fresh.
   function toggleTile(item) {
-    if (current && current.date === item.date) {
-      if (audio.ended) start(item);                  // finished → play again
-      else if (audio.paused) audio.play().catch(() => {}); // resume in place
-      else audio.pause();                            // pause → tile reverts
+    if (current && media && current.date === item.date) {
+      if (media.ended()) start(item);            // finished → play again
+      else if (media.paused()) media.play();     // resume in place
+      else media.pause();                        // pause → tile reverts
     } else {
-      start(item);                                   // a different track → play now
+      start(item);                               // a different item → play now
     }
   }
   function enqueue(item) {
-    if (!current) { start(item); return 0; }  // nothing playing → start it
+    if (!current) { start(item); return 0; }     // nothing playing → start it
     queue.push(item);
-    render();
-    updateTileStates();
+    render(); updateTileStates();
     return queue.length;
   }
   function playNext() {
     const nx = queue.shift();
     if (nx) start(nx);
-    render();
-    updateTileStates();
+    else syncToggle();
+    render(); updateTileStates();
   }
   function close() {
-    audio.pause();
-    audio.removeAttribute('src');
-    audio.load();
-    current = null;
-    queue.length = 0;
+    if (media) media.destroy();
+    media = null; current = null; queue.length = 0;
     el.classList.remove('open', 'is-playing', 'has-queue');
     el.setAttribute('aria-hidden', 'true');
     pop.hidden = true;
@@ -398,21 +532,10 @@ const player = (() => {
     pop.appendChild(clear);
   }
 
-  audio.addEventListener('timeupdate', () => {
-    const d = audio.duration || 0;
-    progEl.style.width = d ? `${(audio.currentTime / d) * 100}%` : '0%';
-    curEl.textContent = fmt(audio.currentTime);
-  });
-  audio.addEventListener('loadedmetadata', () => { durEl.textContent = fmt(audio.duration); });
-  // Tiles track "actually playing", so any pause/end reverts them to normal.
-  audio.addEventListener('play',  syncToggle);
-  audio.addEventListener('pause', syncToggle);
-  audio.addEventListener('ended', () => { if (queue.length) playNext(); else syncToggle(); });
-
   toggleBt.addEventListener('click', () => {
-    if (!current) return;
-    if (audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play().catch(() => {}); }
-    else audio.pause();
+    if (!media) return;
+    if (media.paused()) { if (media.ended()) media.seekFrac(0); media.play(); }
+    else media.pause();
   });
   el.querySelector('[data-act=next]').addEventListener('click', playNext);
   el.querySelector('[data-act=close]').addEventListener('click', close);
@@ -423,21 +546,23 @@ const player = (() => {
 
   /* Scrub — click or drag anywhere on the track to seek; arrow keys nudge.
      A drag holds playback (pausing if it was playing) and resumes on release
-     only if it had been playing; a paused track stays paused at the new spot. */
+     only if it had been playing; a paused item stays paused at the new spot. */
   let scrubbing = false;
   let resumeAfterScrub = false;
   function seekToX(clientX) {
-    if (!audio.duration) return;
+    const d = media ? media.dur() : 0;
+    if (!d) return;
     const r = trackEl.getBoundingClientRect();
     const p = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
-    audio.currentTime = p * audio.duration;
+    media.seekFrac(p);
     progEl.style.width = `${p * 100}%`;
-    curEl.textContent = fmt(audio.currentTime);
+    curEl.textContent = fmt(p * d);
   }
   trackEl.addEventListener('pointerdown', (e) => {
+    if (!media || !media.dur()) return;
     scrubbing = true;
-    resumeAfterScrub = !!current && !audio.paused; // was it playing when the drag began?
-    if (resumeAfterScrub) audio.pause();           // hold playback while scrubbing
+    resumeAfterScrub = !media.paused(); // was it playing when the drag began?
+    if (resumeAfterScrub) media.pause(); // hold playback while scrubbing
     try { trackEl.setPointerCapture(e.pointerId); } catch { /* older browsers */ }
     seekToX(e.clientX);
   });
@@ -445,35 +570,35 @@ const player = (() => {
   const endScrub = () => {
     if (!scrubbing) return;
     scrubbing = false;
-    if (resumeAfterScrub) audio.play().catch(() => {}); // resume only if it had been playing
+    if (resumeAfterScrub && media) media.play(); // resume only if it had been playing
     resumeAfterScrub = false;
   };
   trackEl.addEventListener('pointerup', endScrub);
   trackEl.addEventListener('pointercancel', endScrub);
   trackEl.addEventListener('keydown', (e) => {
-    if (!audio.duration) return;
-    let t = audio.currentTime;
+    const d = media ? media.dur() : 0;
+    if (!d) return;
+    let t = media.time();
     if (e.key === 'ArrowRight') t += 5;
     else if (e.key === 'ArrowLeft') t -= 5;
     else if (e.key === 'Home') t = 0;
-    else if (e.key === 'End') t = audio.duration;
+    else if (e.key === 'End') t = d;
     else return;
     e.preventDefault();
-    audio.currentTime = Math.min(audio.duration, Math.max(0, t));
+    media.seekFrac(Math.min(1, Math.max(0, t / d)));
   });
 
   return {
     toggleTile, enqueue,
-    isActive:  (item) => !!current && !audio.paused && current.date === item.date,
+    isActive:  (item) => !!current && !!media && !media.paused() && current.date === item.date,
     isQueued:  (item) => queue.some((q) => q.date === item.date),
-    isPlaying: () => !audio.paused,
   };
 })();
 
-/* Reflect player state onto any audio tiles currently in the DOM. */
+/* Reflect player state onto any media tiles (audio/video/youtube) in the DOM. */
 function updateTileStates() {
-  document.querySelectorAll('.audio-tile').forEach((t) => {
-    const ref = { date: t.dataset.audioDate };
+  document.querySelectorAll('.tile[data-media-date]').forEach((t) => {
+    const ref = { date: t.dataset.mediaDate };
     const active = player.isActive(ref); // current AND actually playing
     t.classList.toggle('is-current', active);
     t.classList.toggle('is-playing', active);
@@ -484,8 +609,8 @@ function updateTileStates() {
 /* ── Audio tile (waveform card or cover; click to play, + to queue) ── */
 function makeAudioTile(item, i) {
   const tile = document.createElement('div');
-  tile.className = 'tile audio-tile';
-  tile.dataset.audioDate = item.date;
+  tile.className = 'tile audio-tile media-tile';
+  tile.dataset.mediaDate = item.date;
   tile.style.animationDelay = `${(i % 5) * 55}ms`;
 
   const cover = item.poster
@@ -561,79 +686,58 @@ function makeImageTile(item, i) {
   return tile;
 }
 
-/* ── Local video tile (cover + play badge, swaps to <video> on click) ── */
+/* ── Video tile (local or YouTube): plays in place, driven by the now-playing
+   bar. Click toggles play/pause; the + badge queues it; the bar scrubs it. ── */
+function makeMediaVideoTile(item, i, coverHTML) {
+  const tile = document.createElement('div');
+  tile.className = 'tile video-tile media-tile';
+  tile.dataset.mediaDate = item.date;
+  tile.style.animationDelay = `${(i % 5) * 55}ms`;
+  tile.innerHTML = `
+    <div class="video-wrap">
+      <div class="video-cover">${coverHTML}</div>
+      <div class="play-badge">${PLAY_ICON_SVG}</div>
+    </div>
+    <button class="audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>
+    ${overlayHTML({ ...item, desc: item.title || item.desc }, 'video')}`;
+
+  // External link as a clickable corner badge (top-right), like image/audio.
+  if (item.link) {
+    tile.classList.add('has-link');
+    const a = document.createElement('a');
+    a.className = 'link-badge link-badge-active';
+    a.href = item.link; a.target = '_blank'; a.rel = 'noopener';
+    a.setAttribute('aria-label', 'Open source');
+    a.innerHTML = LINK_ICON_SVG;
+    a.addEventListener('click', (e) => e.stopPropagation());
+    tile.appendChild(a);
+  }
+
+  const wrap = tile.querySelector('.video-wrap');
+  wrap.addEventListener('click', (e) => {
+    if (e.target.closest('.audio-queue-badge, .link-badge')) return;
+    player.toggleTile(item);
+  });
+  tile.querySelector('.audio-queue-badge').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const n = player.enqueue(item);
+    toast(n ? `Queued · ${n} up next` : 'Now playing');
+  });
+  return tile;
+}
+
 function makeVideoTile(item, i) {
   const title = item.title || 'video';
   const cover = item.poster
     ? `<img src="${escapeAttr(item.poster)}" alt="${escapeAttr(title)}">`
     : `<div class="video-placeholder"></div>`;
-
-  const tile = document.createElement('div');
-  tile.className = 'tile video-tile';
-  tile.style.animationDelay = `${(i % 5) * 55}ms`;
-  tile.innerHTML = `
-    <div class="video-wrap">
-      <div class="video-cover">${cover}</div>
-      <div class="play-badge">${PLAY_ICON_SVG}</div>
-    </div>
-    ${overlayHTML(item, 'video')}`;
-
-  const wrap  = tile.querySelector('.video-wrap');
-  const cv    = tile.querySelector('.video-cover');
-  const badge = tile.querySelector('.play-badge');
-  cv.addEventListener('click', (e) => {
-    e.stopPropagation();              // don't trigger tile link
-    const v = document.createElement('video');
-    v.src = item.src;
-    v.controls = true;
-    v.autoplay = true;
-    v.playsInline = true;
-    wrap.appendChild(v);
-    cv.style.opacity = '0';
-    cv.style.pointerEvents = 'none';
-    badge.style.display = 'none';
-  });
-
-  applyLink(tile, item);
-  return tile;
+  return makeMediaVideoTile(item, i, cover);
 }
 
-/* ── YouTube tile (lazy iframe) ── */
 function makeYouTubeTile(item, i) {
   const title    = item.title || 'video';
   const thumbUrl = `https://img.youtube.com/vi/${item.id}/mqdefault.jpg`;
-
-  const tile = document.createElement('div');
-  tile.className = 'tile video-tile';
-  tile.style.animationDelay = `${(i % 5) * 55}ms`;
-  tile.innerHTML = `
-    <div class="video-wrap">
-      <iframe
-        data-src="https://www.youtube.com/embed/${escapeAttr(item.id)}?autoplay=1&rel=0"
-        title="${escapeAttr(title)}"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
-      <div class="video-cover">
-        <img src="${thumbUrl}" alt="${escapeAttr(title)}">
-      </div>
-      <div class="play-badge">${PLAY_ICON_SVG}</div>
-    </div>
-    ${overlayHTML(item, 'video')}`;
-
-  const cover  = tile.querySelector('.video-cover');
-  const badge  = tile.querySelector('.play-badge');
-  const iframe = tile.querySelector('iframe');
-  cover.addEventListener('click', (e) => {
-    e.stopPropagation();
-    iframe.src = iframe.dataset.src;
-    cover.style.opacity = '0';
-    cover.style.pointerEvents = 'none';
-    badge.style.display = 'none';
-  });
-
-  applyLink(tile, item);
-  return tile;
+  return makeMediaVideoTile(item, i, `<img src="${thumbUrl}" alt="${escapeAttr(title)}">`);
 }
 
 function makeTile(item, i) {

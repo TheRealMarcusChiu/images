@@ -247,6 +247,19 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   z-index: 2;
 }
 
+/* ── Live video/YouTube (driven by the now-playing bar) ── */
+.inline-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000;
+  z-index: 2;
+}
+.video-tile.media-live .video-cover,
+.video-tile.media-live .play-badge { opacity: 0; pointer-events: none; }
+
 /* ── Lightbox ── */
 .lightbox {
   position: fixed;
@@ -447,8 +460,8 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   transform: scale(0.7);
   transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease, color 0.2s ease;
 }
-.audio-tile:hover .audio-queue-badge,
-.audio-tile.is-queued .audio-queue-badge { opacity: 1; transform: scale(1); }
+.media-tile:hover .audio-queue-badge,
+.media-tile.is-queued .audio-queue-badge { opacity: 1; transform: scale(1); }
 .audio-queue-badge svg { width: 13px; height: 13px; }
 .audio-queue-badge:hover { background: rgba(200, 169, 110, 0.92); color: #0e0d0b; }
 
@@ -476,8 +489,8 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
 }
 .audio-queue-badge:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
 /* When already queued, the badge re-adds; keep the banner honest. */
-.audio-tile.is-queued .audio-queue-badge::after { content: 'Queue again'; }
-.audio-tile.is-queued .audio-queue-badge {
+.media-tile.is-queued .audio-queue-badge::after { content: 'Queue again'; }
+.media-tile.is-queued .audio-queue-badge {
   background: rgba(200, 169, 110, 0.85);
   color: #0e0d0b;
   border-color: var(--accent);
