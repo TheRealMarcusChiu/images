@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-12T03:19:29.244-05:00", file: "2026-06-12T03:19:29.244-05:00.jpg",
-    desc: "Downtown Dallas - circa 2017" },
+    desc: "Downtown Dallas - circa 2017", hidden: true },
 
   { type: "image", date: "2026-06-12T02:59:24.886-05:00", file: "2026-06-12T02:59:24.886-05:00.png",
     hidden: true },
