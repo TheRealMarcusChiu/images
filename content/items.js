@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-06-12T12:35:45.551-05:00",
+    quote: "TEST", author: "TEST", desc: "TEST" },
+
   { type: "quote", date: "2026-06-12T09:36:07.100-05:00",
     quote: "The line worth keeping", author: "Marcus Chiu", desc: "random description", link: "https://www.google.com" },
 
