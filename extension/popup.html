@@ -112,6 +112,7 @@
           <label class="seg-btn"><input type="radio" name="type" value="image" checked>Image</label>
           <label class="seg-btn"><input type="radio" name="type" value="youtube">YouTube</label>
           <label class="seg-btn"><input type="radio" name="type" value="video">Video</label>
+          <label class="seg-btn"><input type="radio" name="type" value="audio">Audio</label>
         </div>
       </label>
 
@@ -143,6 +144,30 @@
       <label class="typed" data-for="video" hidden>
         <span>Poster <em>optional · first frame used if blank</em></span>
         <input type="file" name="poster" accept="image/*">
+      </label>
+
+      <label class="typed" data-for="audio" hidden>
+        <span>Audio source</span>
+        <div class="seg">
+          <label class="seg-btn"><input type="radio" name="audsrc" value="upload" checked>Upload file</label>
+          <label class="seg-btn"><input type="radio" name="audsrc" value="youtube">From YouTube</label>
+        </div>
+      </label>
+      <label class="typed srcd" data-for="audio" data-src="upload" hidden>
+        <span>Audio file</span>
+        <input type="file" name="audio" accept="audio/*">
+      </label>
+      <label class="typed srcd" data-for="audio" data-src="youtube" hidden>
+        <span>YouTube URL <em>audio extracted &amp; saved</em></span>
+        <input type="text" name="audioUrl" placeholder="https://youtu.be/aqz-KE-bpKQ">
+      </label>
+      <label class="typed" data-for="audio" hidden>
+        <span>Cover art <em>optional · still / waveform if blank</em></span>
+        <input type="file" name="audioCover" accept="image/*">
+      </label>
+      <label class="typed" data-for="audio" hidden>
+        <span>Title <em>optional · shown in the player</em></span>
+        <input type="text" name="title" placeholder="Track name">
       </label>
 
       <label>

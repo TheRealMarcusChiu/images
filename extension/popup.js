@@ -59,18 +59,22 @@ const form = $('#add-form');
 const F = form.elements;
 const notice = $('#notice');
 const currentType = () => F.type.value;
-const currentSrc  = () => F.imgsrc.value;
+// Per-type "source" toggle (upload vs. URL/YouTube); null for types without one.
+const currentSrc  = () =>
+  currentType() === 'image' ? F.imgsrc.value :
+  currentType() === 'audio' ? F.audsrc.value : null;
 
 function syncFields() {
   const type = currentType(), src = currentSrc();
   $$('[data-for]', form).forEach((el) => {
-    const show = el.dataset.for === type &&
-      (!el.classList.contains('srcd') || el.dataset.src === src);
+    let show = el.dataset.for === type;
+    if (show && el.classList.contains('srcd')) show = el.dataset.src === src;
     el.hidden = !show;
   });
 }
 $$('input[name=type]', form).forEach((r) => r.addEventListener('change', syncFields));
 $$('input[name=imgsrc]', form).forEach((r) => r.addEventListener('change', syncFields));
+$$('input[name=audsrc]', form).forEach((r) => r.addEventListener('change', syncFields));
 
 function showNotice(html, isError) {
   notice.innerHTML = html;
@@ -132,12 +136,23 @@ form.addEventListener('submit', async (e) => {
       const frame = await extractFirstFrame(F.media2.files[0]);
       if (frame) fd.append('poster', frame, 'poster.jpg');
     }
+  } else if (type === 'audio') {
+    if (currentSrc() === 'youtube') {
+      if (!F.audioUrl.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
+      fd.append('audioUrl', F.audioUrl.value.trim());
+    } else {
+      if (!F.audio.files[0]) return showNotice('Choose an audio file.', true);
+      fd.append('media', F.audio.files[0]);
+    }
+    if (F.audioCover.files[0]) fd.append('poster', F.audioCover.files[0]);
+    if (F.title.value.trim()) fd.append('title', F.title.value.trim());
   } else {
     if (!F.youtube.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
     fd.append('youtube', F.youtube.value.trim());
   }
 
-  submitBtn.disabled = true; submitBtn.textContent = 'Adding…';
+  const extracting = type === 'audio' && currentSrc() === 'youtube';
+  submitBtn.disabled = true; submitBtn.textContent = extracting ? 'Extracting audio…' : 'Adding…';
   try {
     const { ok, data } = await apiAdd(fd);
     if (ok) {
@@ -178,12 +193,13 @@ function thumbHTML(it) {
   if (it.type === 'youtube') return `<img src="https://img.youtube.com/vi/${esc(it.id)}/default.jpg" alt="">`;
   if (it.type === 'image')   return `<img src="${esc(mediaUrl(it.file))}" alt="">`;
   if (it.poster)             return `<img src="${esc(mediaUrl(it.poster))}" alt="">`;
-  return 'video';
+  return it.type === 'audio' ? 'audio' : 'video';
 }
 function viewRow(it) {
   const el = document.createElement('div');
   el.className = 'row' + (it.hidden ? ' is-hidden' : '');
-  const title = it.desc ? esc(it.desc) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
+  const display = it.title || it.desc;
+  const title = display ? esc(display) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
   const meta = [it.type + (it.hidden ? ' · hidden' : ''), fmtDate(it.date), it.link ? 'link' : '']
     .filter(Boolean).join(' · ');
   el.innerHTML = `
@@ -206,6 +222,7 @@ function editRow(it) {
     <div class="thumb">${thumbHTML(it)}</div>
     <div class="body edit-fields">
       <input type="text" name="date" value="${esc(it.date)}" spellcheck="false">
+      ${it.type === 'audio' ? `<input type="text" name="title" value="${esc(it.title || '')}" placeholder="Title — shown in the player">` : ''}
       <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
       <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
       <label class="edit-check"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> Hidden</label>
@@ -216,13 +233,15 @@ function editRow(it) {
     </div>`;
   el.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const { ok, data } = await apiJSON('/api/tiles/update', {
+    const payload = {
       date: it.date,
       newDate: el.elements.date.value.trim(),
       desc: el.elements.desc.value,
       link: el.elements.link.value,
       hidden: el.elements.hidden.checked,
-    });
+    };
+    if (el.elements.title) payload.title = el.elements.title.value;
+    const { ok, data } = await apiJSON('/api/tiles/update', payload);
     if (!ok) { alert(data.error || 'Update failed'); return; }
     gitAlert(data.git);
     editingDate = null; refresh();
