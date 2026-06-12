@@ -604,6 +604,13 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
 .media-tile:hover .audio-queue-badge { opacity: 1; transform: scale(1); }
 .audio-queue-badge svg { width: 13px; height: 13px; }
 .audio-queue-badge:hover { background: rgba(200, 169, 110, 0.92); color: #0e0d0b; }
+/* Clicked → a quick gold bounce + ring confirms the track was queued. */
+.audio-queue-badge.queue-pop { animation: queue-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes queue-pop {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(200, 169, 110, 0.65); }
+  40%  { transform: scale(1.4);  box-shadow: 0 0 0 4px rgba(200, 169, 110, 0.3); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 13px rgba(200, 169, 110, 0); }
+}
 
 /* Hover banner — sits to the right of the badge, inside the card's bounds. */
 .audio-queue-badge::after {
@@ -1024,7 +1031,8 @@ body.player-active #gallery-wrap { padding-bottom: 84px; }
   .player-eq span { animation: none !important; }
   .play-badge:hover::after,
   .audio-tile.is-playing .play-badge::before,
-  .lb-audio.is-playing .play-badge::before { animation: none !important; }
+  .lb-audio.is-playing .play-badge::before,
+  .audio-queue-badge.queue-pop { animation: none !important; }
   /* Locator: hold a static gold ring instead of pulsing. */
   .tile.is-located {
     animation: none !important;

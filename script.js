@@ -160,6 +160,15 @@ function overlayHTML(item, withMediaBadge) {
   return `<div class="overlay"><div class="ts">${escapeHTML(item.ts)}</div>${badge}${desc}</div>`;
 }
 
+/* A quick "added" bounce + ring on the queue badge when it's clicked. */
+function popQueueBadge(btn) {
+  if (!btn) return;
+  btn.classList.remove('queue-pop');
+  void btn.offsetWidth;        // restart the animation if clicked rapidly
+  btn.classList.add('queue-pop');
+  setTimeout(() => btn.classList.remove('queue-pop'), 450);
+}
+
 /* ──────────────────────────────────────────────────────────────────────────
    Lightbox — clicking a tile expands it over a darkened backdrop. Images,
    video posters and YouTube thumbnails enlarge as stills; an audio tile shows
@@ -270,6 +279,7 @@ const lightbox = (() => {
       });
       figure.querySelector('.lb-queue-badge').addEventListener('click', (e) => {
         e.stopPropagation();
+        popQueueBadge(e.currentTarget);
         const n = player.enqueue(it);
         toast(n ? `Queued · ${n} up next` : 'Now playing');
       });
@@ -860,6 +870,7 @@ function makeAudioTile(item, i) {
   });
   qBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+    popQueueBadge(e.currentTarget);
     const n = player.enqueue(item);
     toast(n ? `Queued · ${n} up next` : 'Now playing');
   });
@@ -936,6 +947,7 @@ function makeMediaVideoTile(item, i, coverHTML) {
   });
   tile.querySelector('.audio-queue-badge').addEventListener('click', (e) => {
     e.stopPropagation();
+    popQueueBadge(e.currentTarget);
     const n = player.enqueue(item);
     toast(n ? `Queued · ${n} up next` : 'Now playing');
   });
