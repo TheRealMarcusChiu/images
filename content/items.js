@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-12T12:46:37.578-05:00", file: "2026-06-12T12:46:37.578-05:00.webp",
+    desc: "1 year to a 10 year old is 10 percent of his life, but to a 100 year old it's 1 percent" },
+
   { type: "audio", date: "2026-06-12T12:44:24.297-05:00", file: "2026-06-12T12:44:24.297-05:00.mp3",
     title: "Elijah Who - Hello" },
 
