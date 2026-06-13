@@ -370,7 +370,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   height: 56%; fill: rgba(200, 169, 110, 0.4); }
 .lb-audio.has-cover .wave { display: none; }
 .lb-audio .audio-cover { position: absolute; inset: 0; }
-.lb-audio .audio-cover img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55) saturate(0.85); }
+.lb-audio .audio-cover img { width: 100%; height: 100%; object-fit: cover; }
 /* With a cover photo, the expanded stage shrink-wraps the image's own aspect
    ratio so the whole picture is shown (no crop), with the play badge centred. */
 .lb-audio.has-cover {
@@ -586,10 +586,7 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.52) saturate(0.82);
-  transition: filter 0.3s ease;
 }
-.audio-tile:hover .audio-cover img { filter: brightness(0.4) saturate(0.95); }
 
 .audio-card .play-badge { z-index: 7; }
 /* While playing, the badge stays put and shows a pause icon (set in JS),
