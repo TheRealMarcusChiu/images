@@ -371,6 +371,23 @@ a.link-badge-active:hover svg { stroke: #0e0d0b; }
 .lb-audio.has-cover .wave { display: none; }
 .lb-audio .audio-cover { position: absolute; inset: 0; }
 .lb-audio .audio-cover img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55) saturate(0.85); }
+/* With a cover photo, the expanded stage shrink-wraps the image's own aspect
+   ratio so the whole picture is shown (no crop), with the play badge centred. */
+.lb-audio.has-cover {
+  width: auto;
+  height: auto;
+  max-width: min(92vw, 900px);
+  max-height: 80vh;
+  background: none;
+}
+.lb-audio.has-cover .audio-cover { position: static; inset: auto; display: flex; }
+.lb-audio.has-cover .audio-cover img {
+  width: auto;
+  height: auto;
+  max-width: min(92vw, 900px);
+  max-height: 80vh;
+  object-fit: contain;
+}
 /* Corner queue badge — hover-gated in the expanded view, matching the tile:
    hidden until you hover the expanded media, regardless of play state. */
 .lightbox .lb-queue-badge { z-index: 8; }
