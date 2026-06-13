@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-13T00:12:26.351-05:00", file: "2026-06-13T00:12:26.351-05:00.webp",
+    desc: "TEST", link: "https://www.google.com/search?sca_esv=63526a15bb371c08&sxsrf=ANbL-n5PvjlJripgbALfhYqYOfCfpmHDYg:1781327464974&udm=2&fbs=ADc_l-aN0CWEZBOHjofHoaMMDiKpaEWjvZ2Py1XXV8d8KvlI3o6iwGk6Iv1tRbZIBNIVs-5-bUj3iBl-UxHsANYwOkWWQqZAJJdwuRaSoLHfELMHAQFneUwKM50jpvR3lgPoPKND8akQVgLBVTEo53fw1z5raJTC8s1v3NluXpvgoyxRB5GEiIHiTiOmlY36mL4n1wm75zEksHpxaN-QJIsqxMOKBb23Tg&q=white+background&sa=X&ved=2ahUKEwinxJz2uYOVAxUimSYFHcSXCXkQtKgLegQIERAB&biw=1512&bih=834&dpr=2#sv=CAMSURoyKhBlLWt2cC1UUkZpMlBBa0pNMg5rdnAtVFJGaTJQQWtKTToOeGJEY2pmdkpqdlp0QU0gBCoXCgFzEhBlLWt2cC1UUkZpMlBBa0pNGAEwARgHINitgs0HSggQARgBIAEoAQ" },
+
   { type: "quote", date: "2026-06-12T13:36:05.937-05:00",
     quote: "The most intelligent men, like the strongest, find their happiness where others would find only disaster: in the labyrinth, in being hard with themselves and with others, in effort; their delight is in self-mastery; in them asceticism becomes second nature, a necessity, an instinct. They regard a difficult task as a privilege; it is to them a recreation to play with burdens that would crush all others.", desc: "a view under the sun" },
 
