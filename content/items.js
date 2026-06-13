@@ -70,7 +70,7 @@ window.GALLERY_ITEMS = [
     title: "Our God is an Awesome God", link: "https://www.youtube.com/watch?v=PP9BjKnDaFk", poster: "2026-06-12T01:51:43.644-05:00-poster.jpg", hidden: true },
 
   { type: "audio", date: "2026-06-12T01:05:39.046-05:00", file: "2026-06-12T01:05:39.046-05:00.mp4",
-    title: "Darling I Do (Wedding Vows)", desc: "vows are not a list of reasons why you love someone, they are a list of promises you make for someone" },
+    title: "Darling I Do (Wedding Vows)", desc: "vows are not a list of reasons why you love someone, they are a list of promises you make for someone", poster: "2026-06-12T01:05:39.046-05:00-poster.jpg" },
 
   { type: "image", date: "2026-06-11T19:23:01.691-05:00", file: "2026-06-11T19:23:01.691-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
