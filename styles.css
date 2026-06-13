@@ -1200,7 +1200,10 @@ body.ready [data-anim] { animation: heroUp 1.1s cubic-bezier(0.2, 1, 0.36, 1) bo
   padding: 12px clamp(8px, 1.4vw, 18px);
   background: rgba(14, 13, 11, 0.86); backdrop-filter: blur(10px);
   border-bottom: 1px solid #1d1b16;
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* collapse the toolbar when scrolling down; it slides back on scroll-up */
+#toolbar.tb-hidden { transform: translateY(-100%); }
 .tb-search {
   display: flex; align-items: center; gap: 9px;
   border: 1px solid var(--border); border-radius: 2px; padding: 9px 13px;

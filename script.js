@@ -1269,3 +1269,47 @@ setTimeout(loadMore, 250);
   setDD(false);
   updateLabels();
 })();
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Toolbar auto-hide — once the search/filter/sort bar is stuck to the top,
+   collapse it on scroll-down and reveal it on scroll-up. Stays put while the
+   filter dropdown is open so its panel never vanishes mid-interaction.
+   ────────────────────────────────────────────────────────────────────────── */
+(function () {
+  const toolbar = document.getElementById('toolbar');
+  // the page scrolls inside #gallery-wrap, not the window
+  const scroller = document.getElementById('gallery-wrap');
+  if (!toolbar || !scroller) return;
+  const panel = document.getElementById('filter-panel');
+  const DELTA = 5;        // px of travel before we react, to ignore jitter
+  const INPUT_MS = 250;   // collapse only if the user drove the scroll this recently
+  let lastY = scroller.scrollTop;
+  let lastInput = -Infinity;
+  let ticking = false;
+
+  // Only count scrolls the user actually drove. Programmatic smooth scrolls
+  // (the hero→index snap, the INDEX / BACK-TO-TOP links) fire no input events,
+  // so they won't collapse the toolbar — it stays put until you scroll past it.
+  const markInput = () => { lastInput = performance.now(); };
+  ['wheel', 'touchstart', 'touchmove', 'keydown'].forEach((ev) =>
+    window.addEventListener(ev, markInput, { passive: true }));
+
+  function onScroll() {
+    const y = scroller.scrollTop;
+    const panelOpen = panel && panel.style.display === 'block';
+    const stuck = toolbar.getBoundingClientRect().top <= 0;
+    const userDriven = performance.now() - lastInput < INPUT_MS;
+    if (y > lastY + DELTA) {                     // scrolling down
+      if (stuck && !panelOpen && userDriven) toolbar.classList.add('tb-hidden');
+      lastY = y;
+    } else if (y < lastY - DELTA || panelOpen) {  // scrolling up → reveal
+      toolbar.classList.remove('tb-hidden');
+      lastY = y;
+    }
+    ticking = false;
+  }
+
+  scroller.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive: true });
+})();
