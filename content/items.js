@@ -21,7 +21,7 @@ window.GALLERY_ITEMS = [
     quote: "The most intelligent men, like the strongest, find their happiness where others would find only disaster: in the labyrinth, in being hard with themselves and with others, in effort; their delight is in self-mastery; in them asceticism becomes second nature, a necessity, an instinct. They regard a difficult task as a privilege; it is to them a recreation to play with burdens that would crush all others.", desc: "a view under the sun" },
 
   { type: "audio", date: "2026-06-12T13:22:07.684-05:00", file: "2026-06-12T13:22:07.684-05:00.mp3",
-    title: "Charli XCX - Forever", poster: "2026-06-12T13:22:07.684-05:00-poster.jpeg" },
+    title: "Charli XCX - Forever", link: "https://www.youtube.com/watch?v=TbJE-KVZvTA", poster: "2026-06-12T13:22:07.684-05:00-poster.jpeg" },
 
   { type: "image", date: "2026-06-12T13:18:24.248-05:00", file: "2026-06-12T13:18:24.248-05:00.webp" },
 
