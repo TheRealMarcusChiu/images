@@ -314,10 +314,18 @@
     });
   }
 
-  /* Bridge a hero-wall click to the gallery's existing lightbox: find the tile
-     whose image matches and click it, so script.js owns the expanded view.
-     Falls back to scrolling the image into view if its tile isn't placed yet. */
+  /* Bridge a hero-wall click to the gallery's existing lightbox. The hero src
+     is built identically to each item's `src` (content/media/<encoded file>),
+     so we open straight from item data — this works even when the matching
+     tile hasn't been rendered yet by the infinite-scroll mosaic. */
   function openInLightbox(src) {
+    if (typeof openLightbox === 'function') {
+      const find = (arr) => Array.isArray(arr) ? arr.find((it) => it.src === src) : null;
+      const item = (typeof view !== 'undefined' && find(view)) ||
+                   (typeof ITEMS !== 'undefined' && find(ITEMS));
+      if (item) { openLightbox(item); return; }
+    }
+    // Fallback: click an already-rendered tile, else scroll the gallery in.
     const file = decodeURIComponent(src.replace(/^content\/media\//, ''));
     const tiles = document.querySelectorAll('#mosaic .tile');
     for (const tile of tiles) {
