@@ -13,18 +13,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Images</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
+
+<!-- Fixed viewport atmosphere: grain, vignette, custom cursor, index link -->
+<div id="grain" aria-hidden="true"></div>
+<div id="vignette" aria-hidden="true"></div>
+<div id="cur-ring" aria-hidden="true"></div>
+<div id="cur-dot" aria-hidden="true"></div>
+<a id="index-link" href="#mosaic" data-hov>INDEX ↓</a>
+
 <div id="shell">
   <div id="gallery-wrap">
+
+    <!-- HERO — a slowly-rotating 3D wall of the archive behind the wordmark -->
+    <section id="hero">
+      <canvas id="gl"></canvas>
+      <div id="hero-fade" aria-hidden="true"></div>
+      <div id="hero-copy">
+        <div data-anim class="hero-kicker">MOSAIC GALLERY — MMXXVI</div>
+        <h1 data-anim class="hero-title">St<span>u</span>ff</h1>
+        <div data-anim class="hero-sub">
+          A quiet archive of pictures, sound &amp; text — newest first, packed into
+          the shortest column. Drift the wall, then scroll down to read it.
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLBAR — search / filter / sort; drives script.js's `view` -->
+    <div id="toolbar">
+      <div class="tb-search">
+        <span class="tb-search-icon">⌕</span>
+        <input id="gallery-search" type="text" placeholder="Search title, words, type…" autocomplete="off" spellcheck="false" data-hov>
+      </div>
+      <div id="filter-dd" class="tb-dd">
+        <button id="filter-btn" class="tb-btn" data-hov>
+          <span class="tb-key">FILTER</span> <span id="filter-label">ALL</span> <span id="filter-caret" class="tb-caret">⌄</span>
+        </button>
+        <div id="filter-panel" class="tb-panel">
+          <div class="tb-panel-head">Show types</div>
+        </div>
+      </div>
+      <button id="sort-btn" class="tb-btn" data-hov>
+        <span class="tb-key">SORT</span> <span id="sort-label">Newest</span> <span id="sort-icon" class="tb-caret">↓</span>
+      </button>
+      <span id="result-count" class="tb-count">SHOWING 0 / 0</span>
+    </div>
+
+    <!-- GALLERY — owned entirely by script.js; structure unchanged -->
     <div id="mosaic"></div>
     <div id="sentinel">Loading…</div>
+
+    <!-- breathing room before the footer -->
+    <div class="end-space" aria-hidden="true"></div>
+
+    <!-- FOOTER -->
+    <footer id="site-footer">
+      <div class="foot-brand">
+        <div class="foot-mark">Stuff<span>.</span></div>
+        <div class="foot-meta">© 2026 Marcus Chiu</div>
+      </div>
+      <a id="to-top" href="#hero" data-hov>BACK TO TOP ↑</a>
+    </footer>
+
   </div>
+</div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-wordwrap"><span id="ld-word">Stuff</span></div>
+  <div class="ld-track"><div id="ld-bar"></div></div>
+  <div class="ld-label">LOADING <span id="ld-num">00</span></div>
 </div>
 
 <script src="content/items.js"></script>
 <script src="script.js"></script>
+<script src="atmosphere.js"></script>
 </body>
 </html>

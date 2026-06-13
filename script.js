@@ -56,12 +56,18 @@ function normalize(raw) {
 
 const ITEMS = normalize(Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : []);
 
+// The currently-displayed slice of ITEMS after the toolbar's search/filter/sort.
+// Defaults to the whole archive; the masonry and lightbox both walk `view`, so
+// every other part of the gallery is unchanged — only what's in it and its
+// order change. (See the toolbar controller near the bottom of the file.)
+let view = ITEMS.slice();
+
 const mosaic   = document.getElementById('mosaic');
 const sentinel = document.getElementById('sentinel');
 const galWrap  = document.getElementById('gallery-wrap');
 
 let loading = false;
-let cursor  = 0;     // index into ITEMS of the next item to place
+let cursor  = 0;     // index into `view` of the next item to place
 
 /** Measure aspect ratio (height/width) by decoding the image; resilient. */
 function measureAR(url) {
@@ -252,10 +258,11 @@ const lightbox = (() => {
   function open(it) {
     item = it;
     lbHosted = false;
-    // Position within the gallery (newest-first) drives left/right navigation.
-    const idx = ITEMS.indexOf(it);
+    // Position within the displayed view drives left/right navigation, so
+    // prev/next stays inside the current search/filter/sort results.
+    const idx = view.indexOf(it);
     prevBtn.disabled = idx <= 0;                 // ← newer
-    nextBtn.disabled = idx < 0 || idx >= ITEMS.length - 1; // → older
+    nextBtn.disabled = idx < 0 || idx >= view.length - 1; // → older
     figure.innerHTML = stageHTML(it) +
       (PLAYABLE.has(it.type)
         ? `<button class="lb-queue-badge audio-queue-badge" type="button" aria-label="Add to queue">${QUEUE_ICON_SVG}</button>`
@@ -308,10 +315,10 @@ const lightbox = (() => {
   // Step to an adjacent gallery tile: dir −1 = newer (left), +1 = older (right).
   function navigate(dir) {
     if (!item) return;
-    const ni = ITEMS.indexOf(item) + dir;
-    if (ni < 0 || ni >= ITEMS.length) return;
+    const ni = view.indexOf(item) + dir;
+    if (ni < 0 || ni >= view.length) return;
     releaseHosted();
-    open(ITEMS[ni]);
+    open(view[ni]);
   }
 
   el.addEventListener('click', (e) => { if (e.target === el) close(); });
@@ -1087,7 +1094,7 @@ function placeItem(item, i) {
 function relayout() {
   const revealed = cursor;
   setupColumns();
-  for (let i = 0; i < revealed; i++) placeItem(ITEMS[i], i);
+  for (let i = 0; i < revealed; i++) placeItem(view[i], i);
   updateTileStates(); // re-apply now-playing / queued marks to rebuilt tiles
 }
 
@@ -1095,23 +1102,23 @@ function relayout() {
 const BATCH_SIZE = 12;
 async function loadMore() {
   if (loading) return;
-  if (cursor >= ITEMS.length) { finish(); return; }
+  if (cursor >= view.length) { finish(); return; }
 
   loading = true;
   sentinel.textContent = 'Loading…';
 
   // Measure aspect ratios up front so placement is exact and reflow-free.
-  const end = Math.min(cursor + BATCH_SIZE, ITEMS.length);
-  await Promise.all(ITEMS.slice(cursor, end).map(ensureAR));
+  const end = Math.min(cursor + BATCH_SIZE, view.length);
+  await Promise.all(view.slice(cursor, end).map(ensureAR));
 
   while (cursor < end) {
-    placeItem(ITEMS[cursor], cursor);
+    placeItem(view[cursor], cursor);
     cursor++;
   }
   updateTileStates();
   loading = false;
 
-  if (cursor >= ITEMS.length) finish();
+  if (cursor >= view.length) finish();
   else sentinel.textContent = 'Loading…';
 
   restoreScroll();
@@ -1127,7 +1134,8 @@ window.addEventListener('resize', () => {
 });
 
 function finish() {
-  sentinel.textContent = ITEMS.length ? '— end of archive —' : '— no content yet —';
+  sentinel.textContent = view.length ? '— end of archive —'
+    : (ITEMS.length ? '— no matches —' : '— no content yet —');
   sentinel.style.opacity = '0.3';
   observer.disconnect();
 }
@@ -1154,3 +1162,110 @@ observer.observe(sentinel);
 setupColumns();
 loadMore();
 setTimeout(loadMore, 250);
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Toolbar — search, type filter and sort. It only ever recomputes `view`
+   (which items, in which order) and re-runs the same masonry; the tiles, audio
+   player and lightbox are untouched. youtube is folded into the Video filter.
+   ────────────────────────────────────────────────────────────────────────── */
+(() => {
+  const search   = document.getElementById('gallery-search');
+  const filterBtn = document.getElementById('filter-btn');
+  const filterDD  = document.getElementById('filter-dd');
+  const filterPanel = document.getElementById('filter-panel');
+  const filterLabel = document.getElementById('filter-label');
+  const filterCaret = document.getElementById('filter-caret');
+  const sortBtn   = document.getElementById('sort-btn');
+  const sortLabel = document.getElementById('sort-label');
+  const sortIcon  = document.getElementById('sort-icon');
+  const resultEl  = document.getElementById('result-count');
+  const heroEl    = document.getElementById('hero');
+  if (!search || !filterBtn || !sortBtn) return; // toolbar markup absent → no-op
+
+  const CATS = [['image', 'Images'], ['audio', 'Audio'], ['video', 'Video'], ['quote', 'Quote']];
+  const cat = (type) => (type === 'youtube' ? 'video' : type);
+  const types = { image: true, audio: true, video: true, quote: true };
+  let dir = 'desc';     // 'desc' = newest first (ITEMS' native order)
+  let query = '';
+
+  const counts = { image: 0, audio: 0, video: 0, quote: 0 };
+  ITEMS.forEach((it) => { counts[cat(it.type)]++; });
+
+  const searchText = (it) =>
+    [it.type, it.title, it.desc, it.quote, it.author, it.ts]
+      .filter(Boolean).join(' ').toLowerCase();
+
+  function buildView() {
+    const q = query.trim().toLowerCase();
+    let v = ITEMS.filter((it) => types[cat(it.type)]);
+    if (q) v = v.filter((it) => searchText(it).includes(q));
+    if (dir === 'asc') v = v.slice().reverse(); // ITEMS is newest-first
+    return v;
+  }
+
+  function applyView() {
+    view = buildView();
+    cursor = 0;
+    loading = false;
+    scrollRestored = true;                 // we control scroll here, skip restore
+    setupColumns();
+    sentinel.style.opacity = '';
+    sentinel.textContent = 'Loading…';
+    observer.observe(sentinel);            // re-arm if a previous view called finish()
+    if (heroEl && galWrap.scrollTop > heroEl.offsetHeight) {
+      galWrap.scrollTop = heroEl.offsetHeight; // keep the toolbar pinned, show results from top
+    }
+    loadMore();
+    setTimeout(loadMore, 250);
+    updateLabels();
+  }
+
+  function updateLabels() {
+    const active = CATS.filter(([k]) => types[k]).length;
+    if (filterLabel) filterLabel.textContent = active === CATS.length ? 'ALL' : (active === 0 ? 'NONE' : active + ' OF ' + CATS.length);
+    if (resultEl) resultEl.textContent = 'SHOWING ' + view.length + ' / ' + ITEMS.length;
+    if (sortLabel) sortLabel.textContent = dir === 'desc' ? 'Newest' : 'Oldest';
+    if (sortIcon) sortIcon.textContent = dir === 'desc' ? '↓' : '↑';
+  }
+
+  // Build the filter dropdown rows once; checks toggle on click.
+  function renderFilterRows() {
+    if (!filterPanel) return;
+    filterPanel.querySelectorAll('.filter-row').forEach((n) => n.remove());
+    CATS.forEach(([key, label]) => {
+      const row = document.createElement('button');
+      row.className = 'filter-row' + (types[key] ? ' is-on' : '');
+      row.innerHTML = `<span class="filter-box">${types[key] ? '✓' : ''}</span>` +
+        `<span class="filter-name">${label}</span><span class="filter-count">${counts[key]}</span>`;
+      row.addEventListener('click', () => {
+        types[key] = !types[key];
+        renderFilterRows();
+        applyView();
+      });
+      filterPanel.appendChild(row);
+    });
+  }
+
+  let dd = false;
+  function setDD(open) {
+    dd = open;
+    if (filterPanel) filterPanel.style.display = open ? 'block' : 'none';
+    if (filterCaret) filterCaret.textContent = open ? '⌃' : '⌄';
+  }
+
+  let searchTimer = null;
+  search.addEventListener('input', (e) => {
+    query = e.target.value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyView, 120);
+  });
+  filterBtn.addEventListener('click', (e) => { e.stopPropagation(); setDD(!dd); });
+  document.addEventListener('mousedown', (e) => {
+    if (dd && filterDD && !filterDD.contains(e.target)) setDD(false);
+  });
+  sortBtn.addEventListener('click', () => { dir = dir === 'desc' ? 'asc' : 'desc'; applyView(); });
+
+  renderFilterRows();
+  setDD(false);
+  updateLabels();
+})();
