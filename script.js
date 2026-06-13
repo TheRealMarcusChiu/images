@@ -9,6 +9,13 @@
 const VIDEO_AR = 0.5625; // 16:9 height/width, for youtube + posterless video
 const AUDIO_AR = 0.80;   // height/width for a coverless audio card (a squat artifact)
 
+// Admin mode: when admin.html sets window.GALLERY_CONFIG = { admin: true } before
+// loading this file, the gallery is fed from the live /api/tiles endpoint, keeps
+// hidden tiles (dimmed), grows an edit button per tile, and persists toolbar
+// state. index.html sets nothing, so every admin branch below is skipped.
+const config = (typeof window !== 'undefined' && window.GALLERY_CONFIG) || {};
+const ADMIN = !!config.admin;
+
 /** "YYYY.MM.DD HH:MM" from an ISO 8601 string. */
 function displayTS(iso) {
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso || '');
@@ -23,11 +30,14 @@ function mediaSrc(file) {
 /** Normalize authored entries into render-ready items, newest first. */
 function normalize(raw) {
   return raw
-    .filter((e) => e && e.type && e.date && !e.hidden && !Number.isNaN(Date.parse(e.date)))
+    // Public hides `hidden` entries; admin keeps them (rendered dimmed) so they
+    // can be managed, and dims them in the grid instead of dropping them.
+    .filter((e) => e && e.type && e.date && (ADMIN || !e.hidden) && !Number.isNaN(Date.parse(e.date)))
     // A quote tile is text-only; it must carry quote text to be worth rendering.
     .filter((e) => e.type !== 'quote' || (e.quote && String(e.quote).trim()))
     .map((e) => {
       const it = { type: e.type, date: e.date, ts: displayTS(e.date) };
+      if (ADMIN) { it.hidden = !!e.hidden; it.raw = e; } // raw entry feeds the edit form
       if (e.title) it.title = e.title;
       if (e.desc) it.desc = e.desc;
       if (e.link) it.link = e.link;
@@ -54,7 +64,20 @@ function normalize(raw) {
     .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
 }
 
-const ITEMS = normalize(Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : []);
+// In admin mode ITEMS starts empty and is filled asynchronously by loadItems()
+// (see the toolbar controller's reload()); the public page fills it synchronously
+// from the GALLERY_ITEMS the page embedded.
+let ITEMS = ADMIN ? [] : normalize(Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : []);
+
+/** (Re)load ITEMS — from the live API in admin, from the embedded array otherwise. */
+async function loadItems() {
+  if (ADMIN) {
+    const data = await (await fetch('/api/tiles')).json();
+    ITEMS = normalize(Array.isArray(data.items) ? data.items : []);
+  } else {
+    ITEMS = normalize(Array.isArray(window.GALLERY_ITEMS) ? window.GALLERY_ITEMS : []);
+  }
+}
 
 // The currently-displayed slice of ITEMS after the toolbar's search/filter/sort.
 // Defaults to the whole archive; the masonry and lightbox both walk `view`, so
@@ -106,6 +129,9 @@ const QUEUE_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColo
   stroke-linecap="round"><line x1="12" y1="6" x2="12" y2="18"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`;
 const TRASH_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
   stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>`;
+// Pencil — the admin per-tile edit affordance.
+const EDIT_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+  stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>`;
 // Viewfinder reticle — "find the playing tile on the page".
 const LOCATE_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
   stroke-linecap="round"><circle cx="12" cy="12" r="6"/><line x1="12" y1="2" x2="12" y2="5"/>
@@ -752,14 +778,28 @@ const player = (() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const gwRect = galWrap.getBoundingClientRect();
     const tRect  = tile.getBoundingClientRect();
-    const inView = tRect.top >= gwRect.top && tRect.bottom <= gwRect.bottom;
-    if (reduce || inView) { tile.scrollIntoView({ block: 'center' }); flash(); return; }
+    const viewH  = galWrap.clientHeight;
+    // Target: center the tile. But clamp the upward end so we never scroll above
+    // the top of the index — leave the toolbar (search/filter/sort) pinned and
+    // visible rather than overshooting up into the hero for a near-top tile.
+    const tileTop = galWrap.scrollTop + (tRect.top - gwRect.top);
+    let target = tileTop - (viewH - tile.offsetHeight) / 2;
+    const mosaic  = document.getElementById('mosaic');
+    const toolbar = document.getElementById('toolbar');
+    if (mosaic && toolbar) {
+      const mTop = galWrap.scrollTop + (mosaic.getBoundingClientRect().top - gwRect.top);
+      target = Math.max(target, mTop - toolbar.offsetHeight); // toolbar stays flush at top
+    }
+    target = Math.max(0, Math.min(target, galWrap.scrollHeight - viewH));
+    if (reduce || Math.abs(target - galWrap.scrollTop) < 2) {
+      galWrap.scrollTo({ top: target }); flash(); return;
+    }
     // Wait for the smooth scroll to finish (scrollend), with a timeout fallback.
     let fired = false;
     const done = () => { if (fired) return; fired = true; galWrap.removeEventListener('scrollend', done); clearTimeout(t); flash(); };
     galWrap.addEventListener('scrollend', done);
     const t = setTimeout(done, 1200);
-    tile.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    galWrap.scrollTo({ top: target, behavior: 'smooth' });
   });
 
   /* Scrub — click or drag anywhere on the track to seek; arrow keys nudge.
@@ -1077,9 +1117,27 @@ function shortestColumn() {
   return min;
 }
 
+/* Admin-only: dim hidden tiles and add a pencil button that opens the editor.
+   The button stops propagation so the tile's normal click (lightbox / play) is
+   preserved — editing is a deliberate, separate affordance. */
+function decorateAdminTile(tile, item) {
+  tile.classList.toggle('is-hidden-tile', !!item.hidden);
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'tile-edit-badge';
+  btn.setAttribute('aria-label', 'Edit tile');
+  btn.innerHTML = EDIT_ICON_SVG;
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (typeof config.onEdit === 'function') config.onEdit(item.raw);
+  });
+  tile.appendChild(btn);
+}
+
 function placeItem(item, i) {
   const tile = makeTile(item, i);
   if (!tile) return;
+  if (ADMIN) decorateAdminTile(tile, item);
   const c = shortestColumn();
   cols[c].appendChild(tile);
   // Media tiles know their aspect ratio up front; a quote's height depends on
@@ -1187,9 +1245,15 @@ setTimeout(loadMore, 250);
   const types = { image: true, audio: true, video: true, quote: true };
   let dir = 'desc';     // 'desc' = newest first (ITEMS' native order)
   let query = '';
+  let showHidden = false;  // admin only: include hidden tiles (rendered dimmed)
 
+  // ITEMS can be reloaded (admin), so counts are (re)derived rather than fixed.
   const counts = { image: 0, audio: 0, video: 0, quote: 0 };
-  ITEMS.forEach((it) => { counts[cat(it.type)]++; });
+  function recomputeCounts() {
+    counts.image = counts.audio = counts.video = counts.quote = 0;
+    ITEMS.forEach((it) => { counts[cat(it.type)]++; });
+  }
+  recomputeCounts();
 
   const searchText = (it) =>
     [it.type, it.title, it.desc, it.quote, it.author, it.ts]
@@ -1198,9 +1262,35 @@ setTimeout(loadMore, 250);
   function buildView() {
     const q = query.trim().toLowerCase();
     let v = ITEMS.filter((it) => types[cat(it.type)]);
+    if (ADMIN && !showHidden) v = v.filter((it) => !it.hidden);
     if (q) v = v.filter((it) => searchText(it).includes(q));
     if (dir === 'asc') v = v.slice().reverse(); // ITEMS is newest-first
     return v;
+  }
+
+  /* Admin-only: persist toolbar state so filter/sort survive a reload. */
+  const LS_KEY = 'admin-view';
+  function persist() {
+    if (!ADMIN) return;
+    try { localStorage.setItem(LS_KEY, JSON.stringify({ types, dir, query, showHidden })); }
+    catch { /* ignore */ }
+  }
+  function restore() {
+    if (!ADMIN) return;
+    let s; try { s = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch { s = null; }
+    if (!s) return;
+    if (s.types) CATS.forEach(([k]) => { if (k in s.types) types[k] = !!s.types[k]; });
+    if (s.dir === 'asc' || s.dir === 'desc') dir = s.dir;
+    if (typeof s.query === 'string') { query = s.query; if (search) search.value = query; }
+    showHidden = !!s.showHidden;
+  }
+
+  /* Admin-only: re-fetch the live archive and rebuild everything after a write. */
+  async function reload() {
+    await loadItems();
+    recomputeCounts();
+    renderFilterRows();
+    applyView();
   }
 
   function applyView() {
@@ -1218,6 +1308,7 @@ setTimeout(loadMore, 250);
     loadMore();
     setTimeout(loadMore, 250);
     updateLabels();
+    persist();
   }
 
   function updateLabels() {
@@ -1244,6 +1335,14 @@ setTimeout(loadMore, 250);
       });
       filterPanel.appendChild(row);
     });
+    if (ADMIN) {
+      const row = document.createElement('button');
+      row.className = 'filter-row filter-row-hidden' + (showHidden ? ' is-on' : '');
+      row.innerHTML = `<span class="filter-box">${showHidden ? '✓' : ''}</span>` +
+        `<span class="filter-name">Show hidden</span>`;
+      row.addEventListener('click', () => { showHidden = !showHidden; renderFilterRows(); applyView(); });
+      filterPanel.appendChild(row);
+    }
   }
 
   let dd = false;
@@ -1268,6 +1367,14 @@ setTimeout(loadMore, 250);
   renderFilterRows();
   setDD(false);
   updateLabels();
+
+  // Admin: expose a reload hook for admin.js, restore saved state, then fill the
+  // grid from the live API. Public: the synchronous load above already ran.
+  if (ADMIN) {
+    window.GALLERY = { reload };
+    restore();
+    reload();
+  }
 })();
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -1297,12 +1404,14 @@ setTimeout(loadMore, 250);
   function onScroll() {
     const y = scroller.scrollTop;
     const panelOpen = panel && panel.style.display === 'block';
+    // collapse on scroll-down once the toolbar is pinned to the top; the mosaic
+    // anchor just keeps it from hiding before it has actually reached the top.
     const stuck = toolbar.getBoundingClientRect().top <= 0;
     const userDriven = performance.now() - lastInput < INPUT_MS;
-    if (y > lastY + DELTA) {                     // scrolling down
+    if (y > lastY + DELTA) {                       // scrolling down
       if (stuck && !panelOpen && userDriven) toolbar.classList.add('tb-hidden');
       lastY = y;
-    } else if (y < lastY - DELTA || panelOpen) {  // scrolling up → reveal
+    } else if (y < lastY - DELTA || panelOpen) {   // scrolling up → reveal
       toolbar.classList.remove('tb-hidden');
       lastY = y;
     }

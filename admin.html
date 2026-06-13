@@ -4,52 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gallery admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
+  /* Modal-form internals only — the gallery chrome comes from styles.css, and the
+     overlay / floating button live in styles.css's admin block. */
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap');
 
-  :root {
-    --bg:#0e0d0b; --text:#e8e0d0; --muted:#6b6456; --accent:#c8a96e; --border:#2a2720;
-  }
-  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-  html, body { min-height:100%; background:var(--bg); color:var(--text); font-family:'DM Mono',monospace; }
-
-  header { text-align:center; padding:72px 24px 48px; }
-  header .eyebrow { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
-  header h1 { font-family:'DM Serif Display',serif; font-style:italic; font-weight:400; font-size:clamp(28px,4vw,46px); }
-
-  .nav { display:flex; gap:28px; justify-content:center; }
-  .nav a { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent);
-    text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:border-color .2s; }
-  .nav a:hover { border-color:var(--accent); }
-  .header-links { margin-top:20px; }
-
-  .tabs { display:flex; gap:8px; justify-content:center; margin-top:32px; }
-  .tab { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
-    padding:10px 22px; background:transparent; border:1px solid var(--border); border-radius:2px;
-    color:var(--muted); cursor:pointer; transition:border-color .2s,color .2s; }
-  .tab:hover { color:var(--text); }
-  .tab.is-active { color:var(--accent); border-color:var(--accent); }
-
-  .admin { max-width:620px; margin:0 auto; padding:0 24px 100px; }
-  .panel { animation:fadeUp 0.3s ease both; }
-
-  /* Forms */
   .admin-form { display:flex; flex-direction:column; gap:22px; }
   .admin-form label { display:flex; flex-direction:column; gap:8px; }
   .admin-form label[hidden] { display:none; }
   .admin-form label > span { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
   .admin-form label > span em { font-style:normal; color:var(--accent); opacity:0.7; margin-left:6px; }
 
-  .admin-form input[type=text], .admin-form input[type=url], .admin-form textarea,
-  .manage-edit input, .manage-edit textarea {
+  .admin-form input[type=text], .admin-form input[type=url], .admin-form textarea {
     width:100%; padding:12px 14px; background:transparent; border:1px solid var(--border);
     border-radius:2px; color:var(--text); font-family:'DM Mono',monospace; font-size:13px;
     letter-spacing:0.04em; outline:none; transition:border-color .2s; }
-  .admin-form textarea, .manage-edit textarea { resize:vertical; line-height:1.6; }
-  .admin-form input:focus, .admin-form textarea:focus,
-  .manage-edit input:focus, .manage-edit textarea:focus { border-color:var(--accent); }
-  .admin-form input::placeholder, .manage-edit input::placeholder, .manage-edit textarea::placeholder { color:var(--muted); }
+  .admin-form textarea { resize:vertical; line-height:1.6; }
+  .admin-form input:focus, .admin-form textarea:focus { border-color:var(--accent); }
+  .admin-form input::placeholder, .admin-form textarea::placeholder { color:var(--muted); }
 
   input[type=file] { width:100%; padding:10px 12px; background:transparent; border:1px solid var(--border);
     border-radius:2px; color:var(--text); font-family:'DM Mono',monospace; font-size:12px; cursor:pointer; }
@@ -58,7 +34,6 @@
     border:1px solid var(--border); border-radius:2px; color:var(--text); cursor:pointer; }
   input[type=file]::file-selector-button:hover { border-color:var(--accent); }
 
-  /* Segmented toggles */
   .seg { display:flex; gap:8px; }
   .seg-btn { flex:1; text-align:center; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em;
     text-transform:uppercase; padding:11px 8px; background:transparent; border:1px solid var(--border);
@@ -66,15 +41,12 @@
   .seg-btn input { display:none; }
   .seg-btn:has(input:checked) { color:var(--accent); border-color:var(--accent); }
 
-  /* Checkbox row */
   .admin-form label.check-row { flex-direction:row; align-items:center; gap:11px; cursor:pointer; }
-  .check-row input { flex-shrink:0; }
-  .check-row input { width:15px; height:15px; accent-color:var(--accent); }
+  .check-row input { flex-shrink:0; width:15px; height:15px; accent-color:var(--accent); }
   .check-row > span { color:var(--muted); }
 
-  .form-actions { display:flex; gap:14px; margin-top:4px; }
+  .form-actions { display:flex; gap:14px; margin-top:4px; flex-wrap:wrap; }
 
-  /* Buttons */
   .btn { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase;
     padding:11px 20px; border-radius:2px; border:1px solid var(--border); background:transparent;
     color:var(--text); cursor:pointer; transition:border-color .2s,color .2s; }
@@ -83,458 +55,70 @@
   .btn-primary { border-color:var(--accent); color:var(--accent); }
   .btn-ghost { color:var(--muted); }
   .btn-danger:hover { border-color:#b4654a; color:#cf7a5d; }
+  .form-actions .btn-danger { margin-left:auto; }
 
-  /* Notice */
   .notice { font-size:10px; letter-spacing:0.12em; line-height:1.7; text-transform:uppercase;
-    color:var(--accent); animation:fadeUp 0.3s ease both; }
+    color:var(--accent); }
   .notice a { color:var(--accent); }
   .notice code { color:var(--text); text-transform:none; letter-spacing:0; }
   .notice-error { color:#cf7a5d; }
 
-  /* Manage list */
-  .count { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:18px; }
-  .manage-list { display:flex; flex-direction:column; }
-  .manage-row { display:flex; gap:18px; align-items:center; justify-content:space-between;
-    padding:20px 0; border-bottom:1px solid var(--border); }
-  .manage-row:first-child { border-top:1px solid var(--border); }
-  .manage-row.is-hidden { opacity:0.5; }
-  .manage-thumb { width:64px; height:64px; flex-shrink:0; border:1px solid var(--border); border-radius:2px;
-    object-fit:cover; background:#000; display:flex; align-items:center; justify-content:center;
-    color:var(--muted); font-size:8px; letter-spacing:0.14em; text-transform:uppercase; overflow:hidden; }
-  .manage-thumb img { width:100%; height:100%; object-fit:cover; }
-  .manage-body { flex:1; min-width:0; }
-  .manage-text { font-family:'DM Serif Display',serif; font-style:italic; font-size:16px; line-height:1.6;
-    color:var(--text); overflow-wrap:anywhere; }
-  .manage-text .muted { font-family:'DM Mono',monospace; font-style:normal; font-size:12px; color:var(--muted); }
-  .manage-meta { margin-top:8px; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent); }
-  .row-actions { display:flex; gap:8px; flex-shrink:0; }
-  .manage-edit .manage-body { display:flex; flex-direction:column; gap:10px; }
-  .manage-edit .row-actions { flex-direction:column; }
-  .edit-check { display:flex; flex-direction:row; align-items:center; gap:9px; cursor:pointer;
-    font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
-  .edit-check input { width:15px; height:15px; accent-color:var(--accent); flex-shrink:0; }
   .edit-file { display:flex; flex-direction:column; gap:6px; }
-  .edit-file > span { font-size:8px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
-  .edit-file input[type=file] { font-size:11px; padding:7px 9px; }
-  .empty-msg { text-align:center; padding:60px 24px; font-size:10px; letter-spacing:0.18em;
-    text-transform:uppercase; color:var(--muted); }
-
-  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  .edit-file > span { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
+  .edit-thumb { width:74px; height:74px; border:1px solid var(--border); border-radius:2px; object-fit:cover;
+    background:#000; }
 </style>
 </head>
 <body>
 
-<header>
-  <p class="eyebrow">Admin</p>
-  <h1>Gallery admin</h1>
-  <nav class="nav header-links">
-    <a href="/index">View local</a>
-    <a href="http://git.marcuschiu.com/images/" target="_blank" rel="noopener">View production</a>
-  </nav>
-  <nav class="tabs" role="tablist">
-    <button class="tab is-active" data-tab="add" role="tab">Add</button>
-    <button class="tab" data-tab="manage" role="tab">Manage</button>
-  </nav>
-</header>
+<div id="shell">
+  <div id="gallery-wrap">
 
-<main class="admin">
-
-  <!-- Add tab -->
-  <section id="panel-add" class="panel" data-panel="add">
-    <form id="add-form" class="admin-form" autocomplete="off">
-      <label>
-        <span>Type <em>required</em></span>
-        <div class="seg">
-          <label class="seg-btn"><input type="radio" name="type" value="image" checked>Image</label>
-          <label class="seg-btn"><input type="radio" name="type" value="youtube">YouTube</label>
-          <label class="seg-btn"><input type="radio" name="type" value="video">Video</label>
-          <label class="seg-btn"><input type="radio" name="type" value="audio">Audio</label>
-          <label class="seg-btn"><input type="radio" name="type" value="quote">Quote</label>
-        </div>
-      </label>
-
-      <!-- quote -->
-      <label class="typed" data-for="quote" hidden>
-        <span>Quote <em>required</em></span>
-        <textarea name="quote" rows="3" placeholder="The line worth keeping."></textarea>
-      </label>
-      <label class="typed" data-for="quote" hidden>
-        <span>Author <em>optional</em></span>
-        <input type="text" name="author" placeholder="Who said it">
-      </label>
-
-      <!-- image -->
-      <label class="typed" data-for="image">
-        <span>Image source</span>
-        <div class="seg">
-          <label class="seg-btn"><input type="radio" name="imgsrc" value="upload" checked>Upload file</label>
-          <label class="seg-btn"><input type="radio" name="imgsrc" value="url">From URL</label>
-        </div>
-      </label>
-      <label class="typed srcd" data-for="image" data-src="upload">
-        <span>Image file</span>
-        <input type="file" name="media" accept="image/*">
-      </label>
-      <label class="typed srcd" data-for="image" data-src="url" hidden>
-        <span>Image URL <em>downloaded &amp; saved locally</em></span>
-        <input type="url" name="imageUrl" placeholder="https://example.com/photo.jpg">
-      </label>
-
-      <!-- youtube -->
-      <label class="typed" data-for="youtube" hidden>
-        <span>YouTube URL or ID</span>
-        <input type="text" name="youtube" placeholder="https://youtu.be/aqz-KE-bpKQ  ·  or  ·  aqz-KE-bpKQ">
-      </label>
-
-      <!-- video -->
-      <label class="typed" data-for="video" hidden>
-        <span>Video file</span>
-        <input type="file" name="media2" accept="video/*">
-      </label>
-      <label class="typed" data-for="video" hidden>
-        <span>Poster <em>optional · first frame used if blank</em></span>
-        <input type="file" name="poster" accept="image/*">
-      </label>
-
-      <!-- audio -->
-      <label class="typed" data-for="audio" hidden>
-        <span>Audio source</span>
-        <div class="seg">
-          <label class="seg-btn"><input type="radio" name="audsrc" value="upload" checked>Upload file</label>
-          <label class="seg-btn"><input type="radio" name="audsrc" value="youtube">From YouTube</label>
-        </div>
-      </label>
-      <label class="typed srcd" data-for="audio" data-src="upload" hidden>
-        <span>Audio file</span>
-        <input type="file" name="audio" accept="audio/*">
-      </label>
-      <label class="typed srcd" data-for="audio" data-src="youtube" hidden>
-        <span>YouTube URL <em>audio extracted &amp; saved locally</em></span>
-        <input type="text" name="audioUrl" placeholder="https://youtu.be/aqz-KE-bpKQ  ·  or  ·  aqz-KE-bpKQ">
-      </label>
-      <label class="typed" data-for="audio" hidden>
-        <span>Cover art <em>optional · a still from the video, or waveform, if blank</em></span>
-        <input type="file" name="audioCover" accept="image/*">
-      </label>
-      <label class="typed" data-for="audio" hidden>
-        <span>Title <em>optional · shown in the player &amp; queue</em></span>
-        <input type="text" name="title" placeholder="Track name">
-      </label>
-
-      <label>
-        <span>Description <em>optional</em></span>
-        <textarea name="desc" rows="3" placeholder="Shown on hover and in the lightbox."></textarea>
-      </label>
-      <label>
-        <span>External link <em>optional</em></span>
-        <input type="url" name="link" placeholder="https://example.com">
-      </label>
-      <label class="check-row">
-        <input type="checkbox" name="hidden">
-        <span>Add as hidden</span>
-      </label>
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Add tile</button>
-        <button type="reset" class="btn btn-ghost">Clear</button>
+    <!-- TOOLBAR — same chrome as index.html; admin.js gets a "Show hidden" row -->
+    <div id="toolbar">
+      <div class="tb-search">
+        <span class="tb-search-icon">⌕</span>
+        <input id="gallery-search" type="text" placeholder="Search title, words, type…" autocomplete="off" spellcheck="false" data-hov>
       </div>
-
-      <p id="notice" class="notice" hidden></p>
-    </form>
-  </section>
-
-  <!-- Manage tab -->
-  <section id="panel-manage" class="panel" data-panel="manage" hidden>
-    <p id="count" class="count"></p>
-    <div id="rows" class="manage-list"></div>
-    <p id="empty" class="empty-msg" hidden>No tiles yet.</p>
-  </section>
-
-</main>
-
-<script>
-(() => {
-  'use strict';
-  const $  = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const PROD_URL = 'http://git.marcuschiu.com/images/';
-  const OFFLINE = 'is the server running?';
-  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
-    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-  const mediaUrl = (f) => 'content/media/' + encodeURIComponent(f);
-  const fmtDate = (d) => {
-    const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(d || '');
-    return m ? `${m[1]}.${m[2]}.${m[3]} ${m[4]}:${m[5]}` : (d || '');
-  };
-
-  /* ---------- Tabs ---------- */
-  const tabs = $$('.tab'), panels = $$('.panel');
-  function activate(name) {
-    tabs.forEach((t) => t.classList.toggle('is-active', t.dataset.tab === name));
-    panels.forEach((p) => (p.hidden = p.dataset.panel !== name));
-    if (name === 'manage') refresh();
-  }
-  tabs.forEach((t) => t.addEventListener('click', () => activate(t.dataset.tab)));
-
-  /* ---------- Add form ---------- */
-  const form = $('#add-form');
-  const F = form.elements;
-  const notice = $('#notice');
-  const currentType = () => F.type.value;
-  // Per-type "source" toggle (upload vs. URL/YouTube); null for types without one.
-  const currentSrc  = () =>
-    currentType() === 'image' ? F.imgsrc.value :
-    currentType() === 'audio' ? F.audsrc.value : null;
-
-  function syncFields() {
-    const type = currentType(), src = currentSrc();
-    $$('[data-for]', form).forEach((el) => {
-      let show = el.dataset.for === type;
-      if (show && el.classList.contains('srcd')) show = el.dataset.src === src;
-      el.hidden = !show;
-    });
-  }
-  $$('input[name=type]', form).forEach((r) => r.addEventListener('change', syncFields));
-  $$('input[name=imgsrc]', form).forEach((r) => r.addEventListener('change', syncFields));
-  $$('input[name=audsrc]', form).forEach((r) => r.addEventListener('change', syncFields));
-
-  function showNotice(html, isError) {
-    notice.innerHTML = html;
-    notice.className = isError ? 'notice notice-error' : 'notice';
-    notice.hidden = false;
-  }
-  function gitNote(g) {
-    if (!g) return '';
-    if (g.pushed) return ' · pushed to GitHub';
-    if (g.reason) return ` · git: ${esc(g.reason)}`;
-    if (g.error)  return ` · push failed: ${esc(g.error)}`;
-    return '';
-  }
-  function gitAlert(g) { if (g && g.error) alert('Saved, but git push failed:\n' + g.error); }
-
-  /* Grab a video's first frame as a JPEG blob (browser-side decode). */
-  function extractFirstFrame(file) {
-    return new Promise((resolve) => {
-      const video = document.createElement('video');
-      video.muted = true; video.playsInline = true; video.preload = 'auto';
-      const url = URL.createObjectURL(file);
-      let done = false;
-      const finish = (b) => { if (!done) { done = true; URL.revokeObjectURL(url); resolve(b); } };
-      const capture = () => {
-        const w = video.videoWidth, h = video.videoHeight;
-        if (!w || !h) return finish(null);
-        try {
-          const c = document.createElement('canvas');
-          c.width = w; c.height = h;
-          c.getContext('2d').drawImage(video, 0, 0, w, h);
-          c.toBlob((b) => finish(b), 'image/jpeg', 0.9);
-        } catch { finish(null); }
-      };
-      video.onloadeddata = () => { try { video.currentTime = Math.min(0.1, (video.duration || 1) / 2); } catch { capture(); } };
-      video.onseeked = capture;
-      video.onerror = () => finish(null);
-      video.src = url;
-      setTimeout(() => finish(null), 8000);
-    });
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const type = currentType();
-    const submitBtn = form.querySelector('button[type=submit]');
-    const fd = new FormData();
-    fd.append('type', type);
-    fd.append('desc', F.desc.value);
-    fd.append('link', F.link.value);
-    if (F.hidden.checked) fd.append('hidden', 'true');
-
-    if (type === 'image') {
-      if (currentSrc() === 'upload') {
-        if (!F.media.files[0]) return showNotice('Choose an image file.', true);
-        fd.append('media', F.media.files[0]);
-      } else {
-        if (!F.imageUrl.value.trim()) return showNotice('Paste an image URL.', true);
-        fd.append('imageUrl', F.imageUrl.value.trim());
-      }
-    } else if (type === 'video') {
-      if (!F.media2.files[0]) return showNotice('Choose a video file.', true);
-      fd.append('media', F.media2.files[0]);
-      if (F.poster.files[0]) {
-        fd.append('poster', F.poster.files[0]);
-      } else {
-        submitBtn.disabled = true; submitBtn.textContent = 'Reading first frame…';
-        const frame = await extractFirstFrame(F.media2.files[0]);
-        if (frame) fd.append('poster', frame, 'poster.jpg');
-      }
-    } else if (type === 'audio') {
-      if (currentSrc() === 'youtube') {
-        if (!F.audioUrl.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
-        fd.append('audioUrl', F.audioUrl.value.trim());
-      } else {
-        if (!F.audio.files[0]) return showNotice('Choose an audio file.', true);
-        fd.append('media', F.audio.files[0]);
-      }
-      if (F.audioCover.files[0]) fd.append('poster', F.audioCover.files[0]);
-      if (F.title.value.trim()) fd.append('title', F.title.value.trim());
-    } else if (type === 'quote') {
-      if (!F.quote.value.trim()) return showNotice('Write the quote text.', true);
-      fd.append('quote', F.quote.value.trim());
-      if (F.author.value.trim()) fd.append('author', F.author.value.trim());
-    } else {
-      if (!F.youtube.value.trim()) return showNotice('Paste a YouTube URL or ID.', true);
-      fd.append('youtube', F.youtube.value.trim());
-    }
-
-    const extracting = type === 'audio' && currentSrc() === 'youtube';
-    submitBtn.disabled = true;
-    submitBtn.textContent = extracting ? 'Extracting audio…' : 'Adding…';
-    try {
-      const res = await fetch('/api/tiles', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (res.ok) {
-        const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>`
-          : data.entry.id ? `id <code>${esc(data.entry.id)}</code>`
-          : data.entry.quote ? `<code>“${esc(data.entry.quote.slice(0, 40))}”</code>` : '';
-        showNotice(`Added ${esc(data.entry.type)} ${what}` + (data.entry.hidden ? ' · hidden' : '') +
-          gitNote(data.git) +
-          ` · <a href="/index">local →</a> · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`, false);
-        form.reset(); syncFields();
-      } else showNotice(esc(data.error) || 'Something went wrong.', true);
-    } catch (err) {
-      showNotice(`Could not save — ${OFFLINE}`, true);
-    } finally {
-      submitBtn.disabled = false; submitBtn.textContent = 'Add tile';
-    }
-  });
-
-  /* ---------- Manage list ---------- */
-  const rowsEl = $('#rows'), countEl = $('#count'), emptyMsg = $('#empty');
-  let editingDate = null;
-  let cache = [];
-
-  async function refresh() {
-    try { cache = (await (await fetch('/api/tiles')).json()).items; }
-    catch (e) {
-      rowsEl.replaceChildren(); countEl.textContent = '';
-      emptyMsg.textContent = `Could not load — ${OFFLINE}`; emptyMsg.hidden = false;
-      return;
-    }
-    render();
-  }
-  function render() {
-    countEl.textContent = `${cache.length} tile${cache.length === 1 ? '' : 's'}`;
-    rowsEl.replaceChildren();
-    cache.forEach((it) => rowsEl.appendChild(it.date === editingDate ? editRow(it) : viewRow(it)));
-    emptyMsg.textContent = 'No tiles yet.';
-    emptyMsg.hidden = cache.length > 0;
-  }
-  function thumbHTML(it) {
-    if (it.type === 'youtube') return `<img src="https://img.youtube.com/vi/${esc(it.id)}/default.jpg" alt="">`;
-    if (it.type === 'image')   return `<img src="${esc(mediaUrl(it.file))}" alt="">`;
-    if (it.poster)             return `<img src="${esc(mediaUrl(it.poster))}" alt="">`;
-    if (it.type === 'quote')   return '&ldquo;';
-    return it.type === 'audio' ? 'audio' : 'video';
-  }
-  function viewRow(it) {
-    const el = document.createElement('div');
-    el.className = 'manage-row' + (it.hidden ? ' is-hidden' : '');
-    const display = it.title || it.quote || it.desc;
-    const title = display ? esc(display) : `<span class="muted">${esc(it.file || it.id || '')}</span>`;
-    const meta = [it.type + (it.hidden ? ' · hidden' : ''), fmtDate(it.date), it.link ? 'link' : '']
-      .filter(Boolean).join(' · ');
-    el.innerHTML = `
-      <div class="manage-thumb">${thumbHTML(it)}</div>
-      <div class="manage-body">
-        <p class="manage-text">${title}</p>
-        <p class="manage-meta">${esc(meta)}</p>
+      <div id="filter-dd" class="tb-dd">
+        <button id="filter-btn" class="tb-btn" data-hov>
+          <span class="tb-key">FILTER</span> <span id="filter-label">ALL</span> <span id="filter-caret" class="tb-caret">⌄</span>
+        </button>
+        <div id="filter-panel" class="tb-panel">
+          <div class="tb-panel-head">Show types</div>
+        </div>
       </div>
-      <div class="row-actions">
-        <button class="btn btn-ghost" data-act="edit">Edit</button>
-        <button class="btn btn-ghost" data-act="toggle">${it.hidden ? 'Show' : 'Hide'}</button>
-        <button class="btn btn-danger" data-act="delete">Delete</button>
-      </div>`;
-    el.querySelector('[data-act=edit]').addEventListener('click', () => { editingDate = it.date; render(); });
-    el.querySelector('[data-act=toggle]').addEventListener('click', () => toggleHidden(it));
-    el.querySelector('[data-act=delete]').addEventListener('click', () => del(it));
-    return el;
-  }
-  function editRow(it) {
-    const el = document.createElement('form');
-    el.className = 'manage-row manage-edit';
-    el.innerHTML = `
-      <div class="manage-thumb">${thumbHTML(it)}</div>
-      <div class="manage-body">
-        <input type="text" name="date" value="${esc(it.date)}" spellcheck="false">
-        ${it.type === 'audio' ? `<input type="text" name="title" value="${esc(it.title || '')}" placeholder="Title — shown in the player">` : ''}
-        ${it.type === 'quote' ? `<textarea name="quote" rows="2" placeholder="Quote">${esc(it.quote || '')}</textarea>
-        <input type="text" name="author" value="${esc(it.author || '')}" placeholder="Author">` : ''}
-        <textarea name="desc" rows="2" placeholder="Description">${esc(it.desc || '')}</textarea>
-        <input type="url" name="link" value="${esc(it.link || '')}" placeholder="External link">
-        ${it.type === 'image' ? `<label class="edit-file"><span>Replace photo</span><input type="file" name="image" accept="image/*"></label>` : ''}
-        ${(it.type === 'video' || it.type === 'audio') ? `<label class="edit-file"><span>${it.type === 'audio' ? 'Cover image' : 'Poster image'}</span><input type="file" name="image" accept="image/*"></label>` : ''}
-        <label class="edit-check"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> Hidden</label>
-      </div>
-      <div class="row-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-ghost" data-act="cancel">Cancel</button>
-      </div>`;
-    el.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const saveBtn = el.querySelector('button[type=submit]');
-      // Replace the image first (uses the current date), then apply field edits.
-      const imgInput = el.elements.image;
-      if (imgInput && imgInput.files[0]) {
-        saveBtn.disabled = true; saveBtn.textContent = 'Uploading…';
-        const slot = it.type === 'image' ? 'file' : 'poster';
-        const mfd = new FormData();
-        mfd.append('date', it.date); mfd.append('slot', slot); mfd.append('media', imgInput.files[0]);
-        const mr = await fetch('/api/tiles/media', { method: 'POST', body: mfd });
-        const md = await mr.json();
-        if (!mr.ok) { alert(md.error || 'Image update failed'); saveBtn.disabled = false; saveBtn.textContent = 'Save'; return; }
-      }
-      const payload = {
-        date: it.date,
-        newDate: el.elements.date.value.trim(),
-        desc: el.elements.desc.value,
-        link: el.elements.link.value,
-        hidden: el.elements.hidden.checked,
-      };
-      if (el.elements.title) payload.title = el.elements.title.value;
-      if (el.elements.quote) payload.quote = el.elements.quote.value;
-      if (el.elements.author) payload.author = el.elements.author.value;
-      const res = await fetch('/api/tiles/update', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) { alert(data.error || 'Update failed'); return; }
-      gitAlert(data.git);
-      editingDate = null; refresh();
-    });
-    el.querySelector('[data-act=cancel]').addEventListener('click', () => { editingDate = null; render(); });
-    return el;
-  }
-  async function toggleHidden(it) {
-    const res = await fetch('/api/tiles/update', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date: it.date, hidden: !it.hidden }),
-    });
-    const data = await res.json();
-    if (!res.ok) { alert(data.error || 'Update failed'); return; }
-    gitAlert(data.git); refresh();
-  }
-  async function del(it) {
-    const label = it.desc ? `“${it.desc.slice(0, 40)}”` : (it.file || it.id || it.date);
-    if (!confirm(`Delete this ${it.type} tile (${label})?\nIts media files will also be removed.`)) return;
-    const res = await fetch('/api/tiles/delete', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: it.date }),
-    });
-    const data = await res.json();
-    if (!res.ok) { alert(data.error || 'Delete failed'); return; }
-    gitAlert(data.git); refresh();
-  }
+      <button id="sort-btn" class="tb-btn" data-hov>
+        <span class="tb-key">SORT</span> <span id="sort-label">Newest</span> <span id="sort-icon" class="tb-caret">↓</span>
+      </button>
+      <span id="result-count" class="tb-count">SHOWING 0 / 0</span>
+    </div>
 
-  syncFields();
-})();
-</script>
+    <!-- GALLERY — owned by script.js (admin mode) -->
+    <div id="mosaic"></div>
+    <div id="sentinel">Loading…</div>
+
+    <div class="end-space" aria-hidden="true"></div>
+
+    <footer id="site-footer">
+      <div class="foot-brand">
+        <div class="foot-mark">Admin<span>.</span></div>
+        <div class="foot-meta">© 2026 Marcus Chiu</div>
+      </div>
+      <a id="to-top" href="/index" data-hov>VIEW LOCAL →</a>
+    </footer>
+
+  </div>
+</div>
+
+<!-- Floating create button; admin.js opens the add-tile modal -->
+<button id="admin-create" type="button" aria-label="Create a tile">+</button>
+
+<!-- Modal host; admin.js fills it with the create / edit forms -->
+<div id="admin-modal" class="admin-modal" hidden></div>
+
+<script>window.GALLERY_CONFIG = { admin: true };</script>
+<script src="script.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>
