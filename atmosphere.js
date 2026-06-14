@@ -91,20 +91,13 @@
     })();
   }
 
-  /* ── Index link fades once you've scrolled past the hero; back-to-top and
-     the index link drive the inner #gallery-wrap scroller (not the window). ── */
+  /* ── back-to-top drives the inner #gallery-wrap scroller (not the window). ── */
   function initChrome() {
-    const link   = document.getElementById('index-link');
+    const heroScroll = document.getElementById('hero-scroll');
     const toTop  = document.getElementById('to-top');
     const mosaic = document.getElementById('mosaic');
     if (galWrap) {
       const onScroll = () => {
-        const past = galWrap.scrollTop > innerHeight * 0.5;
-        if (link) {
-          link.style.opacity = past ? '0' : '1';
-          link.style.transform = past ? 'translateY(-10px)' : 'none';
-          link.style.pointerEvents = past ? 'none' : 'auto';
-        }
         // The custom cursor belongs to the hero; over the gallery/tiles hand
         // control back to the ordinary system pointer.
         const inHero = !coarse && galWrap.scrollTop < (hero ? hero.offsetHeight * 0.55 : innerHeight * 0.55);
@@ -141,8 +134,8 @@
         snapTimer = setTimeout(maybeSnap, 130);     // act once scrolling settles
       }, { passive: true });
     }
-    if (link && galWrap && mosaic) {
-      link.addEventListener('click', (e) => {
+    if (heroScroll && galWrap && mosaic) {
+      heroScroll.addEventListener('click', (e) => {
         e.preventDefault();
         galWrap.scrollTo({ top: hero ? hero.offsetHeight : mosaic.offsetTop, behavior: 'smooth' });
       });
