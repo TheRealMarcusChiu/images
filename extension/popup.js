@@ -18,6 +18,8 @@ async function loadServer() {
   $('#server').textContent = SERVER;
   const local = $('#view-local');
   if (local) local.href = `${SERVER}/index`;
+  const admin = $('#view-admin');
+  if (admin) admin.href = `${SERVER}/admin`;
 }
 const mediaUrl = (f) => `${SERVER}/content/media/${encodeURIComponent(f)}`;
 
