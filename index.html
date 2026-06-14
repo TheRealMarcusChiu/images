@@ -90,8 +90,19 @@
   <div class="ld-label">LOADING <span id="ld-num">00</span></div>
 </div>
 
-<script src="content/items.js"></script>
-<script src="script.js"></script>
-<script src="atmosphere.js"></script>
+<!-- Load content + scripts in order. items.js is re-grabbed fresh on every page
+     load (cache-busted) so content edits show up without a hard refresh; the
+     async=false flag preserves execution order (items.js before script.js). -->
+<script>
+  (function () {
+    var sources = ['content/items.js?t=' + Date.now(), 'script.js', 'atmosphere.js'];
+    sources.forEach(function (src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = false;
+      document.body.appendChild(s);
+    });
+  })();
+</script>
 </body>
 </html>
