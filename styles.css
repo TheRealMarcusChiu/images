@@ -1128,23 +1128,22 @@ body.atmo-cursor #cur-dot {
   color: #9b927f; max-width: 46ch; line-height: 1.6;
 }
 
-/* Hero scroll cue — a vertical descent hairline anchored bottom-right to
-   counterweight the bottom-left wordmark. A bronze bead falls down the line on
-   a loop: the same downward gesture we're inviting. It's a real link to the
-   index, so it acts rather than decorates. */
+/* Hero scroll cue — a vertical descent hairline anchored top-right. A bronze
+   bead falls down the line on a loop: the same downward gesture we're inviting.
+   It's a real link to the index, so it acts rather than decorates. */
 #hero-scroll {
-  position: absolute; right: clamp(18px, 4vw, 46px); bottom: clamp(38px, 9vh, 86px);
+  position: absolute; right: clamp(18px, 4vw, 46px); top: clamp(22px, 4vh, 44px);
   z-index: 10; pointer-events: auto; text-decoration: none; color: var(--accent);
-  display: flex; flex-direction: column; align-items: center; gap: 15px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
 }
 .hs-label {
   writing-mode: vertical-rl; text-orientation: mixed;
-  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.42em;
+  font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.44em;
   text-transform: uppercase; color: var(--accent);
   transition: opacity 0.4s ease; opacity: 0.85;
 }
 #hero-scroll:hover .hs-label { opacity: 1; }
-.hs-line { position: relative; width: 1px; height: 58px; background: var(--border); overflow: hidden; }
+.hs-line { position: relative; width: 1px; height: 74px; background: var(--border); overflow: hidden; }
 .hs-line i {
   position: absolute; left: 0; right: 0; top: -45%; height: 45%;
   background: linear-gradient(to bottom, transparent, var(--accent));
@@ -1156,7 +1155,7 @@ body.atmo-cursor #cur-dot {
   80%  { opacity: 1; }
   100% { top: 100%; opacity: 0; }
 }
-.hs-arrow { display: none; font-size: 11px; line-height: 1; color: var(--accent); }
+.hs-arrow { display: none; font-size: 13px; line-height: 1; color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .hs-line i { animation: none; top: 0; height: 100%; opacity: 1; }
   .hs-arrow { display: block; }
