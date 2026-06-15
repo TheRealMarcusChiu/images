@@ -1128,20 +1128,23 @@ body.atmo-cursor #cur-dot {
   color: #9b927f; max-width: 46ch; line-height: 1.6;
 }
 
-/* Scroll cue — a centered hint near the bottom edge, on the reader's natural
-   path under the wordmark. A short label with an arrow that nudges down on a
-   loop. */
+/* Scroll cue — a centered hint at the bottom edge: a label stacked over a
+   down-arrow that bobs on a loop (layout & motion mirror the projects site). */
+/* Centered with auto margins (not transform) so the hero entrance animation,
+   which animates transform, can't knock it off-centre. */
 #hero-scroll-hint {
-  position: absolute; left: 50%; bottom: clamp(22px, 5vh, 38px); transform: translateX(-50%);
+  position: absolute; left: 0; right: 0; bottom: 34px; margin: 0 auto; width: max-content;
   z-index: 10; pointer-events: none;
-  display: flex; align-items: center; gap: 11px;
-  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.34em;
-  text-transform: uppercase; color: var(--muted); white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center; gap: 9px;
 }
-.hsh-arrow { color: var(--accent); font-size: 12px; line-height: 1; animation: hshNudge 1.8s ease-in-out infinite; }
-@keyframes hshNudge {
-  0%, 100% { transform: translateY(-2px); opacity: 0.45; }
-  50%      { transform: translateY(3px);  opacity: 1; }
+.hsh-text {
+  font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--muted);
+}
+.hsh-arrow { font-size: 18px; line-height: 1; color: var(--accent); animation: hshBob 2.2s ease-in-out infinite; }
+@keyframes hshBob {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(7px); opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) { .hsh-arrow { animation: none; opacity: 1; transform: none; } }
 @media (max-width: 600px) { #hero-scroll-hint { display: none; } }
