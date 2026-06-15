@@ -1128,11 +1128,11 @@ body.atmo-cursor #cur-dot {
   color: #9b927f; max-width: 46ch; line-height: 1.6;
 }
 
-/* Hero scroll cue — a vertical descent hairline anchored bottom-right. A bronze
+/* Hero scroll cue — a vertical descent hairline anchored top-right. A bronze
    bead falls down the line on a loop: the same downward gesture we're inviting.
    It's a real link to the index, so it acts rather than decorates. */
 #hero-scroll {
-  position: absolute; right: clamp(18px, 4vw, 46px); bottom: clamp(38px, 9vh, 86px);
+  position: absolute; right: clamp(18px, 4vw, 46px); top: clamp(22px, 4vh, 44px);
   z-index: 10; pointer-events: auto; text-decoration: none; color: var(--accent);
   display: flex; flex-direction: column; align-items: center; gap: 22px;
 }
