@@ -1187,7 +1187,10 @@ body.atmo-cursor #cur-dot {
   display: flex; align-items: center; justify-content: center; flex-direction: column;
   gap: 28px; transition: opacity 0.8s ease;
 }
-.ld-wordwrap { overflow: hidden; line-height: 1.22; padding: 0 0.14em; }
+/* overflow:hidden clips the word as it slides up in the reveal (a vertical
+   move). The big horizontal padding pushes the side clip edges out past any
+   italic overhang; the matching negative margin keeps the box centered. */
+.ld-wordwrap { overflow: hidden; line-height: 1.22; padding: 0 1.5em; margin: 0 -1.5em; }
 #ld-word {
   display: inline-block; transform: translateY(115%);
   transition: transform 1s cubic-bezier(0.2, 1, 0.36, 1);
