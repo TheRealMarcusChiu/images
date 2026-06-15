@@ -1128,40 +1128,23 @@ body.atmo-cursor #cur-dot {
   color: #9b927f; max-width: 46ch; line-height: 1.6;
 }
 
-/* Hero scroll cue — a vertical descent hairline anchored top-right. A bronze
-   bead falls down the line on a loop: the same downward gesture we're inviting.
-   It's a real link to the index, so it acts rather than decorates. */
-#hero-scroll {
-  position: absolute; right: clamp(18px, 4vw, 46px); top: clamp(22px, 4vh, 44px);
-  z-index: 10; pointer-events: auto; text-decoration: none; color: var(--accent);
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
+/* Scroll cue — a centered hint near the bottom edge, on the reader's natural
+   path under the wordmark. A short label with an arrow that nudges down on a
+   loop. */
+#hero-scroll-hint {
+  position: absolute; left: 50%; bottom: clamp(22px, 5vh, 38px); transform: translateX(-50%);
+  z-index: 10; pointer-events: none;
+  display: flex; align-items: center; gap: 11px;
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.34em;
+  text-transform: uppercase; color: var(--muted); white-space: nowrap;
 }
-.hs-label {
-  writing-mode: vertical-rl; text-orientation: mixed;
-  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.4em;
-  text-transform: uppercase; color: var(--accent);
-  transition: opacity 0.4s ease; opacity: 0.85;
+.hsh-arrow { color: var(--accent); font-size: 12px; line-height: 1; animation: hshNudge 1.8s ease-in-out infinite; }
+@keyframes hshNudge {
+  0%, 100% { transform: translateY(-2px); opacity: 0.45; }
+  50%      { transform: translateY(3px);  opacity: 1; }
 }
-#hero-scroll:hover .hs-label { opacity: 1; }
-.hs-line { position: relative; width: 1px; height: 56px; background: var(--border); overflow: hidden; }
-.hs-line i {
-  position: absolute; left: 0; right: 0; top: -45%; height: 45%;
-  background: linear-gradient(to bottom, transparent, var(--accent));
-  animation: hsBead 2.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-}
-@keyframes hsBead {
-  0%   { top: -45%; opacity: 0; }
-  20%  { opacity: 1; }
-  80%  { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
-}
-.hs-arrow { display: none; font-size: 11px; line-height: 1; color: var(--accent); }
-@media (prefers-reduced-motion: reduce) {
-  .hs-line i { animation: none; top: 0; height: 100%; opacity: 1; }
-  .hs-arrow { display: block; }
-}
-/* Touch scrolling needs no prompt, and the giant wordmark crowds the edge. */
-@media (max-width: 600px) { #hero-scroll { display: none; } }
+@media (prefers-reduced-motion: reduce) { .hsh-arrow { animation: none; opacity: 1; transform: none; } }
+@media (max-width: 600px) { #hero-scroll-hint { display: none; } }
 
 /* Large empty space between the gallery and the footer. */
 .end-space { height: clamp(360px, 60vh, 720px); }

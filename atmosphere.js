@@ -93,7 +93,6 @@
 
   /* ── back-to-top drives the inner #gallery-wrap scroller (not the window). ── */
   function initChrome() {
-    const heroScroll = document.getElementById('hero-scroll');
     const toTop  = document.getElementById('to-top');
     const mosaic = document.getElementById('mosaic');
     if (galWrap) {
@@ -133,12 +132,6 @@
         clearTimeout(snapTimer);
         snapTimer = setTimeout(maybeSnap, 130);     // act once scrolling settles
       }, { passive: true });
-    }
-    if (heroScroll && galWrap && mosaic) {
-      heroScroll.addEventListener('click', (e) => {
-        e.preventDefault();
-        galWrap.scrollTo({ top: hero ? hero.offsetHeight : mosaic.offsetTop, behavior: 'smooth' });
-      });
     }
     if (toTop && galWrap) {
       toTop.addEventListener('click', (e) => {
