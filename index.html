@@ -837,7 +837,7 @@ class Component extends DCLogic {
     const make = () => {
       const yt = new YT.Player(target, {
         videoId: im.youtube,
-        playerVars: { autoplay: 1, rel: 0, controls: 1, playsinline: 1 },
+        playerVars: { autoplay: 1, rel: 0, controls: 0, modestbranding: 1, disablekb: 1, playsinline: 1 },
         events: {
           onReady: (e) => { try { e.target.setVolume(Math.round(this.volume * 100)); e.target.playVideo(); } catch (er) {} },
           onStateChange: (e) => { if (window.YT && e.data === YT.PlayerState.ENDED) this.onEnded(); }
@@ -855,6 +855,34 @@ class Component extends DCLogic {
     };
     if (window.YT && window.YT.Player) make();
     else { this._ytPending = make; this.loadYTApi(); }
+    // overlay: a click-catching layer that opens the lightbox, plus a centered pause/play button
+    // that auto-hides after the mouse is idle (mirroring YouTube's own controls fading out)
+    const ov = document.createElement('div');
+    ov.className = 'yt-overlay';
+    ov.style.cssText = 'position:absolute; inset:0; z-index:6; cursor:zoom-in;';
+    ov.innerHTML = '<button class="yt-pause" title="Play / pause" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:58px; height:58px; border-radius:50%; background:rgba(8,10,14,0.55); border:1px solid rgba(255,255,255,0.7); display:grid; place-items:center; cursor:pointer; opacity:0; transition:opacity .3s ease;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#f3efe6"><path d="M7 5h3v14H7zm7 0h3v14h-3z"></path></svg></button>';
+    const pauseBtn = ov.querySelector('.yt-pause');
+    const showControls = () => {
+      pauseBtn.style.opacity = '1';
+      clearTimeout(this._ytIdle);
+      this._ytIdle = setTimeout(() => { if (pauseBtn) pauseBtn.style.opacity = '0'; }, 2600);
+    };
+    ov.addEventListener('mousemove', showControls);
+    ov.addEventListener('mouseenter', showControls);
+    pauseBtn.addEventListener('click', (ev) => { ev.stopPropagation(); this.togglePlay(); showControls(); });
+    ov.addEventListener('click', (ev) => { if (ev.target.closest('.yt-pause')) return; ev.stopPropagation(); this.openYouTubeLightbox(i); });
+    holder.appendChild(ov);
+    showControls();
+  }
+  // open the lightbox for a playing YouTube tile, moving the live player in so it keeps playing from where it left off
+  openYouTubeLightbox(i) {
+    // lightbox uses a fresh player WITH native controls, seeded at the inline player's time;
+    // pause the controls-less inline player so they don't double up
+    this._ytStart = this.player ? Math.floor(this.player.time()) : 0;
+    if (this.player) { try { this.player.pause(); } catch (e) {} }
+    this.openIndex = i;
+    this.originRect = null;
+    this.setState({ lightbox: i });
   }
   loadYTApi() {
     if (this._ytApiLoading) return;
@@ -1071,6 +1099,9 @@ class Component extends DCLogic {
 
   closeLightbox = () => {
     if (this._closing) return;
+    // resume the controls-less inline YouTube player when leaving the lightbox
+    if (this.player && this.player.kind === 'youtube' && this.playingIndex != null) { try { this.player.play(); } catch (e) {} }
+    const el0 = document.querySelector('.lb-yt'); if (el0) el0.setAttribute('src', ''); // stop the lightbox player
     const idx = this.state.lightbox;
     const img = document.querySelector('.lb-stage');
     const o = this.tileRectFor(idx);
@@ -1269,7 +1300,8 @@ class Component extends DCLogic {
         if (el && el.getAttribute('src') !== item.src) el.setAttribute('src', item.src);
       } else if (item.isVideo && item.youtube) {
         const el = document.querySelector('.lb-yt');
-        const want = 'https://www.youtube.com/embed/' + item.youtube + '?autoplay=1&rel=0';
+        const start = this._ytStart || 0; this._ytStart = 0;
+        const want = 'https://www.youtube.com/embed/' + item.youtube + '?autoplay=1&rel=0&start=' + start;
         if (el && el.getAttribute('src') !== want) el.setAttribute('src', want);
       } else if (item.isVideo) {
         const el = document.querySelector('.lb-video');
