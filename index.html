@@ -8,7 +8,7 @@
 <body>
 <x-dc>
 <helmet>
-  <title>Stuff</title>
+  <title>Marchive</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
@@ -126,6 +126,18 @@
     }
     .mc-scrubrow { max-width: 640px; min-width: 300px; }
     .media-controller.mc-behind { z-index: 50 !important; }
+    /* ─── easter eggs ─── */
+    .mark-egg { cursor: pointer; pointer-events: auto; transition: color .2s ease, letter-spacing .2s ease; }
+    .mark-egg:hover { color: #f5e6c0; }
+    .gold-mode { background: radial-gradient(130% 100% at 50% 0%, #2e2206 0%, #160f02 55%, #0a0700 100%) !important; }
+    .gold-mode .tile img { filter: sepia(0.55) saturate(1.5) hue-rotate(-6deg) brightness(0.96) contrast(1.04) !important; }
+    .gold-mode .tile figure { outline-color: rgba(255,206,84,0.3) !important; box-shadow: 0 18px 40px rgba(0,0,0,0.5), 0 0 16px rgba(255,200,70,0.22) !important; }
+    .egg-toast { position: fixed; left: 50%; bottom: 46px; transform: translateX(-50%) translateY(20px); z-index: 240;
+      padding: 13px 24px; border-radius: 999px; background: rgba(12,10,6,0.86); backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,206,84,0.4); color: #f5e6c0; font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0; pointer-events: none;
+      transition: opacity .4s ease, transform .4s cubic-bezier(.2,.8,.2,1); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .egg-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </helmet>
 <div ref="{{ rootRef }}" tabindex="0" style="position: fixed; inset: 0; overflow: hidden; background: radial-gradient(130% 100% at 50% 0%, #14141a 0%, #0a0a0c 55%, #060608 100%); color: #f3efe6; font-family: 'Space Grotesk', sans-serif; outline: none; touch-action: none;">
@@ -278,8 +290,8 @@
 
   <!-- hero overlay (fades out as you scroll) -->
   <div ref="{{ heroRef }}" style="position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; pointer-events: none;">
-    <div style="font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--ac, #e8b34a); margin-bottom: 20px;">Mosaic Gallery — MMXVI</div>
-    <h1 style="font-family: 'Newsreader', serif; font-weight: 400; font-size: clamp(52px, 11vw, 150px); line-height: 0.92; letter-spacing: -0.025em; margin: 0; color: #f5f1e8; text-shadow: 0 8px 60px rgba(0,0,0,0.6);">Archive <span style="font-size: 0.36em; font-style: italic; color: var(--ac, #e8b34a); vertical-align: 0.18em;">of</span> Stuff</h1>
+    <div style="font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--ac, #e8b34a); margin-bottom: 20px;">Mosaic Archive — <span class="mark-egg" onClick="{{ onMarkClick }}" title="A little secret">{{ markText }}</span></div>
+    <h1 style="font-family: 'Newsreader', serif; font-weight: 400; font-size: clamp(52px, 11vw, 150px); line-height: 0.92; letter-spacing: -0.025em; margin: 0; color: #f5f1e8; text-shadow: 0 8px 60px rgba(0,0,0,0.6);">Mark<span style="font-style: italic; color: var(--ac, #e8b34a);">ive</span></h1>
     <p ref="{{ subtitleRef }}" style="max-width: 480px; margin: 26px 18px 0; font-size: 14px; line-height: 1.65; color: #b9b3a6;">A quiet archive of images, quotes, and stuff. Drift the wall, then scroll down to explore more.</p>
     <div class="scroll-hint {{ hintClass }}" style="position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; padding-bottom: 38px; pointer-events: none;">
       <div style="display: flex; flex-direction: column; align-items: center; gap: 9px;">
@@ -298,12 +310,12 @@
       <div ref="{{ endSpacerRef }}" style="height: 24vh;"></div>
       <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;">
         <div style="width: 54px; height: 1px; background: rgba(255,255,255,0.22);"></div>
-        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--ac, #e8b34a);">End of archive</div>
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--ac, #e8b34a);">End</div>
       </div>
       <div style="height: 6vh;"></div>
       <footer style="pointer-events: auto; width: 100%; border-top: 1px solid rgba(255,255,255,0.08); padding: 30px 34px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; background: rgba(8,9,12,0.5);">
         <div style="font-family: 'Newsreader', serif; font-size: 18px; color: #f3efe6;">Archive <span style="font-size: 0.55em; font-style: italic; color: var(--ac, #e8b34a); vertical-align: 0.14em;">of</span> Stuff</div>
-        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5d5648;">© MMXVI — All works imagined</div>
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5d5648;">© MMXXVI — All works imagined</div>
       </footer>
     </div>
   </div>
@@ -394,8 +406,8 @@
 
   <!-- loading screen: covers the page until the carousel's images are ready -->
   <div ref="{{ loaderRef }}" style="position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(130% 100% at 50% 0%, #14141a 0%, #0a0a0c 55%, #060608 100%); transition: opacity 0.7s ease;">
-    <div style="font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--ac, #e8b34a); margin-bottom: 20px;">Mosaic Gallery — MMXVI</div>
-    <h1 style="font-family: 'Newsreader', serif; font-weight: 400; font-size: clamp(52px, 11vw, 150px); line-height: 0.92; letter-spacing: -0.025em; margin: 0; color: #f5f1e8; text-shadow: 0 8px 60px rgba(0,0,0,0.6);">Archive <span style="font-size: 0.36em; font-style: italic; color: var(--ac, #e8b34a); vertical-align: 0.18em;">of</span> Stuff</h1>
+    <div style="font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--ac, #e8b34a); margin-bottom: 20px;">Mosaic Archive — <span class="mark-egg" onClick="{{ onMarkClick }}" title="A little secret">{{ markText }}</span></div>
+    <h1 style="font-family: 'Newsreader', serif; font-weight: 400; font-size: clamp(52px, 11vw, 150px); line-height: 0.92; letter-spacing: -0.025em; margin: 0; color: #f5f1e8; text-shadow: 0 8px 60px rgba(0,0,0,0.6);">Mark<span style="font-style: italic; color: var(--ac, #e8b34a);">ive</span></h1>
     <p style="max-width: 480px; margin: 26px 18px 0; font-size: 14px; line-height: 1.65; color: #b9b3a6;">A quiet archive of images, quotes, and stuff. Drift the wall, then scroll down to explore more.</p>
     <div style="position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%); width: 220px; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.1); overflow: hidden;">
       <div style="position: absolute; top: 0; bottom: 0; width: 36%; border-radius: 2px; background: var(--ac, #e8b34a); animation: loadBar 1.3s ease-in-out infinite;"></div>
@@ -509,7 +521,7 @@
 class Component extends DCLogic {
   carouselCount = 16;   // items shown in the rotating carousel
   MEDIA = 'content/media/';   // all images / audio / video live here, named by their ISO date
-  state = { lightbox: null, gridCount: 0, search: '', types: { image: true, quote: true, video: true, audio: true }, filterOpen: false, sort: 'default', playingIndex: null, paused: false, queueOpen: false, volumePct: 50, autoplay: true, shuffle: false };
+  state = { lightbox: null, gridCount: 0, search: '', types: { image: true, quote: true, video: true, audio: true }, filterOpen: false, sort: 'default', playingIndex: null, paused: false, queueOpen: false, volumePct: 50, autoplay: true, shuffle: false, goldMode: false, markMode: 0 };
 
   constructor(props) {
     super(props);
@@ -646,6 +658,7 @@ class Component extends DCLogic {
     if (this.rootEl) this.rootEl.focus({ preventScroll: true });
     this.animate();        // rAF loop (paused while the tab/iframe is hidden)
     this.bootPoll();       // setTimeout fallback: guarantees an initial layout even if rAF is throttled
+    this.eggGreeting();    // styled console hello for the curious
   }
 
   // Timers fire even in a backgrounded document, unlike requestAnimationFrame.
@@ -753,6 +766,12 @@ class Component extends DCLogic {
       else if (e.key === 'ArrowRight') { e.preventDefault(); this.nextLightbox(); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); this.prevLightbox(); }
       return;
+    }
+    this._eggKeys(e);
+    // Space while in the carousel auto-scrolls down to the masonry grid
+    if (e.key === ' ' && this.transDist) {
+      const pr = this.clamp(this.scrollTarget / this.transDist, 0, 1);
+      if (pr < 0.5) { e.preventDefault(); this._userScrolled(); this.scrollTarget = this.transDist; return; }
     }
     const big = (this.vh || 600) * 0.85;
     let d = 0;
@@ -1385,9 +1404,77 @@ class Component extends DCLogic {
   }
 
   applyProps() {
-    if (this.rootEl) this.rootEl.style.setProperty('--ac', this.props.accent || '#e8b34a');
+    if (this.rootEl) {
+      const ac = this.state.goldMode ? '#ffce54' : (this.props.accent || '#e8b34a');
+      this.rootEl.style.setProperty('--ac', ac);
+      this.rootEl.classList.toggle('gold-mode', !!this.state.goldMode);
+    }
     if (this.subtitleEl && this.props.subtitle) this.subtitleEl.textContent = this.props.subtitle;
   }
+
+  // ─── easter eggs ─────────────────────────────────────────────────────────
+  eggGreeting() {
+    if (typeof window === 'undefined' || window.__marchiveGreeted) return;
+    window.__marchiveGreeted = true;
+    const title = 'color:#e8b34a;font-size:40px;font-weight:700;font-family:Georgia,serif;text-shadow:0 2px 8px rgba(0,0,0,0.4);';
+    const dim = 'color:#b9b3a6;font-size:13px;font-family:monospace;';
+    const ac = 'color:#e8b34a;font-size:12px;font-family:monospace;';
+    try {
+      console.log('%cMark\u00b7ive', title);
+      console.log('%cA quiet archive of images, quotes, and stuff.', dim);
+      console.log('%cSecrets:  \u2191\u2191\u2193\u2193\u2190\u2192\u2190\u2192 B A   \u00b7   type a name   \u00b7   click the year', ac);
+      console.log('%c\u2014 git.marcuschiu.com', dim);
+    } catch (e) {}
+  }
+
+  _eggKeys = (e) => {
+    // Konami code \u2192 Midas (gold) mode
+    const seq = this._konamiSeq || (this._konamiSeq = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a']);
+    this._kb = (this._kb || []);
+    this._kb.push((e.key || '').toLowerCase());
+    if (this._kb.length > seq.length) this._kb.shift();
+    if (this._kb.length === seq.length && seq.every((k, i) => k === this._kb[i])) {
+      this._kb = [];
+      this.toggleGold();
+    }
+    // hidden words \u2192 wild carousel spin
+    if (e.key && e.key.length === 1 && /[a-z]/i.test(e.key)) {
+      this._wb = ((this._wb || '') + e.key.toLowerCase()).slice(-12);
+      const words = { marcus: 'Marcus', markive: 'Mark\u00b7ive', void: 'Into the void' };
+      for (const w in words) {
+        if (this._wb.endsWith(w)) { this._wb = ''; this.wildSpin(words[w]); break; }
+      }
+    }
+  };
+
+  toggleGold = () => {
+    const on = !this.state.goldMode;
+    this.setState({ goldMode: on });
+    this.showToast(on ? '\u2726 Midas Mode \u2726' : 'Back to Normal');
+  };
+
+  wildSpin = (label) => {
+    // big angular impulse; the existing momentum easing decays it back to the slow drift
+    this.angVel = 0.42 * (this.driftDir || 1);
+    // if the user is down in the grid, glide back up so they can watch the carousel spin
+    if (this.transDist && this.scrollTarget > this.transDist * 0.4) { this._userScrolled(); this.scrollTarget = 0; }
+    if (label) this.showToast(label);
+  };
+
+  showToast = (text) => {
+    if (!this.rootEl) return;
+    let t = this._toastEl;
+    if (!t) { t = this._toastEl = document.createElement('div'); t.className = 'egg-toast'; this.rootEl.appendChild(t); }
+    t.textContent = text;
+    requestAnimationFrame(() => t.classList.add('show'));
+    clearTimeout(this._toastT);
+    this._toastT = setTimeout(() => { if (this._toastEl) this._toastEl.classList.remove('show'); }, 2200);
+  };
+
+  onMarkClick = (e) => {
+    e.stopPropagation();
+    this.setState((s) => ({ markMode: ((s.markMode || 0) + 1) % 3 }));
+  };
 
   onResize = () => this.computeLayout();
   endRef = (el) => { this.endEl = el; };
@@ -1817,6 +1904,8 @@ class Component extends DCLogic {
     }
     return {
       images: this.images.slice(0, this.state.gridCount),
+      markText: (this.state.markMode === 1) ? '2026' : (this.state.markMode === 2) ? (this.images.length + ' items') : 'MMXXVI',
+      onMarkClick: this.onMarkClick,
       lightbox,
       search: this.state.search,
       typeImage: !!this.state.types.image,
