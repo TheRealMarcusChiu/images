@@ -1080,6 +1080,7 @@ class Component extends DCLogic {
     }
     const target = this.transDist + (this.gy[i] || 0) + (this.h[i] || 0) / 2 - this.vh / 2;
     this._userScrolled();
+    this._locateActive = performance.now() + 1600; // keep toolbar + controller shown during the locate auto-scroll
     // never scroll above the masonry grid top (keep the toolbar in view) — clamp the lower bound to transDist
     this.scrollTarget = this.clamp(target, this.transDist, this.maxScroll());
     this._locating = false; // target locked in; allow normal filter-jump behavior again
@@ -1649,6 +1650,7 @@ class Component extends DCLogic {
       const dir = y - (this._tbLastY || 0);
       this._tbLastY = y;
       if (pRaw < 0.995) this._tbTarget = 1;        // keep it up while the grid is still assembling
+      else if (this._locateActive && performance.now() < this._locateActive) this._tbTarget = 1; // keep shown during locate
       else if (dir > 0.6) this._tbTarget = 0;      // scrolling down → slide away
       else if (dir < -0.6) this._tbTarget = 1;     // scrolling up → bring it back
       if (this._tbShown === undefined) this._tbShown = 1;
@@ -1663,7 +1665,8 @@ class Component extends DCLogic {
       const dir = y - (this._mcLastY || 0);
       this._mcLastY = y;
       if (this._mcShown === undefined) this._mcShown = 1;
-      if (dir > 0.6) this._mcTarget = 0;        // scrolling down → hide
+      if (this._locateActive && performance.now() < this._locateActive) this._mcTarget = 1; // keep shown during locate
+      else if (dir > 0.6) this._mcTarget = 0;        // scrolling down → hide
       else if (dir < -0.6) this._mcTarget = 1;  // scrolling up → show
       this._mcShown += ((this._mcTarget === undefined ? 1 : this._mcTarget) - this._mcShown) * 0.16;
       const s = this._mcShown;
