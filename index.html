@@ -1303,6 +1303,9 @@ class Component extends DCLogic {
         const start = this._ytStart || 0; this._ytStart = 0;
         const want = 'https://www.youtube.com/embed/' + item.youtube + '?autoplay=1&rel=0&start=' + start;
         if (el && el.getAttribute('src') !== want) el.setAttribute('src', want);
+        // no FLIP image for YouTube → reveal the stage + caption directly
+        const stg = document.querySelector('.lb-stage'); if (stg) stg.style.visibility = 'visible';
+        if (this.lbCapEl) { this.lbCapEl.style.opacity = '1'; this.lbCapEl.style.transform = 'none'; }
       } else if (item.isVideo) {
         const el = document.querySelector('.lb-video');
         if (el && el.getAttribute('src') !== item.videoSrc) { el.setAttribute('src', item.videoSrc); if (el.load) el.load(); }
