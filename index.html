@@ -78,6 +78,9 @@
     .mc-toggle[data-on="true"] { color: var(--ac, #e8b34a); }
     .mc-toggle[data-on="true"]::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--ac, #e8b34a); }
     .mc-foot-link:hover { color: var(--ac, #e8b34a); }
+    .mq > span { display: inline-block; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; vertical-align: top; }
+    .mq.mq-on > span { max-width: none; text-overflow: clip; animation: marquee var(--mq-dur, 7s) linear infinite; }
+    @keyframes marquee { 0%, 12% { transform: translateX(0); } 50%, 62% { transform: translateX(var(--mq-shift, 0)); } 100% { transform: translateX(0); } }
     .scroll-hint.hint-up { padding-bottom: var(--hint-pb, 92px) !important; }
     .tile[data-type="audio"] figcaption { display: none; }
     .tile[data-type="quote"] .cap-title { display: none; }
@@ -308,7 +311,7 @@
         </button>
         <div style="min-width: 0;">
           <div style="font-family: 'Space Grotesk', sans-serif; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ac, #e8b34a);">{{ playing.kind }}</div>
-          <div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 16px; color: #f3efe6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ playing.title }}</div>
+          <div class="mq" style="font-family: 'Newsreader', serif; font-style: italic; font-size: 16px; color: #f3efe6; overflow: hidden;"><span>{{ playing.title }}</span></div>
           <div style="font-family: 'Space Grotesk', sans-serif; font-size: 10px; color: #8b8579; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ playing.sub }}</div>
         </div>
       </div>
@@ -361,7 +364,7 @@
                 <div onClick="{{ playFromQueue }}" data-i="{{ q.i }}" style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; cursor: pointer;">
                   <span style="flex-shrink: 0; width: 14px; text-align: left; font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 500; color: #6f7888; font-variant-numeric: tabular-nums;">{{ q.pos }}</span>
                   <span style="flex-shrink: 0; font-family: 'Space Grotesk', sans-serif; font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ac, #e8b34a); border: 1px solid rgba(232,179,74,0.4); border-radius: 4px; padding: 2px 5px;">{{ q.badge }}</span>
-                  <span style="font-family: 'Newsreader', serif; font-style: italic; font-size: 14px; color: #f3efe6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ q.title }}</span>
+                  <div class="mq" style="flex: 1; min-width: 0; font-family: 'Newsreader', serif; font-style: italic; font-size: 14px; color: #f3efe6; overflow: hidden;"><span>{{ q.title }}</span></div>
                 </div>
                 <button class="mc-qremove" onClick="{{ removeFromQueue }}" data-i="{{ q.i }}" title="Remove from queue" style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; border: none; background: rgba(255,255,255,0.06); color: #8b8579; cursor: pointer; display: grid; place-items: center; transition: background .2s ease, color .2s ease;">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg>
@@ -1068,6 +1071,22 @@ class Component extends DCLogic {
     if (this.curTimeEl) this.curTimeEl.textContent = this.fmtTime(t);
     if (this.durTimeEl) this.durTimeEl.textContent = this.fmtTime(d);
   }
+  // marquee-scroll any .mq title whose text overflows its box
+  updateMarquees() {
+    const els = document.querySelectorAll('.mq');
+    els.forEach((box) => {
+      const span = box.firstElementChild;
+      if (!span) return;
+      const overflow = span.scrollWidth - box.clientWidth;
+      if (overflow > 4) {
+        box.style.setProperty('--mq-shift', '-' + overflow + 'px');
+        box.style.setProperty('--mq-dur', Math.max(5, overflow / 22 + 4) + 's');
+        box.classList.add('mq-on');
+      } else {
+        box.classList.remove('mq-on');
+      }
+    });
+  }
   fmtTime(s) { s = Math.max(0, Math.floor(s || 0)); const m = Math.floor(s / 60); const ss = s % 60; return m + ':' + (ss < 10 ? '0' : '') + ss; }
 
   // locate: scroll the playing tile into view, then flash a highlight on it
@@ -1308,6 +1327,7 @@ class Component extends DCLogic {
   }
   componentDidUpdate() {
     this.applyProps();
+    requestAnimationFrame(() => this.updateMarquees());
     if (this.ready) {
       const sig = this.state.search + '|' + JSON.stringify(this.state.types) + '|' + this.state.sort;
       if (sig !== this._filterSig) {
