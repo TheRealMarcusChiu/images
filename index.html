@@ -8,6 +8,7 @@
 <body>
 <x-dc>
 <helmet>
+  <title>Stuff</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
@@ -515,7 +516,7 @@ class Component extends DCLogic {
     this.dragging = false;
     this._dragMoved = false;
     this._filterSig = '|all|default';
-    this.state = Object.assign({}, this.state, { gridCount: this.images.length });
+    this.state = Object.assign({}, this.state, { gridCount: Math.min(16, this.images.length) });
   }
 
   // ─── load the external content file and map it to the internal tile model ──
@@ -526,6 +527,24 @@ class Component extends DCLogic {
       .slice()
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)); // newest first
     return items.map((it, i) => this.mapItem(it, i));
+  }
+
+  // for YouTube tiles with no explicit title, fall back to the real video title via oEmbed (CORS-enabled)
+  fetchYouTubeTitles() {
+    (this.images || []).forEach((im) => {
+      if (!im || !im.youtube || !im._ytFetchTitle) return;
+      im._ytFetchTitle = false;
+      fetch('https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=' + im.youtube)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d && d.title) {
+            im.title = d.title; im.hasTitle = true;
+            this.forceUpdate();
+            this.layoutGrid && this.layoutGrid();
+          }
+        })
+        .catch(() => {});
+    });
   }
 
   media(f) {
@@ -569,7 +588,7 @@ class Component extends DCLogic {
     }
     if (it.type === 'youtube') {
       return this.fin(Object.assign(base, { ar: 1.6, title: it.title || '', src: `https://img.youtube.com/vi/${it.id}/hqdefault.jpg`,
-        youtube: it.id, videoSrc: null, kind: 'YouTube', duration: it.dur || '', description: it.desc }));
+        youtube: it.id, videoSrc: null, kind: 'YouTube', duration: it.dur || '', description: it.desc, _ytFetchTitle: !it.title }));
     }
     if (it.type === 'video') {
       return this.fin(Object.assign(base, { ar: 1.6, title: it.title || '', src: this.media(it.poster) || this.media(it.file),
@@ -584,7 +603,10 @@ class Component extends DCLogic {
     return this.fin(Object.assign(base, { ar: 1, title: it.title || '', src: this.media(it.file), description: it.desc, _measure: true }));
   }
 
-  appendChunk() { /* finite dataset — nothing to append */ }
+  appendChunk() {
+    if (this.state.gridCount >= this.images.length) return;
+    this.setState((s) => ({ gridCount: Math.min(s.gridCount + 12, this.images.length) }));
+  }
 
   // ─── refs ──────────────────────────────────────────────────────────────
   rootRef = (el) => { this.rootEl = el; };
@@ -602,6 +624,7 @@ class Component extends DCLogic {
     this.scrollCur = 0;
     this._mountedAt = performance.now();
     this.volume = 0.5; // default volume 50%
+    this.fetchYouTubeTitles();
     setTimeout(() => this.finishLoading(), 8000); // ultimate fallback so the loader can never get stuck
     window.addEventListener('resize', this.onResize);
     window.addEventListener('wheel', this.onWheel, { passive: false });
@@ -1463,7 +1486,7 @@ class Component extends DCLogic {
       el.style.height = h + 'px';
     }
     this.gridHeight = Math.max.apply(null, this.colH);
-    this.atEnd = this.images.length >= this.maxTiles; // archive fully loaded
+    this.atEnd = this.state.gridCount >= this.images.length; // every tile rendered
     // end-of-archive block: top spacer expands when the grid is short so the footer sits at the viewport bottom
     const belowSpacer = 50 + Math.round(this.vh * 0.06) + 60; // marker + mid gap + footer
     const baseSpacer = Math.round(this.vh * 0.16);
@@ -1618,7 +1641,7 @@ class Component extends DCLogic {
     }
 
     // infinite scroll: append more tiles once the user scrolls down toward the bottom
-    if (p > 0.98 && !this._appending && this.images.length < this.maxTiles && extra > this.vh * 0.4) {
+    if (p > 0.98 && !this._appending && this.state.gridCount < this.images.length && extra > this.vh * 0.4) {
       if (extra + this.vh > this.gridHeight - this.vh * 1.25) {
         this._appending = true;
         this.appendChunk();
@@ -1754,7 +1777,7 @@ class Component extends DCLogic {
       queueList.push({ i: idx, pos: queueList.length + 1, title: it.title, sub: it.isAudio ? it.artist : it.kind, badge: it.isAudio ? 'Audio' : (it.youtube ? 'YouTube' : 'Video'), userAdded: false });
     }
     return {
-      images: this.images,
+      images: this.images.slice(0, this.state.gridCount),
       lightbox,
       search: this.state.search,
       typeImage: !!this.state.types.image,
