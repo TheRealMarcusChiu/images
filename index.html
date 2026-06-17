@@ -1679,6 +1679,13 @@ class Component extends DCLogic {
         this.appendChunk();
       }
     }
+    // auto-fill: when the grid is settled at the top but the SHORTEST column doesn't
+    // reach the bottom of the screen, keep appending batches until every column fills past it
+    if (p > 0.98 && !this._appending && this.state.gridCount < this.images.length
+        && this.colH && Math.min.apply(null, this.colH) - extra < this.vh + 24) {
+      this._appending = true;
+      this.appendChunk();
+    }
 
     // hero scrolls up with the scroll (and fades as it leaves)
     // hero text scrolls straight up with the scroll (no fade in or out)
