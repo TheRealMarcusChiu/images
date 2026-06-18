@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-17T23:23:20.885-05:00", file: "2026-06-17T23:23:20.885-05:00.webp" },
+
   { type: "quote", date: "2026-06-16T21:28:52.418-05:00",
     quote: "When you copy from one source it's plagiarism. But when you copy from multiple sources it's research." },
 
