@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<!-- Load the gallery content with a per-visit cache-buster so a fresh visit (typing the
+     domain, opening a bookmark) always fetches the latest items.js instead of a cached copy,
+     the same as a manual refresh. document.write keeps it parser-blocking so window.GALLERY_ITEMS
+     is set before the component constructs; it must live here in <head>, not in <helmet>, because
+     the framework re-injects helmet scripts after parse where document.write would wipe the page. -->
+<script>document.write('<script src="content/items.js?t=' + Date.now() + '"><\/script>');</script>
 </head>
 <body>
 <x-dc>
@@ -12,7 +18,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="content/items.js"></script>
   <style>
     html, body { margin: 0; padding: 0; background: #0a0a0c; overflow-x: hidden; }
     * { box-sizing: border-box; }
