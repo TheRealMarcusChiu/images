@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-23T20:21:41.905-05:00", file: "2026-06-23T20:21:41.905-05:00.jpeg",
+    link: "https://git.marcuschiu.com/thoughts/article.html#2026-06-23--What-is-Beauty%3F" },
+
   { type: "image", date: "2026-06-23T01:13:04.088-05:00", file: "2026-06-23T01:13:04.088-05:00.jpeg",
     desc: "HK street market" },
 
