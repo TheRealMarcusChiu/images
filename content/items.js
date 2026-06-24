@@ -29,7 +29,8 @@ window.GALLERY_ITEMS = [
 
   { type: "image", date: "2026-06-22T12:25:10.643-05:00", file: "2026-06-22T12:25:10.643-05:00.webp" },
 
-  { type: "image", date: "2026-06-22T12:24:38.329-05:00", file: "2026-06-22T12:24:38.329-05:00.webp" },
+  { type: "image", date: "2026-06-22T12:24:38.329-05:00", file: "2026-06-22T12:24:38.329-05:00.webp",
+    desc: "\"You are the average of the five people you spend the most time with\" is only true before the internet. Now it's the average of the content you expose your mind to." },
 
   { type: "image", date: "2026-06-22T12:23:20.805-05:00", file: "2026-06-22T12:23:20.805-05:00.webp" },
 
