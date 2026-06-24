@@ -1318,6 +1318,16 @@ class Component extends DCLogic {
   }
   finishLoading() {
     if (this._loadFinished) return;
+    // keep the loader up for at least 1s even if everything's already ready — an early
+    // call reschedules itself for the remaining time rather than hiding immediately
+    const MIN_LOADER_MS = 1000;
+    const elapsed = performance.now() - (this._mountedAt || 0);
+    if (elapsed < MIN_LOADER_MS) {
+      if (this._loadFinishScheduled) return;
+      this._loadFinishScheduled = true;
+      setTimeout(() => { this._loadFinishScheduled = false; this.finishLoading(); }, MIN_LOADER_MS - elapsed);
+      return;
+    }
     this._loadFinished = true;
     const el = this.loaderEl;
     if (el) { el.style.opacity = '0'; el.style.pointerEvents = 'none'; setTimeout(() => { if (el) el.style.display = 'none'; }, 750); }
