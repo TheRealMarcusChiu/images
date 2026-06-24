@@ -152,6 +152,21 @@
       font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0; pointer-events: none;
       transition: opacity .4s ease, transform .4s cubic-bezier(.2,.8,.2,1); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
     .egg-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    /* end-of-archive → cinematic credits roll */
+    .credits-veil { position: fixed; inset: 0; z-index: 220; display: flex; justify-content: center; overflow: hidden;
+      background: radial-gradient(120% 100% at 50% 0%, #0b0b10 0%, #060608 70%); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+      opacity: 0; transition: opacity .6s ease; cursor: pointer; }
+    .credits-veil.show { opacity: 1; }
+    .credits-roll { position: absolute; top: 0; width: min(90vw, 560px); text-align: center; transform: translateY(100vh);
+      animation: creditsScroll 23s linear forwards; }
+    @keyframes creditsScroll { from { transform: translateY(100vh); } to { transform: translateY(-115%); } }
+    .credits-h { font-family: 'Newsreader', serif; font-size: clamp(30px, 6vw, 52px); color: #f5f1e8; margin: 0; }
+    .credits-of { font-style: italic; color: var(--ac, #e8b34a); }
+    .credits-sub { font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--ac, #e8b34a); margin-top: 16px; }
+    .credits-role { font-family: 'Space Grotesk', sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: #8b8579; margin-top: 58px; line-height: 1.7; }
+    .credits-name { font-family: 'Newsreader', serif; font-style: italic; font-size: 23px; color: #f3efe6; margin-top: 9px; line-height: 1.4; }
+    .credits-skip { position: fixed; bottom: 26px; left: 0; right: 0; text-align: center; font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: #5d5648; animation: pulseGlow 2.4s ease-in-out infinite; pointer-events: none; }
   </style>
 </helmet>
 <div ref="{{ rootRef }}" tabindex="0" style="position: fixed; inset: 0; overflow: hidden; background: radial-gradient(130% 100% at 50% 0%, #14141a 0%, #0a0a0c 55%, #060608 100%); color: #f3efe6; font-family: 'Space Grotesk', sans-serif; outline: none; touch-action: none;">
@@ -324,7 +339,7 @@
       <div ref="{{ endSpacerRef }}" style="height: 24vh;"></div>
       <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;">
         <div style="width: 54px; height: 1px; background: rgba(255,255,255,0.22);"></div>
-        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--ac, #e8b34a);">End</div>
+        <div class="mark-egg" onClick="{{ onEndCredits }}" title="Roll the credits" style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--ac, #e8b34a);">End</div>
       </div>
       <div style="height: 6vh;"></div>
       <footer style="pointer-events: auto; width: 100%; border-top: 1px solid rgba(255,255,255,0.08); padding: 30px 34px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; background: rgba(8,9,12,0.5);">
@@ -1500,6 +1515,47 @@ class Component extends DCLogic {
     this.setState((s) => ({ markMode: ((s.markMode || 0) + 1) % 3 }));
   };
 
+  // clicking "End" at the bottom of the archive rolls cinematic credits
+  onEndCredits = (e) => {
+    if (e) e.stopPropagation();
+    if (this._creditsEl || !this.rootEl) return;
+    const veil = document.createElement('div');
+    veil.className = 'credits-veil';
+    veil.innerHTML =
+      '<div class="credits-roll">' +
+        '<div class="credits-h">Markive <span class="credits-of">of</span> Stuff</div>' +
+        '<div class="credits-sub">MMXXVI</div>' +
+        '<div class="credits-role">Directed by</div><div class="credits-name">Marcus Chiu</div>' +
+        '<div class="credits-role">Curated by</div><div class="credits-name">Marcus Chiu</div>' +
+        '<div class="credits-role">Photography</div><div class="credits-name">Allegedly Original</div>' +
+        '<div class="credits-role">Words &amp; Quotes</div><div class="credits-name">Various, Uncredited</div>' +
+        '<div class="credits-role">Sound Department</div><div class="credits-name">The Internet</div>' +
+        '<div class="credits-role">Featuring</div><div class="credits-name">Images &middot; Quotes<br>Audio &middot; Video</div>' +
+        '<div class="credits-role" style="margin-top:90px;">No pixels were harmed<br>in the making of this archive.</div>' +
+        '<div class="credits-sub" style="margin-top:80px;">All works stolen</div>' +
+        '<div class="credits-role">&copy; MMXXVI</div>' +
+      '</div>' +
+      '<div class="credits-skip">Click anywhere to skip</div>';
+    this.rootEl.appendChild(veil);
+    this._creditsEl = veil;
+    requestAnimationFrame(() => veil.classList.add('show'));
+    const close = () => this.closeCredits();
+    veil.addEventListener('click', close);
+    const roll = veil.querySelector('.credits-roll');
+    if (roll) roll.addEventListener('animationend', close, { once: true });
+    this._creditsKey = (ev) => { if ((ev.key || '').toLowerCase() === 'escape') close(); };
+    document.addEventListener('keydown', this._creditsKey);
+  };
+
+  closeCredits = () => {
+    const veil = this._creditsEl;
+    if (!veil) return;
+    this._creditsEl = null;
+    if (this._creditsKey) { document.removeEventListener('keydown', this._creditsKey); this._creditsKey = null; }
+    veil.classList.remove('show');
+    setTimeout(() => { if (veil.parentNode) veil.parentNode.removeChild(veil); }, 600);
+  };
+
   onResize = () => this.computeLayout();
   endRef = (el) => { this.endEl = el; };
   endSpacerRef = (el) => { this.endSpacerEl = el; if (el && this.endTopSpacer) el.style.height = this.endTopSpacer + 'px'; };
@@ -1990,6 +2046,7 @@ class Component extends DCLogic {
       curTimeRef: this.curTimeRef,
       durTimeRef: this.durTimeRef,
       endRef: this.endRef,
+      onEndCredits: this.onEndCredits,
       endSpacerRef: this.endSpacerRef,
       onTileEnter: this.onTileEnter,
       onTileLeave: this.onTileLeave,
