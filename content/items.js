@@ -53,7 +53,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-19T21:09:14.038-05:00", file: "2026-06-19T21:09:14.038-05:00.jpeg",
     tags: ["Pokémon socks","Charmander","Pikachu","car interior","socks","anime","fashion socks","gray sock","orange sock","lunchbox design"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-19T21:09:06.112-05:00", file: "2026-06-19T21:09:06.112-05:00.jpeg" },
+  { type: "image", date: "2026-06-19T21:09:06.112-05:00", file: "2026-06-19T21:09:06.112-05:00.jpeg",
+    tags: ["Pokémon","Kung Fu Tea","Happy Holidays","red fabric","green Pokémon character","car interior","ESRB rating","plastic cup","Nintendo Switch","collectible item"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-19T21:08:55.857-05:00", file: "2026-06-19T21:08:55.857-05:00.jpeg" },
 
