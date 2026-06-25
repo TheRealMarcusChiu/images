@@ -686,8 +686,19 @@ async function requireCommands(cmds) {
 
 await requireCommands(['yt-dlp', 'ffmpeg']);
 
+async function backfillTags() {
+  let items;
+  try { items = await readItems(); } catch { return; }
+  let n = 0;
+  for (const e of items) {
+    if (taggableImageName(e) && !(Array.isArray(e.tags) && e.tags.length)) { enqueueTag(e.date); n++; }
+  }
+  if (n) console.log(`  tagging: queued ${n} untagged image(s) for backfill`);
+}
+
 server.listen(PORT, HOST, () => {
   console.log('Mosaic Gallery admin server');
   console.log(`  admin:    http://${HOST}:${PORT}/`);
   console.log(`  gallery:  http://${HOST}:${PORT}/index`);
+  backfillTags();
 });
