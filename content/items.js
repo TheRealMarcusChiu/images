@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "audio", date: "2026-06-25T18:31:35.084-05:00", file: "2026-06-25T18:31:35.084-05:00.mp3",
-    title: "TEST", desc: "TEST" },
+    title: "TEST", desc: "TEST", tags: ["el shaddai","praise","god","christ","messiah","jesus","bible","hymn","praise god","praise christ"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-25T12:45:10.334-05:00", file: "2026-06-25T12:45:10.334-05:00.webp",
     tags: ["Marriage Advice","1886","Jane Wells","compromise","friendship","book page","historical text","family values","children","text excerpt"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
