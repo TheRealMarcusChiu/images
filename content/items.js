@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-25T12:45:10.334-05:00", file: "2026-06-25T12:45:10.334-05:00.webp" },
+
   { type: "image", date: "2026-06-25T12:36:58.060-05:00", file: "2026-06-25T12:36:58.060-05:00.jpeg",
     tags: ["book stack","stacked books","bookshelf","reading material","non-fiction books","book collection","book titles","literary works","educational books","book display"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
