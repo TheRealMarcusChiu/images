@@ -164,7 +164,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-10T01:01:17.463-05:00", file: "2026-06-10T01:01:17.463-05:00.png",
     link: "http://git.marcuschiu.com/var-log/enter-visual/art/draw-random-girl/", tags: ["short hair","blue tone","tear","side profile","dark hair","moody lighting","human face","soft focus","monochrome","subtle expression"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
-  { type: "image", date: "2026-06-09T23:51:28.050-05:00", file: "2026-06-09T23:51:28.050-05:00.webp" },
+  { type: "image", date: "2026-06-09T23:51:28.050-05:00", file: "2026-06-09T23:51:28.050-05:00.webp",
+    tags: ["anime","penguin character","female character","grocery store","text overlay","romantic misunderstanding","manga style","store aisle","cartoon","visual novel"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-09T20:38:35.308-05:00", file: "2026-06-09T20:38:35.308-05:00.webp",
     desc: "the most personal is the most creative", link: "https://archive.org/details/MereChristianityCSL/page/n125/mode/2up#:~:text=you%20will%20never,find%20eternal%20life." },
