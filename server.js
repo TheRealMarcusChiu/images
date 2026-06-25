@@ -43,10 +43,11 @@ const HOST       = process.env.HOST || '127.0.0.1';
 const PORT       = process.env.PORT || 3000;
 const MAX_BODY   = 512 * 1024 * 1024; // 512 MB ceiling
 
-const TAGGER_URL      = process.env.TAGGER_URL || 'https://media-tagger.lan/v1/tag';
-const TAGGER_PROVIDER = process.env.TAGGER_PROVIDER || 'ollama';
-const TAGGER_MODEL    = process.env.TAGGER_MODEL || 'qwen3-vl:8b';
-const TAGGER_TIMEOUT  = 120000; // vision models are slow; generous per-image cap
+const TAGGER_URL       = process.env.TAGGER_URL || 'https://media-tagger.lan/v1/tag';
+const TAGGER_AUDIO_URL = process.env.TAGGER_AUDIO_URL || 'https://media-tagger.lan/v1/tag/audio';
+const TAGGER_PROVIDER  = process.env.TAGGER_PROVIDER || 'ollama';
+const TAGGER_MODEL     = process.env.TAGGER_MODEL || 'qwen3-vl:8b';
+const TAGGER_TIMEOUT   = Number(process.env.TAGGER_TIMEOUT) || 120000; // vision/audio models are slow; generous per-file cap
 
 const DEFAULT_HEADER =
 `/* ──────────────────────────────────────────────────────────────────────────
@@ -182,12 +183,14 @@ async function readItems() {
   return Array.isArray(sandbox.window.GALLERY_ITEMS) ? sandbox.window.GALLERY_ITEMS : [];
 }
 
-/* Which media filename (if any) should be sent to the tagger for this entry. */
-function taggableImageName(entry) {
+/* What to send to the tagger for this entry, or null. Images and video posters
+   go to the image endpoint; audio is tagged from the audio file itself. */
+function taggableMedia(entry) {
   if (!entry) return null;
-  if (entry.type === 'image') return entry.file || null;
-  if (entry.type === 'video' || entry.type === 'audio') return entry.poster || null;
-  return null; // quote / youtube have no local image
+  if (entry.type === 'image') return entry.file ? { name: entry.file, kind: 'image' } : null;
+  if (entry.type === 'video') return entry.poster ? { name: entry.poster, kind: 'image' } : null;
+  if (entry.type === 'audio') return entry.file ? { name: entry.file, kind: 'audio' } : null;
+  return null; // quote / youtube have no local media to tag
 }
 
 function serializeEntry(entry) {
@@ -266,19 +269,20 @@ async function runTagJob(date, force) {
   let items = await readItems();
   let entry = items.find((e) => e.date === date);
   if (!entry) return;
-  const name = taggableImageName(entry);
-  if (!name) return;
+  const target = taggableMedia(entry);
+  if (!target) return;
   if (Array.isArray(entry.tags) && entry.tags.length && !force) return;
 
   let tags;
-  try { tags = await tagImage(join(MEDIA_DIR, name)); }
-  catch (e) { console.error(`tagging ${name} failed:`, e.message); return; }
+  try { tags = await tagFile(join(MEDIA_DIR, target.name), target.kind); }
+  catch (e) { console.error(`tagging ${target.name} failed:`, e.message); return; }
 
   // re-read after the slow request so concurrent edits aren't overwritten
   items = await readItems();
   entry = items.find((e) => e.date === date);
-  if (!entry) return;                              // deleted while tagging
-  if (taggableImageName(entry) !== name) return;   // image changed; a newer job will cover it
+  if (!entry) return;                                  // deleted while tagging
+  const after = taggableMedia(entry);
+  if (!after || after.name !== target.name) return;    // media changed; a newer job will cover it
   entry.tags = tags;
   entry.tagProvider = TAGGER_PROVIDER;
   entry.tagModel = TAGGER_MODEL;
@@ -314,26 +318,29 @@ function download(url, redirects = 0) {
   });
 }
 
-/* ── AI image tagger client (zero-dep multipart POST; protocol-aware) ──
-   POSTs one image to the vision tagger and returns its tag list. The .lan
-   host is self-signed, so HTTPS verification is disabled. Throws on any
-   failure so callers can skip-and-retry-later. */
-async function tagImage(absPath) {
+/* ── AI media tagger client (zero-dep multipart POST; protocol-aware) ──
+   POSTs one file to the tagger and returns its tag list. kind 'audio' hits the
+   audio endpoint with a `files` part; anything else hits the image endpoint
+   with an `images` part. The .lan host is self-signed, so HTTPS verification is
+   disabled. Throws on any failure so callers can skip-and-retry-later. */
+async function tagFile(absPath, kind) {
+  const audio = kind === 'audio';
   const data = await readFile(absPath);
   const name = basename(absPath);
   const ctype = MIME[extname(name).toLowerCase()] || 'application/octet-stream';
+  const fileField = audio ? 'files' : 'images';
   const boundary = '----tagger' + Date.now().toString(16) + Math.random().toString(16).slice(2);
   const CRLF = '\r\n';
   const field = (n, v) => `--${boundary}${CRLF}Content-Disposition: form-data; name="${n}"${CRLF}${CRLF}${v}${CRLF}`;
   const head = Buffer.from(
     field('provider', TAGGER_PROVIDER) +
     field('model', TAGGER_MODEL) +
-    `--${boundary}${CRLF}Content-Disposition: form-data; name="images"; filename="${name}"${CRLF}Content-Type: ${ctype}${CRLF}${CRLF}`,
+    `--${boundary}${CRLF}Content-Disposition: form-data; name="${fileField}"; filename="${name}"${CRLF}Content-Type: ${ctype}${CRLF}${CRLF}`,
     'utf8');
   const tail = Buffer.from(`${CRLF}--${boundary}--${CRLF}`, 'utf8');
   const payload = Buffer.concat([head, data, tail]);
 
-  const u = new URL(TAGGER_URL);
+  const u = new URL(audio ? TAGGER_AUDIO_URL : TAGGER_URL);
   const lib = u.protocol === 'http:' ? httpRequest : httpsRequest;
   const opts = {
     hostname: u.hostname,
@@ -482,7 +489,7 @@ async function handleAdd(req, res, body) {
   items.unshift(entry);
   await writeItems(items);
   const git = await gitCommitPush(`admin: add ${entry.type} tile ${entry.date}`);
-  if (taggableImageName(entry)) enqueueTag(entry.date);
+  if (taggableMedia(entry)) enqueueTag(entry.date);
   return sendJSON(res, 200, { ok: true, entry, git });
 }
 
@@ -556,7 +563,8 @@ async function handleMedia(req, res, body) {
 
   await writeItems(items);
   const git = await gitCommitPush(`admin: update ${slot} for tile ${entry.date}`);
-  if (taggableImageName(entry) === entry[slot]) enqueueTag(entry.date, { force: true });
+  const tm = taggableMedia(entry);
+  if (tm && tm.name === entry[slot]) enqueueTag(entry.date, { force: true });
   return sendJSON(res, 200, { ok: true, entry, git });
 }
 
@@ -698,7 +706,7 @@ async function backfillTags() {
   try { items = await readItems(); } catch { return; }
   let n = 0;
   for (const e of items) {
-    if (taggableImageName(e) && !(Array.isArray(e.tags) && e.tags.length)) { enqueueTag(e.date); n++; }
+    if (taggableMedia(e) && !(Array.isArray(e.tags) && e.tags.length)) { enqueueTag(e.date); n++; }
   }
   if (n) console.log(`  tagging: queued ${n} untagged image(s) for backfill`);
 }
