@@ -222,7 +222,7 @@ window.GALLERY_ITEMS = [
     link: "https://www.imdb.com/title/tt1913273", tags: ["handheld sketch","anime characters","pencil drawing","six-panel layout","Anohana reference","2013 date","character portraits","school uniforms","glasses character","tied hair"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T19:57:48.626-05:00", file: "2026-06-08T19:57:48.626-05:00.jpeg",
-    desc: "mich star boba", link: "https://share.google/8Kedbj52NAAyVMJmW" },
+    desc: "mich star boba", link: "https://share.google/8Kedbj52NAAyVMJmW", tags: ["Taiwanese tea","bubble tea","San Chen","handheld drink","strawberry flavor","paper sleeve","twine","outdoor setting","people in background","plastic cup"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T19:57:20.077-05:00", file: "2026-06-08T19:57:20.077-05:00.jpeg",
     desc: "a butt", link: "https://maps.app.goo.gl/bX7CU7NCin6pseH36" },
