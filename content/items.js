@@ -225,7 +225,7 @@ window.GALLERY_ITEMS = [
     desc: "mich star boba", link: "https://share.google/8Kedbj52NAAyVMJmW", tags: ["Taiwanese tea","bubble tea","San Chen","handheld drink","strawberry flavor","paper sleeve","twine","outdoor setting","people in background","plastic cup"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T19:57:20.077-05:00", file: "2026-06-08T19:57:20.077-05:00.jpeg",
-    desc: "a butt", link: "https://maps.app.goo.gl/bX7CU7NCin6pseH36" },
+    desc: "a butt", link: "https://maps.app.goo.gl/bX7CU7NCin6pseH36", tags: ["pink inflatable sculpture","stone building","yellow banner","exhibitions","urban art","large-scale art","public art","building facade","window","sky"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T12:03:00.000-05:00", file: "2026-06-08T12:03:00.000-05:00.webp" },
 
