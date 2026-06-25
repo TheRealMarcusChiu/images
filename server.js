@@ -265,6 +265,23 @@ function enqueueTag(date, { force = false } = {}) {
   });
   return tagQueue;
 }
+/* Speech-to-text taggers hallucinate fillers ("thank you", "music", "you") for
+   vocal-less / silent audio. Strip those; if too little real signal remains, the
+   audio result is junk and the caller should fall back to the cover image. */
+const TAG_JUNK = new Set(['you', 'bye', 'bye bye', 'hmm', 'uh', 'um', 'ah', 'oh', 'yeah', 'okay', 'ok',
+  'silence', 'no speech', 'none', 'music', '[music]', '(music)', '♪', '♪♪', '...', '.', 'subscribe']);
+function meaningfulTags(tags) {
+  return (tags || []).map((t) => String(t).toLowerCase().trim()).filter((t) => {
+    if (!t || TAG_JUNK.has(t)) return false;
+    if (/\bthank(s| you)\b/.test(t)) return false;          // "thank you", "repeated thank you", "thanks for watching"
+    if (/please subscrib|next video|next time/.test(t)) return false;
+    return true;
+  });
+}
+function audioTagsAreGarbage(tags) {
+  return meaningfulTags(tags).length < 3; // real transcriptions yield many themed tags
+}
+
 async function runTagJob(date, force) {
   let items = await readItems();
   let entry = items.find((e) => e.date === date);
@@ -272,12 +289,22 @@ async function runTagJob(date, force) {
   const target = taggableMedia(entry);
   if (!target) return;
   if (Array.isArray(entry.tags) && entry.tags.length && !force) return;
+  const posterName = entry.poster || null;
 
   let tags;
   try { tags = await tagFile(join(MEDIA_DIR, target.name), target.kind); }
   catch (e) { console.error(`tagging ${target.name} failed:`, e.message); return; }
 
-  // re-read after the slow request so concurrent edits aren't overwritten
+  // vocal-less / hallucinated audio → fall back to tagging the cover image
+  if (target.kind === 'audio' && audioTagsAreGarbage(tags) && posterName) {
+    try {
+      const coverTags = await tagFile(join(MEDIA_DIR, posterName), 'image');
+      if (coverTags.length) { console.log(`audio ${target.name}: weak transcription — used cover ${posterName}`); tags = coverTags; }
+    } catch (e) { console.error(`cover fallback ${posterName} failed:`, e.message); }
+  }
+  if (!tags.length) return; // nothing usable from audio or cover — leave untagged for the next backfill
+
+  // re-read after the slow request(s) so concurrent edits aren't overwritten
   items = await readItems();
   entry = items.find((e) => e.date === date);
   if (!entry) return;                                  // deleted while tagging
