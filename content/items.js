@@ -107,7 +107,8 @@ window.GALLERY_ITEMS = [
   { type: "quote", date: "2026-06-12T12:49:38.279-05:00",
     quote: "Dead people receive more flowers than living ones, because regret is stronger than gratitude" },
 
-  { type: "image", date: "2026-06-12T12:47:46.635-05:00", file: "2026-06-12T12:47:46.635-05:00.webp" },
+  { type: "image", date: "2026-06-12T12:47:46.635-05:00", file: "2026-06-12T12:47:46.635-05:00.webp",
+    tags: ["teddy bear","stuffed animals","warehouse","dark lighting","text overlay","white teddy bear","toys","fuzzy texture","arrangement","store"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T12:46:37.578-05:00", file: "2026-06-12T12:46:37.578-05:00.webp",
     desc: "1 year to a 10 year old is 10 percent of his life, but to a 100 year old it's 1 percent" },
