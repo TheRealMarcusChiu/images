@@ -198,7 +198,7 @@ window.GALLERY_ITEMS = [
     tags: ["P Winnie the Pooh","cherry blossom tree","honey pot","text quote","watercolor style","sitting bear","nature scene","positive message","spring setting","illustration"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-08T23:25:21.316-05:00", file: "2026-06-08T23:25:21.316-05:00.webp",
-    hidden: true },
+    tags: ["bloodied cat","cartoon","text overlay","recovery","injured","red and blue","dripping blood","lying down","meme","sad"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-08T23:21:10.009-05:00", file: "2026-06-08T23:21:10.009-05:00.webp",
     hidden: true },
