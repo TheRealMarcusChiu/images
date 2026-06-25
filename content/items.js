@@ -39,7 +39,7 @@ window.GALLERY_ITEMS = [
     tags: ["tiramisu","dessert","layered cake","watercolor","food illustration","cocoa powder","mascarpone","sugar dusting","square shape","text overlay"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-22T12:24:38.329-05:00", file: "2026-06-22T12:24:38.329-05:00.webp",
-    desc: "\"You are the average of the five people you spend the most time with\" is only true before the internet. Now it's the average of the content you expose your mind to." },
+    desc: "\"You are the average of the five people you spend the most time with\" is only true before the internet. Now it's the average of the content you expose your mind to.", tags: ["text","quote","self-improvement","personal development","mindset","content consumption","influence","growth","inspiration","life advice"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-22T12:23:20.805-05:00", file: "2026-06-22T12:23:20.805-05:00.webp" },
 
