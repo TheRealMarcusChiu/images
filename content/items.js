@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-06-25T12:35:55.413-05:00", file: "2026-06-25T12:35:55.413-05:00.webp" },
+  { type: "image", date: "2026-06-25T12:35:55.413-05:00", file: "2026-06-25T12:35:55.413-05:00.webp",
+    tags: ["Kafka","Dostoevsky","comparison","literary","loneliness","text","portrait","black background","text overlay","contrast"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-25T12:31:52.827-05:00", file: "2026-06-25T12:31:52.827-05:00.jpg",
     tags: ["mountains","clouds","water","monochrome","landscape","nature","sky","horizon","dramatic","silhouette"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
