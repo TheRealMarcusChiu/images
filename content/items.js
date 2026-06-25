@@ -188,7 +188,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-09T13:08:58.278-05:00", file: "2026-06-09T13:08:58.278-05:00.png",
     tags: ["quote","poetry","Mary Oliver","Upstream","self-discovery","youth","stranger to self","existence","world exploration","literature"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-09T13:08:40.695-05:00", file: "2026-06-09T13:08:40.695-05:00.jpeg" },
+  { type: "image", date: "2026-06-09T13:08:40.695-05:00", file: "2026-06-09T13:08:40.695-05:00.jpeg",
+    tags: ["handwritten text","quote","growth","peace","dark background","blue text","inspirational","motivational","text on dark surface","cursive writing"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-09T13:03:52.793-05:00", file: "2026-06-09T13:03:52.793-05:00.webp" },
 
