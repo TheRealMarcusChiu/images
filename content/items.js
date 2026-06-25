@@ -138,7 +138,7 @@ window.GALLERY_ITEMS = [
     tags: ["man","computer equipment","monitor","electronics","audio mixer","circuitry","wires","blue screen","shack","technical setup"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T03:19:29.244-05:00", file: "2026-06-12T03:19:29.244-05:00.jpg",
-    desc: "Downtown Dallas - circa 2017", hidden: true },
+    desc: "Downtown Dallas - circa 2017", tags: ["abandoned building","urban decay","water puddle","concrete sidewalk","large industrial building","broken windows","sunlit facade","dilapidated structure","exposed wiring","empty lot"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-12T02:59:24.886-05:00", file: "2026-06-12T02:59:24.886-05:00.png",
     hidden: true },
