@@ -62,7 +62,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-19T14:19:37.649-05:00", file: "2026-06-19T14:19:37.649-05:00.webp",
     tags: ["gas station","dog","sleeping","blanket","pillow","Shell","OSÓRIOS","#MB","fuel pump","pet"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-17T23:24:14.513-05:00", file: "2026-06-17T23:24:14.513-05:00.webp" },
+  { type: "image", date: "2026-06-17T23:24:14.513-05:00", file: "2026-06-17T23:24:14.513-05:00.webp",
+    tags: ["medieval knight","armor","cell phone","text message","prophecy","betrayal","dark sky","purple clouds","meme","digital communication"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-17T23:23:20.885-05:00", file: "2026-06-17T23:23:20.885-05:00.webp" },
 
