@@ -26,10 +26,10 @@
 import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir, rename, unlink, readdir } from 'node:fs/promises';
 import { createReadStream, existsSync, statSync } from 'node:fs';
-import { join, extname, normalize as normPath, dirname } from 'node:path';
+import { join, extname, normalize as normPath, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { get as httpsGet } from 'node:https';
-import { get as httpGet } from 'node:http';
+import { get as httpsGet, request as httpsRequest } from 'node:https';
+import { get as httpGet, request as httpRequest } from 'node:http';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import vm from 'node:vm';
@@ -42,6 +42,11 @@ const ITEMS_FILE = join(ROOT, 'content', 'items.js');
 const HOST       = process.env.HOST || '127.0.0.1';
 const PORT       = process.env.PORT || 3000;
 const MAX_BODY   = 512 * 1024 * 1024; // 512 MB ceiling
+
+const TAGGER_URL      = process.env.TAGGER_URL || 'https://media-tagger.lan/v1/tag';
+const TAGGER_PROVIDER = process.env.TAGGER_PROVIDER || 'ollama';
+const TAGGER_MODEL    = process.env.TAGGER_MODEL || 'qwen3-vl:8b';
+const TAGGER_TIMEOUT  = 120000; // vision models are slow; generous per-image cap
 
 const DEFAULT_HEADER =
 `/* ──────────────────────────────────────────────────────────────────────────
@@ -259,6 +264,56 @@ function download(url, redirects = 0) {
         url,
       }));
     }).on('error', reject);
+  });
+}
+
+/* ── AI image tagger client (zero-dep multipart POST; protocol-aware) ──
+   POSTs one image to the vision tagger and returns its tag list. The .lan
+   host is self-signed, so HTTPS verification is disabled. Throws on any
+   failure so callers can skip-and-retry-later. */
+async function tagImage(absPath) {
+  const data = await readFile(absPath);
+  const name = basename(absPath);
+  const ctype = MIME[extname(name).toLowerCase()] || 'application/octet-stream';
+  const boundary = '----tagger' + Date.now().toString(16) + Math.random().toString(16).slice(2);
+  const CRLF = '\r\n';
+  const field = (n, v) => `--${boundary}${CRLF}Content-Disposition: form-data; name="${n}"${CRLF}${CRLF}${v}${CRLF}`;
+  const head = Buffer.from(
+    field('provider', TAGGER_PROVIDER) +
+    field('model', TAGGER_MODEL) +
+    `--${boundary}${CRLF}Content-Disposition: form-data; name="images"; filename="${name}"${CRLF}Content-Type: ${ctype}${CRLF}${CRLF}`,
+    'utf8');
+  const tail = Buffer.from(`${CRLF}--${boundary}--${CRLF}`, 'utf8');
+  const payload = Buffer.concat([head, data, tail]);
+
+  const u = new URL(TAGGER_URL);
+  const lib = u.protocol === 'http:' ? httpRequest : httpsRequest;
+  const opts = {
+    hostname: u.hostname,
+    port: u.port || (u.protocol === 'http:' ? 80 : 443),
+    path: u.pathname + u.search,
+    method: 'POST',
+    headers: { 'Content-Type': `multipart/form-data; boundary=${boundary}`, 'Content-Length': payload.length },
+  };
+  if (u.protocol === 'https:') opts.rejectUnauthorized = false;
+
+  return new Promise((resolve, reject) => {
+    const req = lib(opts, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        if (res.statusCode !== 200) return reject(new Error(`tagger HTTP ${res.statusCode}`));
+        let json;
+        try { json = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
+        catch { return reject(new Error('tagger returned non-JSON')); }
+        const tags = json && json.results && json.results[0] && json.results[0].tags;
+        if (!Array.isArray(tags)) return reject(new Error('tagger response had no tags'));
+        resolve(tags.map(String));
+      });
+    });
+    req.on('error', reject);
+    req.setTimeout(TAGGER_TIMEOUT, () => req.destroy(new Error('tagger timeout')));
+    req.end(payload);
   });
 }
 
