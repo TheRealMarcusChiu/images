@@ -26,7 +26,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-23T20:33:46.412-05:00", file: "2026-06-23T20:33:46.412-05:00.webp",
     tags: ["illusion","platonic","romantic","free choice","cow","text labels","relationship concepts","visual metaphor","color-coded sections","choice illusion"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-23T20:33:21.966-05:00", file: "2026-06-23T20:33:21.966-05:00.webp" },
+  { type: "image", date: "2026-06-23T20:33:21.966-05:00", file: "2026-06-23T20:33:21.966-05:00.webp",
+    tags: ["Instagram post","handwritten text","quote","social media","saved content","relationship","memories","core memories","random hangouts","people"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-23T20:21:41.905-05:00", file: "2026-06-23T20:21:41.905-05:00.jpeg",
     link: "https://git.marcuschiu.com/thoughts/article.html#2026-06-23--What-is-Beauty%3F" },
