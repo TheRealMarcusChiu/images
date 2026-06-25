@@ -182,6 +182,14 @@ async function readItems() {
   return Array.isArray(sandbox.window.GALLERY_ITEMS) ? sandbox.window.GALLERY_ITEMS : [];
 }
 
+/* Which media filename (if any) should be sent to the tagger for this entry. */
+function taggableImageName(entry) {
+  if (!entry) return null;
+  if (entry.type === 'image') return entry.file || null;
+  if (entry.type === 'video' || entry.type === 'audio') return entry.poster || null;
+  return null; // quote / youtube have no local image
+}
+
 function serializeEntry(entry) {
   const q = (v) => JSON.stringify(v);
   const head = [`type: ${q(entry.type)}`, `date: ${q(entry.date)}`];
@@ -194,6 +202,9 @@ function serializeEntry(entry) {
   if (entry.desc)   tail.push(`desc: ${q(entry.desc)}`);
   if (entry.link)   tail.push(`link: ${q(entry.link)}`);
   if (entry.poster) tail.push(`poster: ${q(entry.poster)}`);
+  if (Array.isArray(entry.tags) && entry.tags.length) tail.push(`tags: ${q(entry.tags)}`);
+  if (entry.tagProvider) tail.push(`tagProvider: ${q(entry.tagProvider)}`);
+  if (entry.tagModel)    tail.push(`tagModel: ${q(entry.tagModel)}`);
   if (entry.hidden) tail.push(`hidden: true`);
   let s = `  { ${head.join(', ')}`;
   if (tail.length) s += `,\n    ${tail.join(', ')}`;
