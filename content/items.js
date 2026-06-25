@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-25T12:31:52.827-05:00", file: "2026-06-25T12:31:52.827-05:00.jpg" },
+
   { type: "image", date: "2026-06-24T18:00:46.900-05:00", file: "2026-06-24T18:00:46.900-05:00.png",
     tags: ["poetry book cover","minimalist design","woman sitting","window with curtains","soft lighting","text overlay","black and white photography","book title 'to be seen'","author name 'BRIANORA'","poems theme"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
