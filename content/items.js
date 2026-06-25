@@ -191,7 +191,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-09T13:08:40.695-05:00", file: "2026-06-09T13:08:40.695-05:00.jpeg",
     tags: ["handwritten text","quote","growth","peace","dark background","blue text","inspirational","motivational","text on dark surface","cursive writing"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-09T13:03:52.793-05:00", file: "2026-06-09T13:03:52.793-05:00.webp" },
+  { type: "image", date: "2026-06-09T13:03:52.793-05:00", file: "2026-06-09T13:03:52.793-05:00.webp",
+    tags: ["red fox","sleeping","couch","text overlay","relaxation","animal","warm lighting","comfort","paw","text"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T23:25:28.249-05:00", file: "2026-06-08T23:25:28.249-05:00.jpg",
     hidden: true },
