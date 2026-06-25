@@ -227,7 +227,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-08T19:57:20.077-05:00", file: "2026-06-08T19:57:20.077-05:00.jpeg",
     desc: "a butt", link: "https://maps.app.goo.gl/bX7CU7NCin6pseH36", tags: ["pink inflatable sculpture","stone building","yellow banner","exhibitions","urban art","large-scale art","public art","building facade","window","sky"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-08T12:03:00.000-05:00", file: "2026-06-08T12:03:00.000-05:00.webp" },
+  { type: "image", date: "2026-06-08T12:03:00.000-05:00", file: "2026-06-08T12:03:00.000-05:00.webp",
+    tags: ["poetry","emotional text","relationship","heartbreak","lyrics","text-based art","intimate feelings","unrequited love","despair","hopelessness"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T12:02:00.000-05:00", file: "2026-06-08T12:02:00.000-05:00.webp",
     desc: "Geodude Hanger", link: "https://www.etsy.com/market/geodude_hanger" },
