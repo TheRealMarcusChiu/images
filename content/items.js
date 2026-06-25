@@ -74,7 +74,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-16T21:26:38.696-05:00", file: "2026-06-16T21:26:38.696-05:00.jpg",
     tags: ["modern architecture","conical structure","reflective surface","blue sky","clouds","urban landmark","metallic material","tall building","abstract design","geometric pattern"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-14T13:11:25.558-05:00", file: "2026-06-14T13:11:25.558-05:00.jpg" },
+  { type: "image", date: "2026-06-14T13:11:25.558-05:00", file: "2026-06-14T13:11:25.558-05:00.jpg",
+    tags: ["night sky","stars","aurora","mountains","lake","city lights","clouds","sunset","landscape","celestial phenomenon"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-06-14T11:27:18.628-05:00",
     quote: "The question in love isn't whether I want this person, but more of whether you want to know this person" },
