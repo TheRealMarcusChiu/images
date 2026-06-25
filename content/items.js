@@ -213,7 +213,7 @@ window.GALLERY_ITEMS = [
     hidden: true },
 
   { type: "video", date: "2026-06-08T22:59:41.513-05:00", file: "2026-06-08T22:59:41.513-05:00.mov",
-    desc: "jellyfish", poster: "2026-06-08T22:59:41.513-05:00-poster.jpg", hidden: true },
+    desc: "jellyfish", poster: "2026-06-08T22:59:41.513-05:00-poster.jpg", tags: ["jellyfish","marine life","aquatic animal","blue background","translucent body","striped bell","long tentacles","bioluminescent","underwater","soft coral"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-08T19:58:33.441-05:00", file: "2026-06-08T19:58:33.441-05:00.jpg" },
 
