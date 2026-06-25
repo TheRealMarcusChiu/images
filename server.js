@@ -503,6 +503,13 @@ async function handleUpdate(res, body) {
   if ('desc' in req) { const v = (req.desc || '').trim(); if (v) entry.desc = v; else delete entry.desc; }
   if ('link' in req) { const v = (req.link || '').trim(); if (v) entry.link = v; else delete entry.link; }
   if ('hidden' in req) { if (req.hidden) entry.hidden = true; else delete entry.hidden; }
+  if ('tags' in req) {
+    const clean = Array.isArray(req.tags) ? req.tags.map((t) => String(t).trim()).filter(Boolean) : [];
+    const seen = new Set();
+    const uniq = clean.filter((t) => { const k = t.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
+    if (uniq.length) entry.tags = uniq;
+    else { delete entry.tags; delete entry.tagProvider; delete entry.tagModel; } // cleared → let backfill re-tag
+  }
 
   if (req.newDate && req.newDate !== entry.date) {
     if (Number.isNaN(Date.parse(req.newDate))) return sendJSON(res, 400, { error: 'Invalid new date' });

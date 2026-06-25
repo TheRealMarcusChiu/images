@@ -50,6 +50,14 @@
   .notice-error { color: #cf7a5d; }
   .notice[hidden] { display: none; }
   .edit-thumb { width: 74px; height: 74px; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; object-fit: cover; background: #000; }
+  .tag-editor { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; padding: 9px 11px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; }
+  .tag-editor:focus-within { border-color: var(--ac); }
+  .tag-chips { display: contents; }
+  .tag-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; background: rgba(232,179,74,0.14); border: 1px solid rgba(232,179,74,0.4); border-radius: 999px; color: #f3efe6; font-family: 'Space Grotesk', sans-serif; font-size: 11px; }
+  .tag-rm { background: none; border: none; color: #8b8579; cursor: pointer; font-size: 15px; line-height: 1; padding: 0; }
+  .tag-rm:hover { color: #cf7a5d; }
+  .tag-input { flex: 1; min-width: 90px; background: transparent; border: none; outline: none; color: #f3efe6; font-family: 'Space Grotesk', sans-serif; font-size: 13px; padding: 4px 2px; }
+  .tag-input::placeholder { color: #5d5648; }
 </style>
 </head>
 <body>
@@ -2261,6 +2269,13 @@ class Component extends DCLogic {
       : (it.type === 'video' || it.type === 'audio')
         ? `<label class="edit-file"><span>${it.type === 'audio' ? 'Cover image' : 'Poster image'}</span><input type="file" name="image" accept="image/*"></label>`
         : '';
+    const tagsField = (it.type === 'image' || it.type === 'video' || it.type === 'audio')
+      ? `<label><span>Tags <em>used for search</em></span>
+          <div class="tag-editor" data-tag-editor>
+            <div class="tag-chips" data-tag-chips></div>
+            <input type="text" class="tag-input" data-tag-input placeholder="Add a tag, press Enter">
+          </div></label>`
+      : '';
     return `
       <form id="edit-form" class="admin-form" autocomplete="off">
         ${thumb}
@@ -2271,6 +2286,7 @@ class Component extends DCLogic {
         <label><span>Author</span><input type="text" name="author" value="${esc(it.author || '')}" placeholder="Author"></label>` : ''}
         <label><span>Description</span><textarea name="desc" rows="3" placeholder="Description">${esc(it.desc || '')}</textarea></label>
         <label><span>External link</span><input type="url" name="link" value="${esc(it.link || '')}" placeholder="https://example.com"></label>
+        ${tagsField}
         ${fileField}
         <label class="check-row"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}><span>Hidden</span></label>
         <div class="form-actions">
@@ -2288,6 +2304,32 @@ class Component extends DCLogic {
     const form = $('#edit-form', card);
     form.querySelector('[data-act=cancel]').addEventListener('click', closeModal);
     form.querySelector('[data-act=delete]').addEventListener('click', () => del(it, card));
+
+    // ── tag chip editor (image / video / audio tiles) ──
+    let tags = Array.isArray(it.tags) ? it.tags.slice() : [];
+    const chipsEl = form.querySelector('[data-tag-chips]');
+    const tagInput = form.querySelector('[data-tag-input]');
+    function renderChips() {
+      if (!chipsEl) return;
+      chipsEl.innerHTML = tags.map((t, i) =>
+        `<span class="tag-chip">${esc(t)}<button type="button" class="tag-rm" data-i="${i}" aria-label="Remove ${esc(t)}">×</button></span>`).join('');
+      chipsEl.querySelectorAll('.tag-rm').forEach((b) =>
+        b.addEventListener('click', () => { tags.splice(+b.dataset.i, 1); renderChips(); }));
+    }
+    function addTag(raw) {
+      const v = (raw || '').trim();
+      if (v && !tags.some((t) => t.toLowerCase() === v.toLowerCase())) tags.push(v);
+      renderChips();
+    }
+    function flushTagInput() { if (tagInput && tagInput.value.trim()) { addTag(tagInput.value); tagInput.value = ''; } }
+    if (tagInput) {
+      tagInput.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ',') { ev.preventDefault(); flushTagInput(); }
+        else if (ev.key === 'Backspace' && !tagInput.value && tags.length) { tags.pop(); renderChips(); }
+      });
+      tagInput.addEventListener('blur', flushTagInput);
+    }
+    renderChips();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -2313,6 +2355,7 @@ class Component extends DCLogic {
       if (form.elements.title) payload.title = form.elements.title.value;
       if (form.elements.quote) payload.quote = form.elements.quote.value;
       if (form.elements.author) payload.author = form.elements.author.value;
+      if (chipsEl) { flushTagInput(); payload.tags = tags; }
       saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
       try {
         const res = await fetch('/api/tiles/update', {
