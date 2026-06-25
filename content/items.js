@@ -33,7 +33,7 @@ window.GALLERY_ITEMS = [
     link: "https://git.marcuschiu.com/thoughts/article.html#2026-06-23--What-is-Beauty%3F", tags: ["watercolor","iris flowers","text overlay","abstract background","artistic illustration","beauty theme","golden frame","purple irises","floral design","cursive typography"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-23T01:13:04.088-05:00", file: "2026-06-23T01:13:04.088-05:00.jpeg",
-    desc: "HK street market" },
+    desc: "HK street market", tags: ["street market","t-shirts","souvenirs","urban alley","hong kong","shopping","banners","bags","tents","buildings"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-22T12:25:10.643-05:00", file: "2026-06-22T12:25:10.643-05:00.webp" },
 
