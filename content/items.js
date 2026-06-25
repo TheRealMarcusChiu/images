@@ -201,7 +201,7 @@ window.GALLERY_ITEMS = [
     tags: ["bloodied cat","cartoon","text overlay","recovery","injured","red and blue","dripping blood","lying down","meme","sad"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-08T23:21:10.009-05:00", file: "2026-06-08T23:21:10.009-05:00.webp",
-    hidden: true },
+    tags: ["truth","lie","questioning","challenging","text-based","quote","philosophy","moral","comparison","text"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-08T23:13:59.023-05:00", file: "2026-06-08T23:13:59.023-05:00.jpg" },
 
