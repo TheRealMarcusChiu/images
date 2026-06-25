@@ -122,7 +122,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-12T12:43:10.942-05:00", file: "2026-06-12T12:43:10.942-05:00.webp",
     tags: ["Revenge bedtime procrastination","psychological phenomenon","sleep behavior","procrastination","control over time","nighttime habits","self-regulation","sleep deprivation","behavioral psychology","sleep schedule"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-12T12:43:02.204-05:00", file: "2026-06-12T12:43:02.204-05:00.webp" },
+  { type: "image", date: "2026-06-12T12:43:02.204-05:00", file: "2026-06-12T12:43:02.204-05:00.webp",
+    tags: ["woman combing hair","mirror","desk lamp","long hair","hand holding comb","bedroom setting","text overlay","self-care","reflection","beauty routine"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T12:42:51.357-05:00", file: "2026-06-12T12:42:51.357-05:00.webp" },
 
