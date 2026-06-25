@@ -234,7 +234,7 @@ window.GALLERY_ITEMS = [
     desc: "Geodude Hanger", link: "https://www.etsy.com/market/geodude_hanger", tags: ["Pokémon","Muk","3D print","handheld","watch","purple helmet","gray background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T12:01:00.000-05:00", file: "2026-06-08T12:01:00.000-05:00.webp",
-    link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
+    link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7", tags: ["interior architecture","vertical garden","lobby","elevators","art installation","multi-level building","indoor plants","modern design","staircase","lighting fixtures"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T12:00:00.000-05:00", file: "2026-06-08T12:00:00.000-05:00.webp" },
 ];
