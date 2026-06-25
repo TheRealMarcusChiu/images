@@ -116,7 +116,8 @@ window.GALLERY_ITEMS = [
   { type: "audio", date: "2026-06-12T12:44:24.297-05:00", file: "2026-06-12T12:44:24.297-05:00.mp3",
     title: "Elijah Who - Hello", poster: "2026-06-12T12:44:24.297-05:00-poster.png", tags: ["night scene","anime","two people","cityscape","bicycle","street lamp","stars","urban setting","silhouette","back view"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-12T12:43:20.600-05:00", file: "2026-06-12T12:43:20.600-05:00.webp" },
+  { type: "image", date: "2026-06-12T12:43:20.600-05:00", file: "2026-06-12T12:43:20.600-05:00.webp",
+    tags: ["Anime","Forest","Character","Dog","Weapon","Native American attire","Night scene","Foliage","Fur","Earring"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T12:43:10.942-05:00", file: "2026-06-12T12:43:10.942-05:00.webp" },
 
