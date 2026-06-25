@@ -144,7 +144,7 @@ window.GALLERY_ITEMS = [
     tags: ["Museum of Contemporary Art","Architectural landmark","Sail-shaped structures","Public plaza","Urban landscape","People walking","Overcast sky","Modern architecture","Cultural institution","Stone pavement"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "audio", date: "2026-06-12T01:51:43.644-05:00", file: "2026-06-12T01:51:43.644-05:00.m4a",
-    title: "Our God is an Awesome God", link: "https://www.youtube.com/watch?v=PP9BjKnDaFk", poster: "2026-06-12T01:51:43.644-05:00-poster.jpg", hidden: true },
+    title: "Our God is an Awesome God", link: "https://www.youtube.com/watch?v=PP9BjKnDaFk", poster: "2026-06-12T01:51:43.644-05:00-poster.jpg", tags: ["stars","space","cosmic background","nebula","galaxy","astronomy","deep space","stellar field","night sky","celestial objects"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "audio", date: "2026-06-12T01:05:39.046-05:00", file: "2026-06-12T01:05:39.046-05:00.mp4",
     title: "Darling I Do (Wedding Vows)", desc: "vows are not a list of reasons why you love someone, they are a list of promises you make for someone", poster: "2026-06-12T01:05:39.046-05:00-poster.jpg" },
