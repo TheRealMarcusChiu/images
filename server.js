@@ -482,6 +482,7 @@ async function handleAdd(req, res, body) {
   items.unshift(entry);
   await writeItems(items);
   const git = await gitCommitPush(`admin: add ${entry.type} tile ${entry.date}`);
+  if (taggableImageName(entry)) enqueueTag(entry.date);
   return sendJSON(res, 200, { ok: true, entry, git });
 }
 
@@ -548,6 +549,7 @@ async function handleMedia(req, res, body) {
 
   await writeItems(items);
   const git = await gitCommitPush(`admin: update ${slot} for tile ${entry.date}`);
+  if (taggableImageName(entry) === entry[slot]) enqueueTag(entry.date, { force: true });
   return sendJSON(res, 200, { ok: true, entry, git });
 }
 
