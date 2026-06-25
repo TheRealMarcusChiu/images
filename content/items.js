@@ -219,7 +219,7 @@ window.GALLERY_ITEMS = [
     tags: ["Zoom meeting","Text message","Chat conversation","Thank you habit","You're welcome","Lol","Chuckling","Delivered timestamp","1:27 PM","K avatar"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T19:58:17.091-05:00", file: "2026-06-08T19:58:17.091-05:00.jpeg",
-    link: "https://www.imdb.com/title/tt1913273" },
+    link: "https://www.imdb.com/title/tt1913273", tags: ["handheld sketch","anime characters","pencil drawing","six-panel layout","Anohana reference","2013 date","character portraits","school uniforms","glasses character","tied hair"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T19:57:48.626-05:00", file: "2026-06-08T19:57:48.626-05:00.jpeg",
     desc: "mich star boba", link: "https://share.google/8Kedbj52NAAyVMJmW" },
