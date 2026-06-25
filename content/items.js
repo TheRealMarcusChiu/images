@@ -35,7 +35,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-23T01:13:04.088-05:00", file: "2026-06-23T01:13:04.088-05:00.jpeg",
     desc: "HK street market", tags: ["street market","t-shirts","souvenirs","urban alley","hong kong","shopping","banners","bags","tents","buildings"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-22T12:25:10.643-05:00", file: "2026-06-22T12:25:10.643-05:00.webp" },
+  { type: "image", date: "2026-06-22T12:25:10.643-05:00", file: "2026-06-22T12:25:10.643-05:00.webp",
+    tags: ["tiramisu","dessert","layered cake","watercolor","food illustration","cocoa powder","mascarpone","sugar dusting","square shape","text overlay"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-22T12:24:38.329-05:00", file: "2026-06-22T12:24:38.329-05:00.webp",
     desc: "\"You are the average of the five people you spend the most time with\" is only true before the internet. Now it's the average of the content you expose your mind to." },
