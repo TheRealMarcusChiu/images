@@ -99,7 +99,7 @@ window.GALLERY_ITEMS = [
     quote: "The most intelligent men, like the strongest, find their happiness where others would find only disaster: in the labyrinth, in being hard with themselves and with others, in effort; their delight is in self-mastery; in them asceticism becomes second nature, a necessity, an instinct. They regard a difficult task as a privilege; it is to them a recreation to play with burdens that would crush all others.", desc: "a view under the sun" },
 
   { type: "audio", date: "2026-06-12T13:22:07.684-05:00", file: "2026-06-12T13:22:07.684-05:00.mp3",
-    title: "Charli XCX - Forever", link: "https://www.youtube.com/watch?v=TbJE-KVZvTA", poster: "2026-06-12T13:22:07.684-05:00-poster.jpeg", tags: ["Charli XCX","album cover","bedroom scene","woman lying down","mirror reflection","text overlay","red text","artistic illustration","forever","sleeping"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    title: "Charli XCX - Forever", link: "https://www.youtube.com/watch?v=TbJE-KVZvTA", poster: "2026-06-12T13:22:07.684-05:00-poster.jpeg", tags: ["love","suicide","car","dive","blue","feelings","grow","ghost","forever","december"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T13:18:24.248-05:00", file: "2026-06-12T13:18:24.248-05:00.webp",
     tags: ["couple","illustration","watering can","roses","monstera plant","couch","sad expression","head plants","domestic scene","artwork"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
@@ -126,7 +126,7 @@ window.GALLERY_ITEMS = [
     desc: "1 year to a 10 year old is 10 percent of his life, but to a 100 year old it's 1 percent", tags: ["time perception","age progression","life stages","timeline","childhood","early adulthood","senior years","visual representation","conceptual diagram","bar chart"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "audio", date: "2026-06-12T12:44:24.297-05:00", file: "2026-06-12T12:44:24.297-05:00.mp3",
-    title: "Elijah Who - Hello", poster: "2026-06-12T12:44:24.297-05:00-poster.png", tags: ["night scene","anime","two people","cityscape","bicycle","street lamp","stars","urban setting","silhouette","back view"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    title: "Elijah Who - Hello", poster: "2026-06-12T12:44:24.297-05:00-poster.png", tags: ["greeting","introduction","name exchange","polite conversation","small talk","social interaction","thank you","repetition","confusion","disbelief"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T12:43:20.600-05:00", file: "2026-06-12T12:43:20.600-05:00.webp",
     tags: ["Anime","Forest","Character","Dog","Weapon","Native American attire","Night scene","Foliage","Fur","Earring"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
@@ -156,10 +156,10 @@ window.GALLERY_ITEMS = [
     tags: ["Museum of Contemporary Art","Architectural landmark","Sail-shaped structures","Public plaza","Urban landscape","People walking","Overcast sky","Modern architecture","Cultural institution","Stone pavement"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "audio", date: "2026-06-12T01:51:43.644-05:00", file: "2026-06-12T01:51:43.644-05:00.m4a",
-    title: "Our God is an Awesome God", link: "https://www.youtube.com/watch?v=PP9BjKnDaFk", poster: "2026-06-12T01:51:43.644-05:00-poster.jpg", tags: ["stars","space","cosmic background","nebula","galaxy","astronomy","deep space","stellar field","night sky","celestial objects"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
+    title: "Our God is an Awesome God", link: "https://www.youtube.com/watch?v=PP9BjKnDaFk", poster: "2026-06-12T01:51:43.644-05:00-poster.jpg", tags: ["lyrics","composition","Lee","Zongsheng","song","music","artist","repeated","repetition","repeatedly"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "audio", date: "2026-06-12T01:05:39.046-05:00", file: "2026-06-12T01:05:39.046-05:00.mp4",
-    title: "Darling I Do (Wedding Vows)", desc: "vows are not a list of reasons why you love someone, they are a list of promises you make for someone", poster: "2026-06-12T01:05:39.046-05:00-poster.jpg", tags: ["wedding venue","mountain backdrop","white chairs","flower arrangements","ceremonial arch","text overlay","outdoor ceremony","sunset lighting","landscape photography","event planning"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    title: "Darling I Do (Wedding Vows)", desc: "vows are not a list of reasons why you love someone, they are a list of promises you make for someone", poster: "2026-06-12T01:05:39.046-05:00-poster.jpg", tags: ["wedding vows","marriage promise","faithful friend","lover pursuit","repetition of yes","for better or worse","for richer for poorer","in sickness and in hell","till death do you part","love each other"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-11T19:23:01.691-05:00", file: "2026-06-11T19:23:01.691-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7", tags: ["interior architecture","grand lobby","wooden ceiling","modern sculpture","indoor garden","seating area","patterned flooring","multi-level structure","luxury hotel","vertical garden"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
