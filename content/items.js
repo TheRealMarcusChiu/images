@@ -182,7 +182,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-09T20:31:43.242-05:00", file: "2026-06-09T20:31:43.242-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7", tags: ["hotel lobby","modern interior","art installation","large sculpture","ceiling design","indoor seating","bar area","metal structure","lighting fixtures","high ceiling"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-09T13:11:17.983-05:00", file: "2026-06-09T13:11:17.983-05:00.jpeg" },
+  { type: "image", date: "2026-06-09T13:11:17.983-05:00", file: "2026-06-09T13:11:17.983-05:00.jpeg",
+    tags: ["night scene","beach","moon","stars","umbrella","deck chair","table","lamp","radio","book"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-09T13:08:58.278-05:00", file: "2026-06-09T13:08:58.278-05:00.png" },
 
