@@ -180,7 +180,7 @@ window.GALLERY_ITEMS = [
     tags: ["social media post","text-based meme","italics demonstration","TIL","text formatting","word emphasis","miscommunication","repetition","digital communication","internet humor"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-09T20:31:43.242-05:00", file: "2026-06-09T20:31:43.242-05:00.webp",
-    link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
+    link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7", tags: ["hotel lobby","modern interior","art installation","large sculpture","ceiling design","indoor seating","bar area","metal structure","lighting fixtures","high ceiling"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-09T13:11:17.983-05:00", file: "2026-06-09T13:11:17.983-05:00.jpeg" },
 
