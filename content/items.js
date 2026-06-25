@@ -80,7 +80,8 @@ window.GALLERY_ITEMS = [
   { type: "quote", date: "2026-06-14T11:27:18.628-05:00",
     quote: "The question in love isn't whether I want this person, but more of whether you want to know this person" },
 
-  { type: "image", date: "2026-06-13T22:22:05.436-05:00", file: "2026-06-13T22:22:05.436-05:00.webp" },
+  { type: "image", date: "2026-06-13T22:22:05.436-05:00", file: "2026-06-13T22:22:05.436-05:00.webp",
+    tags: ["advertising billboard","Claude","Keep thinking","man sitting","subway station","brown background","digital display","text overlay","thoughtful pose","modern interior"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-06-12T13:36:05.937-05:00",
     quote: "The most intelligent men, like the strongest, find their happiness where others would find only disaster: in the labyrinth, in being hard with themselves and with others, in effort; their delight is in self-mastery; in them asceticism becomes second nature, a necessity, an instinct. They regard a difficult task as a privilege; it is to them a recreation to play with burdens that would crush all others.", desc: "a view under the sun" },
