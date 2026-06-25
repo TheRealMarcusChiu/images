@@ -47,7 +47,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-22T12:22:48.361-05:00", file: "2026-06-22T12:22:48.361-05:00.webp",
     tags: ["bad dream","meme","text bubble","woman","man","sleeping","phone","night","cartoon","sarcasm"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-22T12:22:27.344-05:00", file: "2026-06-22T12:22:27.344-05:00.webp" },
+  { type: "image", date: "2026-06-22T12:22:27.344-05:00", file: "2026-06-22T12:22:27.344-05:00.webp",
+    tags: ["text","humor","pickup line","solipsism","conversation","friendship","philosophy","imagination","speechless","text message"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-19T21:09:14.038-05:00", file: "2026-06-19T21:09:14.038-05:00.jpeg" },
 
