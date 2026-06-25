@@ -99,7 +99,7 @@ window.GALLERY_ITEMS = [
     tags: ["love advice","relationship tips","how to stay in love","curiosity in relationships","healthy boundaries","communication in love","emotional connection","romantic relationship","interdependence","codependence"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "audio", date: "2026-06-12T12:54:34.201-05:00", file: "2026-06-12T12:54:34.201-05:00.mp3",
-    title: "Let It Be (Guitar)", poster: "2026-06-12T12:54:34.201-05:00-poster.jpeg" },
+    title: "Let It Be (Guitar)", poster: "2026-06-12T12:54:34.201-05:00-poster.jpeg", tags: ["The Beatles","Let It Be album cover","four-panel collage","John Lennon","Paul McCartney","George Harrison","Ringo Starr","microphone","1960s music","album artwork"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T12:50:35.247-05:00", file: "2026-06-12T12:50:35.247-05:00.webp" },
 
