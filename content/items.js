@@ -56,7 +56,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-19T21:09:06.112-05:00", file: "2026-06-19T21:09:06.112-05:00.jpeg",
     tags: ["Pokémon","Kung Fu Tea","Happy Holidays","red fabric","green Pokémon character","car interior","ESRB rating","plastic cup","Nintendo Switch","collectible item"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-19T21:08:55.857-05:00", file: "2026-06-19T21:08:55.857-05:00.jpeg" },
+  { type: "image", date: "2026-06-19T21:08:55.857-05:00", file: "2026-06-19T21:08:55.857-05:00.jpeg",
+    tags: ["cafe","branded interior","brick wall","kung fu tea","tables and chairs","digital menu boards","red ceiling","yogurt series poster","chess board","gaming board"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-19T14:19:37.649-05:00", file: "2026-06-19T14:19:37.649-05:00.webp" },
 
