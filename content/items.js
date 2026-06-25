@@ -89,7 +89,8 @@ window.GALLERY_ITEMS = [
   { type: "audio", date: "2026-06-12T13:22:07.684-05:00", file: "2026-06-12T13:22:07.684-05:00.mp3",
     title: "Charli XCX - Forever", link: "https://www.youtube.com/watch?v=TbJE-KVZvTA", poster: "2026-06-12T13:22:07.684-05:00-poster.jpeg", tags: ["Charli XCX","album cover","bedroom scene","woman lying down","mirror reflection","text overlay","red text","artistic illustration","forever","sleeping"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-12T13:18:24.248-05:00", file: "2026-06-12T13:18:24.248-05:00.webp" },
+  { type: "image", date: "2026-06-12T13:18:24.248-05:00", file: "2026-06-12T13:18:24.248-05:00.webp",
+    tags: ["couple","illustration","watering can","roses","monstera plant","couch","sad expression","head plants","domestic scene","artwork"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "audio", date: "2026-06-12T13:00:36.453-05:00", file: "2026-06-12T13:00:36.453-05:00.mp3",
     title: "Merry Christmas Mr. Lawrence", poster: "2026-06-12T13:00:36.453-05:00-poster.png" },
