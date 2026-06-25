@@ -114,7 +114,7 @@ window.GALLERY_ITEMS = [
     desc: "1 year to a 10 year old is 10 percent of his life, but to a 100 year old it's 1 percent", tags: ["time perception","age progression","life stages","timeline","childhood","early adulthood","senior years","visual representation","conceptual diagram","bar chart"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "audio", date: "2026-06-12T12:44:24.297-05:00", file: "2026-06-12T12:44:24.297-05:00.mp3",
-    title: "Elijah Who - Hello", poster: "2026-06-12T12:44:24.297-05:00-poster.png" },
+    title: "Elijah Who - Hello", poster: "2026-06-12T12:44:24.297-05:00-poster.png", tags: ["night scene","anime","two people","cityscape","bicycle","street lamp","stars","urban setting","silhouette","back view"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T12:43:20.600-05:00", file: "2026-06-12T12:43:20.600-05:00.webp" },
 
