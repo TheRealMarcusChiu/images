@@ -250,6 +250,42 @@ async function doGitCommitPush(message) {
   }
 }
 
+/* ── Serialized, fire-and-forget image tagging ──
+   One job at a time so the tagger isn't overloaded and items.js writes don't
+   race. Re-reads items after the (slow) network call so a concurrent add/edit/
+   delete isn't clobbered. Failures are logged and skipped; the startup backfill
+   retries them next boot. */
+let tagQueue = Promise.resolve();
+function enqueueTag(date, { force = false } = {}) {
+  tagQueue = tagQueue.then(() => runTagJob(date, force)).catch((e) => {
+    console.error('tag job error:', (e && e.message) || e);
+  });
+  return tagQueue;
+}
+async function runTagJob(date, force) {
+  let items = await readItems();
+  let entry = items.find((e) => e.date === date);
+  if (!entry) return;
+  const name = taggableImageName(entry);
+  if (!name) return;
+  if (Array.isArray(entry.tags) && entry.tags.length && !force) return;
+
+  let tags;
+  try { tags = await tagImage(join(MEDIA_DIR, name)); }
+  catch (e) { console.error(`tagging ${name} failed:`, e.message); return; }
+
+  // re-read after the slow request so concurrent edits aren't overwritten
+  items = await readItems();
+  entry = items.find((e) => e.date === date);
+  if (!entry) return;                              // deleted while tagging
+  if (taggableImageName(entry) !== name) return;   // image changed; a newer job will cover it
+  entry.tags = tags;
+  entry.tagProvider = TAGGER_PROVIDER;
+  entry.tagModel = TAGGER_MODEL;
+  await writeItems(items);
+  await gitCommitPush(`admin: tag ${entry.type} tile ${entry.date}`);
+}
+
 /* ── Download a remote file (follows redirects, size-capped) ── */
 function download(url, redirects = 0) {
   return new Promise((resolve, reject) => {
