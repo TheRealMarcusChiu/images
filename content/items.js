@@ -141,7 +141,7 @@ window.GALLERY_ITEMS = [
     desc: "Downtown Dallas - circa 2017", tags: ["abandoned building","urban decay","water puddle","concrete sidewalk","large industrial building","broken windows","sunlit facade","dilapidated structure","exposed wiring","empty lot"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-12T02:59:24.886-05:00", file: "2026-06-12T02:59:24.886-05:00.png",
-    hidden: true },
+    tags: ["Museum of Contemporary Art","Architectural landmark","Sail-shaped structures","Public plaza","Urban landscape","People walking","Overcast sky","Modern architecture","Cultural institution","Stone pavement"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "audio", date: "2026-06-12T01:51:43.644-05:00", file: "2026-06-12T01:51:43.644-05:00.m4a",
     title: "Our God is an Awesome God", link: "https://www.youtube.com/watch?v=PP9BjKnDaFk", poster: "2026-06-12T01:51:43.644-05:00-poster.jpg", hidden: true },
