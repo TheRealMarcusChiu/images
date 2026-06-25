@@ -173,7 +173,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-09T20:33:23.754-05:00", file: "2026-06-09T20:33:23.754-05:00.webp",
     tags: ["text","quote","life advice","boring lifestyle","peaceful living","routine","family time","work ethic","simple diet","walking"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-09T20:32:55.494-05:00", file: "2026-06-09T20:32:55.494-05:00.webp" },
+  { type: "image", date: "2026-06-09T20:32:55.494-05:00", file: "2026-06-09T20:32:55.494-05:00.webp",
+    tags: ["cartoon bears","eating together","text overlay","white bear","brown bear","food","animation","character design","simple background","meme"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-09T20:32:02.725-05:00", file: "2026-06-09T20:32:02.725-05:00.webp" },
 
