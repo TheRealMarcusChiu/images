@@ -71,7 +71,8 @@ window.GALLERY_ITEMS = [
   { type: "quote", date: "2026-06-16T21:28:52.418-05:00",
     quote: "When you copy from one source it's plagiarism. But when you copy from multiple sources it's research." },
 
-  { type: "image", date: "2026-06-16T21:26:38.696-05:00", file: "2026-06-16T21:26:38.696-05:00.jpg" },
+  { type: "image", date: "2026-06-16T21:26:38.696-05:00", file: "2026-06-16T21:26:38.696-05:00.jpg",
+    tags: ["modern architecture","conical structure","reflective surface","blue sky","clouds","urban landmark","metallic material","tall building","abstract design","geometric pattern"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-14T13:11:25.558-05:00", file: "2026-06-14T13:11:25.558-05:00.jpg" },
 
