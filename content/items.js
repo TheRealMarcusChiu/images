@@ -101,7 +101,8 @@ window.GALLERY_ITEMS = [
   { type: "audio", date: "2026-06-12T12:54:34.201-05:00", file: "2026-06-12T12:54:34.201-05:00.mp3",
     title: "Let It Be (Guitar)", poster: "2026-06-12T12:54:34.201-05:00-poster.jpeg", tags: ["The Beatles","Let It Be album cover","four-panel collage","John Lennon","Paul McCartney","George Harrison","Ringo Starr","microphone","1960s music","album artwork"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-12T12:50:35.247-05:00", file: "2026-06-12T12:50:35.247-05:00.webp" },
+  { type: "image", date: "2026-06-12T12:50:35.247-05:00", file: "2026-06-12T12:50:35.247-05:00.webp",
+    tags: ["street scene","window","guitar","waiting","building","tree","text overlay","woman","man","urban"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-06-12T12:49:38.279-05:00",
     quote: "Dead people receive more flowers than living ones, because regret is stronger than gratitude" },
