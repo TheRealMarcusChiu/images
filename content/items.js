@@ -30,7 +30,7 @@ window.GALLERY_ITEMS = [
     tags: ["Instagram post","handwritten text","quote","social media","saved content","relationship","memories","core memories","random hangouts","people"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-23T20:21:41.905-05:00", file: "2026-06-23T20:21:41.905-05:00.jpeg",
-    link: "https://git.marcuschiu.com/thoughts/article.html#2026-06-23--What-is-Beauty%3F" },
+    link: "https://git.marcuschiu.com/thoughts/article.html#2026-06-23--What-is-Beauty%3F", tags: ["watercolor","iris flowers","text overlay","abstract background","artistic illustration","beauty theme","golden frame","purple irises","floral design","cursive typography"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-23T01:13:04.088-05:00", file: "2026-06-23T01:13:04.088-05:00.jpeg",
     desc: "HK street market" },
