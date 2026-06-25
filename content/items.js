@@ -206,7 +206,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-08T23:13:59.023-05:00", file: "2026-06-08T23:13:59.023-05:00.jpg",
     tags: ["child","teddy bear","wooden fence","nature","illustration","text overlay","memory","fun","cartoon","outdoor"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-08T23:11:03.873-05:00", file: "2026-06-08T23:11:03.873-05:00.webp" },
+  { type: "image", date: "2026-06-08T23:11:03.873-05:00", file: "2026-06-08T23:11:03.873-05:00.webp",
+    tags: ["cat paw","oreo cookie","white fur","hand holding","striped cat","cat toy","cute animal","food mimicry","pet accessory","Oreo cat paw"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "youtube", date: "2026-06-08T23:01:12.757-05:00", id: "PP9BjKnDaFk",
     hidden: true },
