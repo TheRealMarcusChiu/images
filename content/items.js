@@ -162,7 +162,7 @@ window.GALLERY_ITEMS = [
     desc: "Zhuhai Grand Theater", link: "https://share.google/wVzluW3nDm4GxOoLl", poster: "2026-06-10T10:01:07.122-05:00-poster.jpg", tags: ["Luzhou Grand Theater","modern architecture","spherical structures","public plaza","tourists","stone pavement","cloudy sky","landscaped trees","large building","outdoor gathering"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-10T01:01:17.463-05:00", file: "2026-06-10T01:01:17.463-05:00.png",
-    link: "http://git.marcuschiu.com/var-log/enter-visual/art/draw-random-girl/", hidden: true },
+    link: "http://git.marcuschiu.com/var-log/enter-visual/art/draw-random-girl/", tags: ["short hair","blue tone","tear","side profile","dark hair","moody lighting","human face","soft focus","monochrome","subtle expression"], tagProvider: "ollama", tagModel: "qwen3-vl:8b", hidden: true },
 
   { type: "image", date: "2026-06-09T23:51:28.050-05:00", file: "2026-06-09T23:51:28.050-05:00.webp" },
 
