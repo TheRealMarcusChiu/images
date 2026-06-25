@@ -185,7 +185,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-09T13:11:17.983-05:00", file: "2026-06-09T13:11:17.983-05:00.jpeg",
     tags: ["night scene","beach","moon","stars","umbrella","deck chair","table","lamp","radio","book"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-09T13:08:58.278-05:00", file: "2026-06-09T13:08:58.278-05:00.png" },
+  { type: "image", date: "2026-06-09T13:08:58.278-05:00", file: "2026-06-09T13:08:58.278-05:00.png",
+    tags: ["quote","poetry","Mary Oliver","Upstream","self-discovery","youth","stranger to self","existence","world exploration","literature"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-09T13:08:40.695-05:00", file: "2026-06-09T13:08:40.695-05:00.jpeg" },
 
