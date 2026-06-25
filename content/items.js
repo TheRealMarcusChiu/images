@@ -152,7 +152,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-11T19:23:01.691-05:00", file: "2026-06-11T19:23:01.691-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7", tags: ["interior architecture","grand lobby","wooden ceiling","modern sculpture","indoor garden","seating area","patterned flooring","multi-level structure","luxury hotel","vertical garden"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-11T19:21:28.740-05:00", file: "2026-06-11T19:21:28.740-05:00.jpg" },
+  { type: "image", date: "2026-06-11T19:21:28.740-05:00", file: "2026-06-11T19:21:28.740-05:00.jpg",
+    tags: ["book cover","Alain de Botton","Essays in Love","Picador","Macmillan London","title page","paper","aged paper","water stain","text"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "youtube", date: "2026-06-10T16:15:34.054-05:00", id: "uzDKm990MvQ",
     desc: "praise is the overflow of what you enjoy" },
