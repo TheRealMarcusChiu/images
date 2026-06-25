@@ -231,7 +231,7 @@ window.GALLERY_ITEMS = [
     tags: ["poetry","emotional text","relationship","heartbreak","lyrics","text-based art","intimate feelings","unrequited love","despair","hopelessness"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T12:02:00.000-05:00", file: "2026-06-08T12:02:00.000-05:00.webp",
-    desc: "Geodude Hanger", link: "https://www.etsy.com/market/geodude_hanger" },
+    desc: "Geodude Hanger", link: "https://www.etsy.com/market/geodude_hanger", tags: ["Pokémon","Muk","3D print","handheld","watch","purple helmet","gray background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-08T12:01:00.000-05:00", file: "2026-06-08T12:01:00.000-05:00.webp",
     link: "https://maps.app.goo.gl/BV7zCbLry34rvqmB7" },
