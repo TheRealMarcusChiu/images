@@ -95,7 +95,8 @@ window.GALLERY_ITEMS = [
   { type: "audio", date: "2026-06-12T13:00:36.453-05:00", file: "2026-06-12T13:00:36.453-05:00.mp3",
     title: "Merry Christmas Mr. Lawrence", poster: "2026-06-12T13:00:36.453-05:00-poster.png", tags: ["piano","musician","studio","microphone","sheet music","black and white","lighting","glasses","blonde hair","silhouette"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-12T12:56:01.329-05:00", file: "2026-06-12T12:56:01.329-05:00.webp" },
+  { type: "image", date: "2026-06-12T12:56:01.329-05:00", file: "2026-06-12T12:56:01.329-05:00.webp",
+    tags: ["love advice","relationship tips","how to stay in love","curiosity in relationships","healthy boundaries","communication in love","emotional connection","romantic relationship","interdependence","codependence"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "audio", date: "2026-06-12T12:54:34.201-05:00", file: "2026-06-12T12:54:34.201-05:00.mp3",
     title: "Let It Be (Guitar)", poster: "2026-06-12T12:54:34.201-05:00-poster.jpeg" },
