@@ -134,7 +134,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-12T12:40:57.455-05:00", file: "2026-06-12T12:40:57.455-05:00.webp",
     tags: ["text message conversation","gym invitation","baby born","10 years friendship","2 days","retarded insult","dayum","i cant bro","remember","man i think youre really retarded"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-12T12:39:21.368-05:00", file: "2026-06-12T12:39:21.368-05:00.webp" },
+  { type: "image", date: "2026-06-12T12:39:21.368-05:00", file: "2026-06-12T12:39:21.368-05:00.webp",
+    tags: ["man","computer equipment","monitor","electronics","audio mixer","circuitry","wires","blue screen","shack","technical setup"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T03:19:29.244-05:00", file: "2026-06-12T03:19:29.244-05:00.jpg",
     desc: "Downtown Dallas - circa 2017", hidden: true },
