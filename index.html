@@ -629,7 +629,8 @@ class Component extends DCLogic {
     const type = it.type === 'youtube' ? 'video' : it.type;
     const base = { i, num: this.dateFor(it.date), date: it.date, type,
       isImage: type === 'image', isQuote: type === 'quote', isVideo: type === 'video', isAudio: type === 'audio',
-      link: it.link || null, hasLink: !!it.link };
+      link: it.link || null, hasLink: !!it.link,
+      tags: Array.isArray(it.tags) ? it.tags : [] };
 
     if (it.type === 'quote') {
       const author = it.author || '';
@@ -1168,7 +1169,7 @@ class Component extends DCLogic {
   };
   _matchesSearch(im, q) {
     q = (q || '').trim().toLowerCase(); if (!q) return true;
-    const hay = [im.title, im.text, im.author, im.artist, im.medium, im.type].filter(Boolean).join(' ').toLowerCase();
+    const hay = [im.title, im.text, im.author, im.artist, im.medium, im.type, (im.tags || []).join(' ')].filter(Boolean).join(' ').toLowerCase();
     return hay.indexOf(q) >= 0;
   }
   _doLocate = (i) => {
@@ -1625,7 +1626,7 @@ class Component extends DCLogic {
       const im = this.images[i];
       if (!types[im.type]) continue;
       if (q) {
-        const hay = [im.title, im.text, im.author, im.artist, im.medium, im.type].filter(Boolean).join(' ').toLowerCase();
+        const hay = [im.title, im.text, im.author, im.artist, im.medium, im.type, (im.tags || []).join(' ')].filter(Boolean).join(' ').toLowerCase();
         if (!hay.includes(q)) continue;
       }
       arr.push(i);
