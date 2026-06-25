@@ -111,7 +111,7 @@ window.GALLERY_ITEMS = [
     tags: ["teddy bear","stuffed animals","warehouse","dark lighting","text overlay","white teddy bear","toys","fuzzy texture","arrangement","store"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-12T12:46:37.578-05:00", file: "2026-06-12T12:46:37.578-05:00.webp",
-    desc: "1 year to a 10 year old is 10 percent of his life, but to a 100 year old it's 1 percent" },
+    desc: "1 year to a 10 year old is 10 percent of his life, but to a 100 year old it's 1 percent", tags: ["time perception","age progression","life stages","timeline","childhood","early adulthood","senior years","visual representation","conceptual diagram","bar chart"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "audio", date: "2026-06-12T12:44:24.297-05:00", file: "2026-06-12T12:44:24.297-05:00.mp3",
     title: "Elijah Who - Hello", poster: "2026-06-12T12:44:24.297-05:00-poster.png" },
