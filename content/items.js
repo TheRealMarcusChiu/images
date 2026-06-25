@@ -44,7 +44,8 @@ window.GALLERY_ITEMS = [
   { type: "image", date: "2026-06-22T12:23:20.805-05:00", file: "2026-06-22T12:23:20.805-05:00.webp",
     tags: ["quote","text","underlined_text","English_language","inspirational_phrase","personal_growth","relationship","unexplored_self","typography","quote_image"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-06-22T12:22:48.361-05:00", file: "2026-06-22T12:22:48.361-05:00.webp" },
+  { type: "image", date: "2026-06-22T12:22:48.361-05:00", file: "2026-06-22T12:22:48.361-05:00.webp",
+    tags: ["bad dream","meme","text bubble","woman","man","sleeping","phone","night","cartoon","sarcasm"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-22T12:22:27.344-05:00", file: "2026-06-22T12:22:27.344-05:00.webp" },
 
