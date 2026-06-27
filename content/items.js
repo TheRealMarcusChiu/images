@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-27T01:19:36.233-05:00", file: "2026-06-27T01:19:36.233-05:00.webp" },
+
   { type: "image", date: "2026-06-27T01:16:13.502-05:00", file: "2026-06-27T01:16:13.502-05:00.webp",
     tags: ["quote","life philosophy","courage","text image","inspirational text"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
