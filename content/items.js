@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-06-28T20:06:03.203-05:00",
+    quote: "sometimes strangers are friends who haven't met yet" },
+
   { type: "image", date: "2026-06-28T19:39:13.984-05:00", file: "2026-06-28T19:39:13.984-05:00.png",
     link: "https://git.marcuschiu.com/var-log/", tags: ["knowledge garden","var log","network visualization","web interface","log management","system monitoring","technical documentation","recently updated","node connections","dark theme"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
