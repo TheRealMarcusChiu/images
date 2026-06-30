@@ -27,7 +27,7 @@ window.GALLERY_ITEMS = [
     quote: "sometimes strangers are friends who haven't met yet", desc: "every friend was once a stranger" },
 
   { type: "image", date: "2026-06-28T19:39:13.984-05:00", file: "2026-06-28T19:39:13.984-05:00.png",
-    desc: "Stardust Knowledge Garden", link: "https://git.marcuschiu.com/var-log/", tags: ["knowledge garden","var log","network visualization","web interface","log management","system monitoring","technical documentation","recently updated","node connections","dark theme"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "Stardust Knowledge Garden", link: "https://git.marcuschiu.com/var-log/", tags: ["knowledge graph","computer science","stanford classes","network visualization","concept mapping","information architecture","web interface","node relationship","academic topics","digital knowledge base"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-27T01:19:36.233-05:00", file: "2026-06-27T01:19:36.233-05:00.webp",
     tags: ["health habits","wellness practices","self care","mindful living","positive lifestyle","natural remedies","emotional health","physical health","mind body connection","healthy living"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
