@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-06-29T19:35:08.286-05:00", file: "2026-06-29T19:35:08.286-05:00.webp" },
+
   { type: "quote", date: "2026-06-28T20:06:03.203-05:00",
     quote: "sometimes strangers are friends who haven't met yet" },
 
