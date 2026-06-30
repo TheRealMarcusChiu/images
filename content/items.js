@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-06-30T01:22:24.475-05:00",
+    quote: "Trying to find the one big answer to the problem of living, is like trying to eat one big meal so you never have to worry about being hungry again.", author: "Harold Kushner" },
+
   { type: "image", date: "2026-06-29T19:35:08.286-05:00", file: "2026-06-29T19:35:08.286-05:00.webp",
     tags: ["subway interior","woman with headscarf","text overlay","train delay","passenger seating","advertisement poster","lukewarm coffee","slow driver","dreams rotting","wrong direction"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
