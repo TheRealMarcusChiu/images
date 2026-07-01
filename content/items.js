@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-01T14:34:50.961-05:00",
+    quote: "cain killed his brother because he was able.... lol" },
+
   { type: "image", date: "2026-06-30T17:00:14.964-05:00", file: "2026-06-30T17:00:14.964-05:00.webp",
     tags: ["monopoly board game","income generation","financial behavior","economic critique","social commentary","game strategy","wealth inequality","capitalism critique","lifestyle critique","monopoly rules"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
