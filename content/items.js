@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-02T04:35:51.826-05:00", file: "2026-07-02T04:35:51.826-05:00.jpg" },
+
   { type: "quote", date: "2026-07-01T14:34:50.961-05:00",
     quote: "cain killed his brother because he was able.... lol" },
 
