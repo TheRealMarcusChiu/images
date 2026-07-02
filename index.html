@@ -2220,9 +2220,23 @@ class Component extends DCLogic {
 
   // ── server endpoint: configurable via the gear → Settings, persisted in localStorage.
   //    Blank base = same-origin '/api/…' (how the bundled node server expects it). ──
-  const API_KEY = 'markive.apiBase';
-  const getApiBase = () => { try { return (localStorage.getItem(API_KEY) || '').trim().replace(/\/+$/, ''); } catch (e) { return ''; } };
-  const setApiBase = (v) => { try { if (v) localStorage.setItem(API_KEY, v); else localStorage.removeItem(API_KEY); } catch (e) {} };
+  //    Key is scoped by pathname because localStorage is shared across all sites on this
+  //    domain (git.marcuschiu.com/images, /thoughts, /tech, …) — an unscoped key would let
+  //    each site overwrite the others' endpoint.
+  const siteScope = () => (location.pathname.replace(/\/index\.html?$/i, '/').replace(/[^/]+$/, '') || '/');
+  const API_KEY = 'markive.apiBase::' + siteScope();
+  const API_KEY_LEGACY = 'markive.apiBase';
+  const getApiBase = () => {
+    try {
+      let v = localStorage.getItem(API_KEY);
+      if (v == null) {                    // one-time migration from the old unscoped key
+        const legacy = localStorage.getItem(API_KEY_LEGACY);
+        if (legacy != null) { v = legacy; localStorage.setItem(API_KEY, legacy); localStorage.removeItem(API_KEY_LEGACY); }
+      }
+      return (v || '').trim().replace(/\/+$/, '');
+    } catch (e) { return ''; }
+  };
+  const setApiBase = (v) => { try { if (v) localStorage.setItem(API_KEY, v); else localStorage.removeItem(API_KEY); localStorage.removeItem(API_KEY_LEGACY); } catch (e) {} };
   const api = (path) => getApiBase() + path;
 
   // Probe the configured endpoint so the user knows whether admin actions will reach the
