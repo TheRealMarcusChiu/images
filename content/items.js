@@ -21,7 +21,7 @@ window.GALLERY_ITEMS = [
     tags: ["chef Gordon Ramsay","kitchen scene","LinkedIn","comparison","reality vs LinkedIn","yelling","team standards","uncompromising excellence","chef uniform","professional demeanor"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-07-01T14:34:50.961-05:00",
-    quote: "cain killed his brother because he was able.... lol" },
+    quote: "cain killed his brother because he was able.... lol", desc: "his brother's name was Able" },
 
   { type: "image", date: "2026-06-30T17:00:14.964-05:00", file: "2026-06-30T17:00:14.964-05:00.webp",
     tags: ["monopoly board game","income generation","financial behavior","economic critique","social commentary","game strategy","wealth inequality","capitalism critique","lifestyle critique","monopoly rules"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
