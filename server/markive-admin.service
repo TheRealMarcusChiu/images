@@ -1,0 +1,61 @@
+[Unit]
+Description=Markive admin server (gallery admin API + static site)
+Documentation=https://git.marcuschiu.com/images
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/markive/server
+ExecStart=/root/.nvm/versions/node/v24.16.0/bin/node /root/markive/server/server.js
+
+# Listen for remote connections on all interfaces, port 9002.
+Environment=HOST=0.0.0.0
+Environment=PORT=9002
+
+# Restart on crash; give git/yt-dlp subprocesses time to settle.
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+
+# Log to the journal (view with: journalctl -u markive-admin -f)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=markive-admin
+
+[Install]
+WantedBy=multi-user.target
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Install (run inside the Proxmox Ubuntu LXC container, as root)
+#
+#   1. Put the project at /root/markive so the paths above resolve:
+#        cd /root && git clone <repo-url> markive
+#      (or: git -C /root/markive pull   if it already exists)
+#
+#   2. Ensure Node + tools are present. This unit runs the nvm Node at
+#      /root/.nvm/versions/node/v24.16.0/bin/node — check with `which node`
+#      and edit ExecStart if your version/path differs. Audio/video features
+#      also need yt-dlp and ffmpeg:
+#        apt update && apt install -y ffmpeg
+#        pip install -U yt-dlp        # or: apt install -y yt-dlp
+#
+#   3. Link this unit into systemd and start it on boot:
+#        cp /root/markive/server/markive-admin.service /etc/systemd/system/
+#        systemctl daemon-reload
+#        systemctl enable --now markive-admin.service
+#
+#   4. Verify it's up and serving on port 9002:
+#        systemctl status markive-admin
+#        journalctl -u markive-admin -f          # follow logs
+#        curl http://127.0.0.1:9002/api/tiles    # should return JSON
+#
+#   5. Reach it from your LAN at http://<container-ip>:9002/  (find the IP
+#      with `hostname -I`). The server has NO auth — keep port 9002 behind a
+#      reverse proxy / firewall and only expose it on a trusted network.
+#      In Proxmox, make sure the container's firewall (or the host's) allows
+#      inbound 9002 from the machines that need it.
+#
+#   After editing this file later:  systemctl daemon-reload && systemctl restart markive-admin
+#   To update deployed content:     bash /root/markive/server/update.sh
+# ─────────────────────────────────────────────────────────────────────────────

@@ -9,9 +9,11 @@ tiles through a web form.
 
 ```
 index.html          Gallery page + built-in admin (press ⌘/Ctrl+E)
-server.js           Optional admin server (Node, no dependencies)
 support.js          Design-component runtime
-update-local.sh     Pull + restart the admin service on the host
+server/
+  server.js             Optional admin server (Node, no dependencies)
+  update.sh             Pull + restart the admin service on the host
+  markive-admin.service systemd unit for running the server as a service
 content/
   items.js          Single source of truth — the list of tiles
   media/            Image, video, and audio files
@@ -52,8 +54,27 @@ Press **⌘/Ctrl + E** anywhere in the gallery to toggle admin mode: a floating
 tile gains an edit pencil.
 
 ```sh
-node server.js          # then open http://127.0.0.1:3000/
+node server/server.js   # then open http://127.0.0.1:3000/
 ```
+
+Host/port are configurable via env: `HOST=0.0.0.0 PORT=9002 node server/server.js`.
+
+### Running as a service (systemd)
+
+`server/markive-admin.service` runs the server on boot and restarts it on
+failure. It expects the project at `/root/markive` and listens on `0.0.0.0:9002`
+(edit `WorkingDirectory`, `ExecStart`, and the `HOST`/`PORT` env lines to match
+your host — in particular `ExecStart` points at an nvm-installed Node).
+
+```sh
+cp server/markive-admin.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now markive-admin.service
+journalctl -u markive-admin -f      # follow logs
+```
+
+After pulling new content on the host, `server/update.sh` re-pulls and restarts
+the service.
 
 The server serves the gallery at `/` and exposes the admin API. By default the
 admin talks to its own origin; to drive a remote server instead, open the gear
@@ -69,6 +90,6 @@ a live connected / unreachable status).
   show, replace the image, or delete (which also removes the media files).
 
 Every successful change is automatically committed and pushed to GitHub. The
-server binds to `127.0.0.1` only and has no authentication — it is meant for
-local use (set `HOST=0.0.0.0` to expose it on a trusted network). Audio
-extraction requires `yt-dlp` and `ffmpeg` on the host.
+server has no authentication, so when exposed beyond `127.0.0.1` (e.g. the
+`0.0.0.0:9002` service above) keep it behind a reverse proxy or firewall on a
+trusted network. Audio extraction requires `yt-dlp` and `ffmpeg` on the host.

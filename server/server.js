@@ -36,7 +36,9 @@ import vm from 'node:vm';
 
 const pexecFile = promisify(execFile);
 
-const ROOT       = dirname(fileURLToPath(import.meta.url));
+// This file lives in <project>/server/, but it serves the site and owns content/
+// which sit at the project root — so ROOT is the parent of this script's directory.
+const ROOT       = dirname(dirname(fileURLToPath(import.meta.url)));
 const MEDIA_DIR  = join(ROOT, 'content', 'media');
 const ITEMS_FILE = join(ROOT, 'content', 'items.js');
 const HOST       = process.env.HOST || '127.0.0.1';
