@@ -66,7 +66,7 @@ window.GALLERY_ITEMS = [
     tags: ["poetry book cover","minimalist design","woman sitting","window with curtains","soft lighting","text overlay","black and white photography","book title 'to be seen'","author name 'BRIANORA'","poems theme"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-24T18:00:23.779-05:00", file: "2026-06-24T18:00:23.779-05:00.jpeg",
-    tags: ["blue rooster sculpture","outdoor sculpture","public art","stone building background","sunny day","shadow","large bird statue","art installation","modern art","urban environment"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "NOT AI", tags: ["blue rooster sculpture","outdoor sculpture","public art","stone building background","sunny day","shadow","large bird statue","art installation","modern art","urban environment"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-06-23T20:33:46.412-05:00", file: "2026-06-23T20:33:46.412-05:00.webp",
     tags: ["illusion","platonic","romantic","free choice","cow","text labels","relationship concepts","visual metaphor","color-coded sections","choice illusion"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
