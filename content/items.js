@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-05T00:00:01.996-05:00", file: "2026-07-05T00:00:01.996-05:00.png" },
+
   { type: "image", date: "2026-07-04T13:36:56.890-05:00", file: "2026-07-04T13:36:56.890-05:00.png",
     desc: "The Bible Visualized", link: "https://git.marcuschiu.com/bible-graph/", tags: ["network visualization","biblical references","data mapping","interactive dashboard","knowledge garden","graph theory","node connections","color-coded nodes","digital art","information architecture"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
