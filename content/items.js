@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-07-05T22:17:01.804-05:00", file: "2026-07-05T22:17:01.804-05:00.webp" },
+  { type: "image", date: "2026-07-05T22:17:01.804-05:00", file: "2026-07-05T22:17:01.804-05:00.webp",
+    tags: ["poetry","kindness","Naomi Shihab Nye","1952","poem","literature","poetic imagery","emotional depth","sorrow","desolate landscape"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-05T00:00:01.996-05:00", file: "2026-07-05T00:00:01.996-05:00.png",
     tags: ["twitter post","student loan","college degree","business expense","ceo","private jet","yacht","social media","tweet","financial inequality"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
