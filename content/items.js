@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-07-07T01:37:26.163-05:00", file: "2026-07-07T01:37:26.163-05:00.webp" },
+  { type: "image", date: "2026-07-07T01:37:26.163-05:00", file: "2026-07-07T01:37:26.163-05:00.webp",
+    tags: ["grief","absence","emotional pain","missing someone","personal reflection","heartache","loneliness","memory","sadness","loss"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-05T22:17:01.804-05:00", file: "2026-07-05T22:17:01.804-05:00.webp",
     tags: ["poetry","kindness","Naomi Shihab Nye","1952","poem","literature","poetic imagery","emotional depth","sorrow","desolate landscape"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
