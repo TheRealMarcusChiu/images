@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-08T00:53:28.456-05:00", file: "2026-07-08T00:53:28.456-05:00.jpg",
+    desc: "so shall i be helpful at the cost of happiness" },
+
   { type: "image", date: "2026-07-07T01:37:26.163-05:00", file: "2026-07-07T01:37:26.163-05:00.webp",
     tags: ["grief","absence","emotional pain","missing someone","personal reflection","heartache","loneliness","memory","sadness","loss"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
