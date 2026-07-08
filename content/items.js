@@ -36,7 +36,7 @@ window.GALLERY_ITEMS = [
     quote: "instead of writing code, we end up writing prompts" },
 
   { type: "image", date: "2026-07-02T19:20:54.108-05:00", file: "2026-07-02T19:20:54.108-05:00.jpg",
-    desc: "First page of the Treaty of Paris in 1783, which forced Britain to recognize the United States as a country.", tags: ["historical document","handwritten text","religious text","trinity reference","legal document","old paper","duplicate","scripture reference","antique manuscript","18th century"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "First page of the Treaty of Paris in 1783, which forced Britain to recognize the United States as a country \"In the name of the most holy and undivided Trinity\"", tags: ["historical document","handwritten text","religious text","trinity reference","legal document","old paper","duplicate","scripture reference","antique manuscript","18th century"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-02T04:35:51.826-05:00", file: "2026-07-02T04:35:51.826-05:00.jpg",
     tags: ["chef Gordon Ramsay","kitchen scene","LinkedIn","comparison","reality vs LinkedIn","yelling","team standards","uncompromising excellence","chef uniform","professional demeanor"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
