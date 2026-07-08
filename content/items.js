@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-07-08T00:53:28.456-05:00", file: "2026-07-08T00:53:28.456-05:00.jpg",
-    desc: "so shall i be helpful at the cost of happiness" },
+    desc: "so shall i be helpful at the cost of happiness", tags: ["robot","wild robot","lupita nyong'o","dreamworks","animated movie","theater release","nature background","large eyes","robot hand","coming soon"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-07T01:37:26.163-05:00", file: "2026-07-07T01:37:26.163-05:00.webp",
     tags: ["grief","absence","emotional pain","missing someone","personal reflection","heartache","loneliness","memory","sadness","loss"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
