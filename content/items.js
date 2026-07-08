@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-08T01:59:40.059-05:00", file: "2026-07-08T01:59:40.059-05:00.jpeg",
+    link: "https://www.thechristianexplorer.org/post/2018/11/01/john-owen-fortitude-in-suffering" },
+
   { type: "image", date: "2026-07-08T00:53:28.456-05:00", file: "2026-07-08T00:53:28.456-05:00.jpg",
     desc: "so shall i be helpful at the cost of happiness", tags: ["robot","wild robot","lupita nyong'o","dreamworks","animated movie","theater release","nature background","large eyes","robot hand","coming soon"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
