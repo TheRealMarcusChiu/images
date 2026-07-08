@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-08T16:34:07.836-05:00",
+    quote: "what's better than having all the answers, is peace that surpasses all understanding" },
+
   { type: "image", date: "2026-07-08T01:59:40.059-05:00", file: "2026-07-08T01:59:40.059-05:00.jpeg",
     link: "https://www.thechristianexplorer.org/post/2018/11/01/john-owen-fortitude-in-suffering", tags: ["portrait of isaac newton","17th century portrait","baroque style","long curly hair","black cap","white collar","historical figure","scientific figure","oil painting","dark background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
