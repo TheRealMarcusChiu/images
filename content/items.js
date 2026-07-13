@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-12T23:40:28.359-05:00",
+    quote: "mad midnight moments" },
+
   { type: "quote", date: "2026-07-08T16:34:07.836-05:00",
     quote: "what's better than having all the answers, is peace that surpasses all understanding" },
 
