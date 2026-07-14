@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-07-14T14:23:44.555-05:00", file: "2026-07-14T14:23:44.555-05:00.webp" },
+  { type: "image", date: "2026-07-14T14:23:44.555-05:00", file: "2026-07-14T14:23:44.555-05:00.webp",
+    tags: ["alphabet with cats","cat lettering","hand-drawn alphabet","cat illustrations","grid paper","uppercase letters","cat faces","letter A to Z","cute cats","cat alphabet"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-14T14:23:30.099-05:00", file: "2026-07-14T14:23:30.099-05:00.webp",
     tags: ["love quote","waiting metaphor","lover's identity","punctuality","relationship philosophy"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
