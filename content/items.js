@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-14T14:17:16.409-05:00", file: "2026-07-14T14:17:16.409-05:00.webp" },
+
   { type: "quote", date: "2026-07-14T13:55:07.747-05:00",
     quote: "a guilty conscience is a gift to a non-repentant mind" },
 
