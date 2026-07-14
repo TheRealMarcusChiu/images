@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-14T14:18:17.548-05:00", file: "2026-07-14T14:18:17.548-05:00.webp" },
+
   { type: "image", date: "2026-07-14T14:17:42.339-05:00", file: "2026-07-14T14:17:42.339-05:00.png",
     tags: ["modern lounge","striped sofas","colorful cushions","industrial chandelier","interior design","high ceiling","bar area","decorative lighting","multi-level space","stone feature"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
