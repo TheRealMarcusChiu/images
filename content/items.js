@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-07-14T14:22:34.061-05:00", file: "2026-07-14T14:22:34.061-05:00.webp" },
+  { type: "image", date: "2026-07-14T14:22:34.061-05:00", file: "2026-07-14T14:22:34.061-05:00.webp",
+    tags: ["beach","golden gate bridge","sunset","people","sand","ocean","fog","hiking","coastal","california"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-14T14:18:29.083-05:00", file: "2026-07-14T14:18:29.083-05:00.webp",
     tags: ["dog","cat","flower bouquet","puppy","kitten","sidewalk","grass","outdoor","gift","bouquet"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
