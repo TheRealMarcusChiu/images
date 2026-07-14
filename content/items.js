@@ -30,7 +30,7 @@ window.GALLERY_ITEMS = [
     quote: "what's better than having all the answers, is peace that surpasses all understanding" },
 
   { type: "image", date: "2026-07-08T01:59:40.059-05:00", file: "2026-07-08T01:59:40.059-05:00.jpeg",
-    link: "https://www.thechristianexplorer.org/post/2018/11/01/john-owen-fortitude-in-suffering", tags: ["portrait of isaac newton","17th century portrait","baroque style","long curly hair","black cap","white collar","historical figure","scientific figure","oil painting","dark background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "John Owen", link: "https://www.thechristianexplorer.org/post/2018/11/01/john-owen-fortitude-in-suffering", tags: ["portrait of isaac newton","17th century portrait","baroque style","long curly hair","black cap","white collar","historical figure","scientific figure","oil painting","dark background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-08T00:53:28.456-05:00", file: "2026-07-08T00:53:28.456-05:00.jpg",
     desc: "so shall i be helpful at the cost of happiness", tags: ["robot","wild robot","lupita nyong'o","dreamworks","animated movie","theater release","nature background","large eyes","robot hand","coming soon"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
