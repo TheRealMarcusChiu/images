@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-13T19:25:40.385-05:00",
+    quote: "I really want to know who he knows", author: "Someone to a faithful person" },
+
   { type: "quote", date: "2026-07-13T19:21:50.388-05:00",
     quote: "He's not leading a service, he's worshipping a Savior.", author: "Someone to a Pastor" },
 
