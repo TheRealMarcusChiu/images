@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-07-15T14:44:40.847-05:00", file: "2026-07-15T14:44:40.847-05:00.jpeg",
-    desc: "made my first batch of cookies - crisped at the edges and chewy in the middle 🤤 - matcha white chocolate macadamia nut cookies" },
+    desc: "made my first batch of cookies - crisped at the edges and chewy in the middle 🤤 - matcha white chocolate macadamia nut cookies", tags: ["green dumplings","aluminum foil tray","hand holding tray","round food items","baked goods","homemade food","food preparation","foil-lined baking sheet","dark green balls","food photography"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-15T14:24:08.521-05:00", file: "2026-07-15T14:24:08.521-05:00.png",
     tags: ["sketch drawing","coffee table book","social gathering","handwritten text","group illustration","monochrome art","conversation theme","people interaction","artbook","social media post"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
