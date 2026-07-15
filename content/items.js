@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-15T14:44:40.847-05:00", file: "2026-07-15T14:44:40.847-05:00.jpeg",
+    desc: "made my first batch of cookies - crisped at the edges and chewy in the middle 🤤 - matcha white chocolate macadamia nut cookies" },
+
   { type: "image", date: "2026-07-15T14:24:08.521-05:00", file: "2026-07-15T14:24:08.521-05:00.png",
     tags: ["sketch drawing","coffee table book","social gathering","handwritten text","group illustration","monochrome art","conversation theme","people interaction","artbook","social media post"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
