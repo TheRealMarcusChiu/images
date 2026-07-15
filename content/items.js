@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-15T14:20:34.220-05:00",
+    quote: "dress for beauty not for lust" },
+
   { type: "quote", date: "2026-07-14T15:39:07.818-05:00",
     quote: "be grateful when there's an opportunity to help someone" },
 
