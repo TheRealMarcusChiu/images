@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-07-15T14:51:41.815-05:00", file: "2026-07-15T14:51:41.815-05:00.png",
-    desc: "I really loved you. There was always a small hope, deep inside me, that we'd end up together... but we never did.\nI don't want to let you go, I really don't. But I have to, I am not enough, I would be too lucky, but you deserved better.\nThere's still this \"why?\" inside me, but I have let go for your happiness. \nStay happy, my love." },
+    desc: "I really loved you. There was always a small hope, deep inside me, that we'd end up together... but we never did.\nI don't want to let you go, I really don't. But I have to, I would be too lucky, you deserved better.\nThere's still this \"why?\" inside me, but I have let go for your happiness. \nStay happy, my love." },
 
   { type: "image", date: "2026-07-15T14:44:40.847-05:00", file: "2026-07-15T14:44:40.847-05:00.jpeg",
     desc: "made my first batch of cookies - crisped at the edges and chewy in the middle 🤤 - matcha white chocolate macadamia nut cookies", tags: ["green dumplings","aluminum foil tray","hand holding tray","round food items","baked goods","homemade food","food preparation","foil-lined baking sheet","dark green balls","food photography"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
