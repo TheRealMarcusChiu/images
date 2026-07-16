@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-15T23:08:30.583-05:00",
+    quote: "For now we see only a reflection as in a mirror; then we shall see face to face. Now I know in part; then I shall know fully, even as I am fully known." },
+
   { type: "image", date: "2026-07-15T14:51:41.815-05:00", file: "2026-07-15T14:51:41.815-05:00.png",
     desc: "I really loved you. There was always a small hope, deep inside me, that we'd end up together... but we never did.\nI don't want to let you go, I really don't. But I have to, I would be too lucky, you deserved better.\nThere's still this \"why?\" inside me, but I have let go for your happiness. \nStay happy, my love." },
 
