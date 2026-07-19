@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-18T22:40:38.760-05:00", file: "2026-07-18T22:40:38.760-05:00.webp" },
+
   { type: "image", date: "2026-07-18T22:40:25.024-05:00", file: "2026-07-18T22:40:25.024-05:00.jpeg" },
 
   { type: "quote", date: "2026-07-15T23:08:30.583-05:00",
