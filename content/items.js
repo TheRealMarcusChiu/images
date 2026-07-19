@@ -19,7 +19,8 @@
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-07-18T22:40:38.760-05:00", file: "2026-07-18T22:40:38.760-05:00.webp" },
 
-  { type: "image", date: "2026-07-18T22:40:25.024-05:00", file: "2026-07-18T22:40:25.024-05:00.jpeg" },
+  { type: "image", date: "2026-07-18T22:40:25.024-05:00", file: "2026-07-18T22:40:25.024-05:00.jpeg",
+    tags: ["historic building","city street","architectural details","pedestrians crossing","sunny day","urban intersection","stone facade","arched windows","British Empire Building","street signs"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-07-15T23:08:30.583-05:00",
     quote: "For now we see only a reflection as in a mirror; then we shall see face to face. Now I know in part; then I shall know fully, even as I am fully known." },
