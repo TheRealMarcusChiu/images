@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-20T12:31:41.127-05:00",
+    quote: "If you want to go fast, go alone. If you want to go far, go together" },
+
   { type: "quote", date: "2026-07-20T00:19:46.035-05:00",
     quote: "i'm sorry" },
 
