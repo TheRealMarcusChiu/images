@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-07-19T23:17:00.543-05:00", file: "2026-07-19T23:17:00.543-05:00.jpeg" },
+  { type: "image", date: "2026-07-19T23:17:00.543-05:00", file: "2026-07-19T23:17:00.543-05:00.jpeg",
+    tags: ["login options","social media login","app login buttons","digital authentication","user interface","screen capture","computer monitor","login with mom","login with PDF","login with calculator"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-18T22:40:38.760-05:00", file: "2026-07-18T22:40:38.760-05:00.webp",
     tags: ["Pokémon card","Eevee GX","Ascension-DNA","Joy Maker GX","collectible card","card price tag","$160","holographic card","card shop","card display"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
