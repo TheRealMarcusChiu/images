@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-20T12:37:39.511-05:00",
+    quote: "Mental pain is less dramatic than physical pain, but it is more common and also more hard to bear. The frequent attempt to conceal mental pain increases the burden: it is easier to say “my tooth is aching” than to say “my heart is broken.”", author: "C.S. Lewis" },
+
   { type: "quote", date: "2026-07-20T12:31:41.127-05:00",
     quote: "If you want to go fast, go alone. If you want to go far, go together" },
 
