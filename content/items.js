@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-20T00:19:46.035-05:00",
+    quote: "i'm sorry" },
+
   { type: "image", date: "2026-07-19T23:18:14.259-05:00", file: "2026-07-19T23:18:14.259-05:00.jpeg",
     tags: ["corsair vengeance dd5","ddr5 ram","128gb memory","6400mhz","computer hardware","memory module","yellow packaging","price tag","retail display","computer parts"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
