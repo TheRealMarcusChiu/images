@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-07-21T00:57:05.329-05:00", id: "pUb3mJhv_TU" },
+
   { type: "quote", date: "2026-07-20T12:37:39.511-05:00",
     quote: "Mental pain is less dramatic than physical pain, but it is more common and also more hard to bear. The frequent attempt to conceal mental pain increases the burden: it is easier to say “my tooth is aching” than to say “my heart is broken.”", author: "C.S. Lewis" },
 
