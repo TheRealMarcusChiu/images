@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-07-22T12:05:06.290-05:00", file: "2026-07-22T12:05:06.290-05:00.png" },
+  { type: "image", date: "2026-07-22T12:05:06.290-05:00", file: "2026-07-22T12:05:06.290-05:00.png",
+    tags: ["diary entry","Leo Tolstoy","1851","January 25","love","party","horse purchase","Russian literature"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-22T12:04:54.238-05:00", file: "2026-07-22T12:04:54.238-05:00.png" },
 
