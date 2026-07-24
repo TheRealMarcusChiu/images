@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-24T03:51:46.500-05:00",
+    quote: "relationship advice: under-promise, over-deliver" },
+
   { type: "image", date: "2026-07-24T01:17:44.967-05:00", file: "2026-07-24T01:17:44.967-05:00.png",
     tags: ["pixel art","dinosaur","wishes","comedy","text bubbles","cactus","fireworks","Gary","thousand wishes","cartoon"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
