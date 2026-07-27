@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-27T14:10:19.026-05:00",
+    quote: "Mercy and truth have met together; righteousness and peace have kissed.", author: "Psalm 85:10 (NKJV)" },
+
   { type: "quote", date: "2026-07-27T10:14:10.656-05:00",
     quote: "We don't go to counseling because our marriage is failing; we go because our marriage matters", author: "A Helpful Mindset" },
 
