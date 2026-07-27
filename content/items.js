@@ -58,7 +58,7 @@ window.GALLERY_ITEMS = [
     desc: "I really loved you. There was always a small hope, deep inside me, that we'd end up together... but we never did.\nI don't want to let you go, I really don't. But I have to, I would be too lucky, you deserved better.\nThere's still this \"why?\" inside me, but I have let go for your happiness. \nStay happy, my love." },
 
   { type: "image", date: "2026-07-15T14:44:40.847-05:00", file: "2026-07-15T14:44:40.847-05:00.jpeg",
-    desc: "made my first batch of cookies - crisped at the edges and chewy in the middle 🤤 - matcha white chocolate macadamia nut cookies", tags: ["green dumplings","aluminum foil tray","hand holding tray","round food items","baked goods","homemade food","food preparation","foil-lined baking sheet","dark green balls","food photography"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "my first batch of cookies - crisped edges, chewy middle 🤤 - matcha white chocolate macadamia nut cookies", tags: ["green dumplings","aluminum foil tray","hand holding tray","round food items","baked goods","homemade food","food preparation","foil-lined baking sheet","dark green balls","food photography"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-15T14:24:08.521-05:00", file: "2026-07-15T14:24:08.521-05:00.png",
     tags: ["sketch drawing","coffee table book","social gathering","handwritten text","group illustration","monochrome art","conversation theme","people interaction","artbook","social media post"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
