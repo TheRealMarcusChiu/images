@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-07-26T21:59:26.825-05:00", file: "2026-07-26T21:59:26.825-05:00.png" },
+
   { type: "quote", date: "2026-07-24T03:51:46.500-05:00",
     quote: "relationship advice: under-promise, over-deliver" },
 
