@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-27T10:14:10.656-05:00",
+    quote: "We don't go to counseling because our marriage is failing; we go because our marriage matters", author: "A Helpful Mindset" },
+
   { type: "quote", date: "2026-07-27T09:49:22.516-05:00",
     quote: "Everything comes from you, goes back to you", author: "Paul Washer" },
 
