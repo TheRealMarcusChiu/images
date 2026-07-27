@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-07-27T00:09:51.556-05:00", file: "2026-07-27T00:09:51.556-05:00.png",
-    desc: "made matcha macarons with butter cream filling!" },
+    desc: "made matcha macarons with butter cream filling!", tags: ["green macaron","hand holding macaron","macaron filling","macaron shells","plastic container","white surface","food photography","dessert","confectionery","mochi-like filling"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-26T21:59:26.825-05:00", file: "2026-07-26T21:59:26.825-05:00.png",
     tags: ["batman costume","pregnant woman","subway train","experiment","seat offering","public transportation","social experiment","passengers","urban setting","costume wearer"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
