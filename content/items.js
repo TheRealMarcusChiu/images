@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-07-27T22:16:53.827-05:00", id: "ZhL2LJ4CpsU" },
+
   { type: "quote", date: "2026-07-27T14:10:19.026-05:00",
     quote: "Mercy and truth have met together; righteousness and peace have kissed.", author: "Psalm 85:10 (NKJV)" },
 
