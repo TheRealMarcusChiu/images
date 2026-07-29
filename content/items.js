@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-29T09:37:07.817-05:00",
+    quote: "Don't you know that when you sleep with someone, your body makes a promise, whether you do or not?", author: "Vanilla Sky" },
+
   { type: "youtube", date: "2026-07-27T22:16:53.827-05:00", id: "ZhL2LJ4CpsU" },
 
   { type: "quote", date: "2026-07-27T14:10:19.026-05:00",
