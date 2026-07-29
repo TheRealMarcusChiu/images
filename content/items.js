@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-07-29T14:26:09.176-05:00", file: "2026-07-29T14:26:09.176-05:00.jpeg" },
+  { type: "image", date: "2026-07-29T14:26:09.176-05:00", file: "2026-07-29T14:26:09.176-05:00.jpeg",
+    tags: ["movie poster","Eternal Sunshine of the Spotless Mind","two people","blue hair","yellow grid background","clouds","coat","boots","hat","scarf"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-07-29T09:37:07.817-05:00",
     quote: "Don't you know that when you sleep with someone, your body makes a promise, whether you do or not?", author: "Vanilla Sky" },
