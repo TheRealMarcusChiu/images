@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-07-30T00:30:28.361-05:00",
+    quote: "Don't cry cause its over. Smile cause it happened" },
+
   { type: "image", date: "2026-07-29T14:26:09.176-05:00", file: "2026-07-29T14:26:09.176-05:00.jpeg",
     tags: ["movie poster","Eternal Sunshine of the Spotless Mind","two people","blue hair","yellow grid background","clouds","coat","boots","hat","scarf"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
