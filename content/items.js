@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-08-05T12:07:23.373-05:00", file: "2026-08-05T12:07:23.373-05:00.webp",
-    tags: ["panda","dragon","journey","destination","company","bamboo","mountain","water","fence","black and white"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "If you want to go the fastest, go alone. If you want to go the farthest, go with company." },
 
   { type: "quote", date: "2026-08-05T12:00:55.251-05:00",
     quote: "Trust in the LORD with all your heart;\r\ndo not depend on your own understanding.\r\nSeek his will in all you do,\r\nand he will show you which path to take.", author: "Proverbs 3:5–6 (NLT)" },
