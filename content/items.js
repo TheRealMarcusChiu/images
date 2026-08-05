@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-08-04T22:33:53.228-05:00", file: "2026-08-04T22:33:53.228-05:00.png",
-    link: "https://share.google/x5wVsF7jthIiGgnB5" },
+    link: "https://share.google/x5wVsF7jthIiGgnB5", tags: ["chipotle mexican grill review","1 star review","gold coin payment","employee mistake","remake order denial","customer complaint","restaurant service issue","owner accountability","pay it forward","food service rating"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-07-30T00:30:28.361-05:00",
     quote: "Don't cry cause its over. Smile cause it happened" },
