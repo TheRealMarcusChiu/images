@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-04T22:33:53.228-05:00", file: "2026-08-04T22:33:53.228-05:00.png",
+    link: "https://share.google/x5wVsF7jthIiGgnB5" },
+
   { type: "quote", date: "2026-07-30T00:30:28.361-05:00",
     quote: "Don't cry cause its over. Smile cause it happened" },
 
