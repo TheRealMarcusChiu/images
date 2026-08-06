@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-06T14:22:42.804-05:00",
+    quote: "profession of faith vs possession of faith" },
+
   { type: "image", date: "2026-08-06T14:11:47.585-05:00", file: "2026-08-06T14:11:47.585-05:00.png",
     tags: ["book page","text quote","philosophical quote","life advice","quote about leaving","paper texture","printed text","book interior","page corner","book text"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
