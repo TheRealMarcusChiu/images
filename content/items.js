@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-06T14:10:47.797-05:00", file: "2026-08-06T14:10:47.797-05:00.webp" },
+
   { type: "image", date: "2026-08-06T14:10:36.993-05:00", file: "2026-08-06T14:10:36.993-05:00.webp",
     tags: ["mathematics landscape","algebraic geometry","numerical analysis","harmonic analysis","differential topology","combinatorial group theory","quantum cohomology","modern mathematics","cartoon","mountain peaks"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
