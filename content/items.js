@@ -57,7 +57,7 @@ window.GALLERY_ITEMS = [
     tags: ["space station","flying saucer","red cloak","clouds","computer monitor","large window","astronaut","cosmic background","ancient architecture","science fiction"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-08-06T13:56:01.462-05:00", file: "2026-08-06T13:56:01.462-05:00.webp",
-    tags: ["Kazakh culture","sheep herding","horse","mountain landscape","text overlay","Kazakh language","friendship","love","text translation","grassland"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "\"I love you\" in Kazakh is \"Men seni zhaksy koremin\" which means \"I see you clearly\"", tags: ["Kazakh culture","sheep herding","horse","mountain landscape","text overlay","Kazakh language","friendship","love","text translation","grassland"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-08-06T13:55:51.172-05:00", file: "2026-08-06T13:55:51.172-05:00.webp",
     tags: ["Twitter tweet","deleted tweet","social media","Tinder","Grindr","dating apps","gay lifestyle","public image","messaging","love"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
