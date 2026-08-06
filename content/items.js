@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-06T14:09:58.455-05:00", file: "2026-08-06T14:09:58.455-05:00.webp" },
+
   { type: "image", date: "2026-08-06T14:09:46.363-05:00", file: "2026-08-06T14:09:46.363-05:00.webp",
     tags: ["two cats","sunlight through window","stained glass window","cat on rug","indoor setting","warm lighting","text overlay","cat sitting","home interior","cat and cat"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
