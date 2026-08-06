@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-06T13:56:16.706-05:00", file: "2026-08-06T13:56:16.706-05:00.webp" },
+
   { type: "image", date: "2026-08-06T13:56:01.462-05:00", file: "2026-08-06T13:56:01.462-05:00.webp",
     tags: ["Kazakh culture","sheep herding","horse","mountain landscape","text overlay","Kazakh language","friendship","love","text translation","grassland"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
