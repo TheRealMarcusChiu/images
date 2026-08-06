@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-08-06T14:11:33.600-05:00", file: "2026-08-06T14:11:33.600-05:00.webp" },
+  { type: "image", date: "2026-08-06T14:11:33.600-05:00", file: "2026-08-06T14:11:33.600-05:00.webp",
+    tags: ["man holding microphone","outdoor street scene","trees","bridge","people walking","urban environment","hoodie","text overlay","London landmark","public space"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-08-06T14:11:20.497-05:00", file: "2026-08-06T14:11:20.497-05:00.webp",
     tags: ["color circles","fingerprint patterns","emotions experience","emotions identity","text design","minimalist art","color psychology","visual metaphor","four colors","circular shapes"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
