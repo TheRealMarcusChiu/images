@@ -19,7 +19,8 @@
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-08-06T13:55:51.172-05:00", file: "2026-08-06T13:55:51.172-05:00.webp" },
 
-  { type: "image", date: "2026-08-06T13:55:40.461-05:00", file: "2026-08-06T13:55:40.461-05:00.webp" },
+  { type: "image", date: "2026-08-06T13:55:40.461-05:00", file: "2026-08-06T13:55:40.461-05:00.webp",
+    tags: ["skeleton holding cat","dead inside","sick of life","cat lover","meme","four panel comic","skull and cat","emotional support cat","dark humor","cat and skeleton"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-08-06T01:05:24.754-05:00",
     quote: "We live in an age that demands apology for greatness" },
