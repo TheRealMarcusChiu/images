@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-08-06T14:10:58.066-05:00", file: "2026-08-06T14:10:58.066-05:00.webp" },
+  { type: "image", date: "2026-08-06T14:10:58.066-05:00", file: "2026-08-06T14:10:58.066-05:00.webp",
+    tags: ["Spotify billboard","urban cityscape","large digital advertisement","remote work","city street","office building","pedestrians","glass skyscrapers","Spotify logo","public messaging"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-08-06T14:10:47.797-05:00", file: "2026-08-06T14:10:47.797-05:00.webp",
     tags: ["bed","cat","woman","phone","text message","sleeping","blue blanket","meme","thoughts","sadness"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
