@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-06T01:05:24.754-05:00",
+    quote: "We live in an age that demands apology for greatness" },
+
   { type: "image", date: "2026-08-05T12:07:23.373-05:00", file: "2026-08-05T12:07:23.373-05:00.webp",
     desc: "If you want to go the fastest, go alone. If you want to go the farthest, go with company." },
 
