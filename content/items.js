@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-06T14:10:36.993-05:00", file: "2026-08-06T14:10:36.993-05:00.webp" },
+
   { type: "image", date: "2026-08-06T14:10:24.394-05:00", file: "2026-08-06T14:10:24.394-05:00.webp",
     tags: ["muscle cross-section","MRI scan","triathlete","sedentary man","quadriceps","adipose tissue","age comparison","medical imaging","anatomy","muscle density"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
