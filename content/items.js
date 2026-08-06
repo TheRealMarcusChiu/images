@@ -47,7 +47,7 @@ window.GALLERY_ITEMS = [
     quote: "We don't go to counseling because our marriage is failing; we go because our marriage matters", author: "A Helpful Mindset" },
 
   { type: "quote", date: "2026-07-27T09:49:22.516-05:00",
-    quote: "Everything comes from you, goes back to you", author: "Paul Washer" },
+    quote: "Everything that comes from you, goes back to you", author: "Paul Washer" },
 
   { type: "image", date: "2026-07-27T00:09:51.556-05:00", file: "2026-07-27T00:09:51.556-05:00.png",
     desc: "made matcha macarons with butter cream filling!", tags: ["green macaron","hand holding macaron","macaron filling","macaron shells","plastic container","white surface","food photography","dessert","confectionery","mochi-like filling"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
