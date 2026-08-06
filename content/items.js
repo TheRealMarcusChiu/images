@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-08-06T13:55:51.172-05:00", file: "2026-08-06T13:55:51.172-05:00.webp" },
+  { type: "image", date: "2026-08-06T13:55:51.172-05:00", file: "2026-08-06T13:55:51.172-05:00.webp",
+    tags: ["Twitter tweet","deleted tweet","social media","Tinder","Grindr","dating apps","gay lifestyle","public image","messaging","love"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-08-06T13:55:40.461-05:00", file: "2026-08-06T13:55:40.461-05:00.webp",
     tags: ["skeleton holding cat","dead inside","sick of life","cat lover","meme","four panel comic","skull and cat","emotional support cat","dark humor","cat and skeleton"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
