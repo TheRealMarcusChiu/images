@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-06T13:55:40.461-05:00", file: "2026-08-06T13:55:40.461-05:00.webp" },
+
   { type: "quote", date: "2026-08-06T01:05:24.754-05:00",
     quote: "We live in an age that demands apology for greatness" },
 
