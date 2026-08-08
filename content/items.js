@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-07T21:25:17.406-05:00",
+    quote: "To love the LORD: it's when I wanna go left, my fear of the LORD makes me go right" },
+
   { type: "quote", date: "2026-08-07T14:49:16.843-05:00",
     quote: "Indians are always in a hurry yet never on time", author: "said by an Indian" },
 
