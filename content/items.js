@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-08T22:41:25.611-05:00", file: "2026-08-08T22:41:25.611-05:00.png" },
+
   { type: "quote", date: "2026-08-07T21:25:17.406-05:00",
     quote: "To love the LORD: it's when I wanna go left, my fear of the LORD makes me go right" },
 
