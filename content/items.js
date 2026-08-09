@@ -17,7 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-08-08T22:41:25.611-05:00", file: "2026-08-08T22:41:25.611-05:00.png" },
+  { type: "image", date: "2026-08-08T22:41:25.611-05:00", file: "2026-08-08T22:41:25.611-05:00.png",
+    tags: ["solar system","gravity visualization","spacetime curvature","planetary orbits","sun gravitational effect","scientific illustration","cosmic phenomena","astronomy diagram","relativity concept","space physics"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-08-07T21:25:17.406-05:00",
     quote: "To love the LORD: it's when I wanna go left, my fear of the LORD makes me go right" },
