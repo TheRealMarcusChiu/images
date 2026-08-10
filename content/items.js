@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-08-10T05:44:27.817-05:00", id: "WYQgdfa6KJY" },
+
   { type: "image", date: "2026-08-08T22:41:25.611-05:00", file: "2026-08-08T22:41:25.611-05:00.png",
     tags: ["solar system","gravity visualization","spacetime curvature","planetary orbits","sun gravitational effect","scientific illustration","cosmic phenomena","astronomy diagram","relativity concept","space physics"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
