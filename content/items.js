@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-10T13:39:35.097-05:00",
+    quote: "I hope you heal from all the things you don’t talk about" },
+
   { type: "quote", date: "2026-08-10T13:38:35.039-05:00",
     quote: "The most precious light is the one that shines in a dark place" },
 
