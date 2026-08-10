@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-10T13:38:35.039-05:00",
+    quote: "The most precious light is the one that shines in a dark place" },
+
   { type: "youtube", date: "2026-08-10T05:44:27.817-05:00", id: "WYQgdfa6KJY" },
 
   { type: "image", date: "2026-08-08T22:41:25.611-05:00", file: "2026-08-08T22:41:25.611-05:00.png",
