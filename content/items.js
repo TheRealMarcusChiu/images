@@ -17,6 +17,122 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-10T22:59:24.972-05:00", file: "2026-08-10T22:59:24.972-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:59:17.630-05:00", file: "2026-08-10T22:59:17.630-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:59:17.612-05:00", file: "2026-08-10T22:59:17.612-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:59:17.592-05:00", file: "2026-08-10T22:59:17.592-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:59:17.565-05:00", file: "2026-08-10T22:59:17.565-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:32.067-05:00", file: "2026-08-10T22:58:32.067-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:32.044-05:00", file: "2026-08-10T22:58:32.044-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:32.028-05:00", file: "2026-08-10T22:58:32.028-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:32.006-05:00", file: "2026-08-10T22:58:32.006-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.990-05:00", file: "2026-08-10T22:58:31.990-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.974-05:00", file: "2026-08-10T22:58:31.974-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.953-05:00", file: "2026-08-10T22:58:31.953-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.938-05:00", file: "2026-08-10T22:58:31.938-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.923-05:00", file: "2026-08-10T22:58:31.923-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.905-05:00", file: "2026-08-10T22:58:31.905-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.888-05:00", file: "2026-08-10T22:58:31.888-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.873-05:00", file: "2026-08-10T22:58:31.873-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.855-05:00", file: "2026-08-10T22:58:31.855-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.838-05:00", file: "2026-08-10T22:58:31.838-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.797-05:00", file: "2026-08-10T22:58:31.797-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.782-05:00", file: "2026-08-10T22:58:31.782-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.765-05:00", file: "2026-08-10T22:58:31.765-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.745-05:00", file: "2026-08-10T22:58:31.745-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.727-05:00", file: "2026-08-10T22:58:31.727-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.711-05:00", file: "2026-08-10T22:58:31.711-05:00.webp" },
+
+  { type: "image", date: "2026-08-10T22:58:31.698-05:00", file: "2026-08-10T22:58:31.698-05:00.webp",
+    tags: ["social media post","snore audio","Spotify","40000 listeners","wife","apnea","humor","relationship","tweet","DaveApnea"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.682-05:00", file: "2026-08-10T22:58:31.682-05:00.webp",
+    tags: ["piano","speech bubbles","cartoon","people","music","conversation","man standing","man sitting","piano bench","stop"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.664-05:00", file: "2026-08-10T22:58:31.664-05:00.webp",
+    tags: ["human face","text overlay","monochrome","close-up","eyes","grainy texture","obsession discipline","dark tones","minimalist","textured background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.647-05:00", file: "2026-08-10T22:58:31.647-05:00.webp",
+    tags: ["twitter post","scott hanselman","https ssl","ssl security","private conversation","satan","tweetlogix"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.630-05:00", file: "2026-08-10T22:58:31.630-05:00.webp",
+    tags: ["handwritten text","positive affirmations","motivational quotes","reading direction instruction","mental health","self-improvement","mindfulness","emotional well-being","personal growth","inspirational writing"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.609-05:00", file: "2026-08-10T22:58:31.609-05:00.webp",
+    tags: ["text quote","question","habits","cowardice","laziness","courage","inventive reason"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.597-05:00", file: "2026-08-10T22:58:31.597-05:00.webp",
+    tags: ["black and white photograph","man speaking","text overlay","philosophical quote","outdoor setting","hand gesture","bearded man","shirt","grass background","quote about experience"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.578-05:00", file: "2026-08-10T22:58:31.578-05:00.webp",
+    tags: ["woman with blonde hair","text overlay","self empowerment","confident expression","two-panel image","situational resilience","positive affirmation","smiling face","indoor setting","spoken word"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.537-05:00", file: "2026-08-10T22:58:31.537-05:00.webp",
+    tags: ["rainy day","umbrella","child","duck","puddle","illustration","cartoon","yellow umbrella","small moments","water droplets"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.519-05:00", file: "2026-08-10T22:58:31.519-05:00.webp",
+    tags: ["pokémon","squirtle","meme","split image","bawling","balling","sunglasses","tears","humor","contrasting emotions"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.504-05:00", file: "2026-08-10T22:58:31.504-05:00.webp",
+    tags: ["bedtime routine","early morning wake up","real food","long walks","obsessive focus","old books","gossip avoidance","minimal social circle","life philosophy","confusing lifestyle"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.486-05:00", file: "2026-08-10T22:58:31.486-05:00.webp",
+    tags: ["fun scale","outdoor activities","skiing","climbing","bear encounter","type 1 fun","type 2 fun","type 3 fun","retrospective fun","storytelling"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.469-05:00", file: "2026-08-10T22:58:31.469-05:00.webp",
+    tags: ["panda character","text overlay","cartoon animation","kung fu panda","quote","screen capture","film still","animated movie","character portrait","spoken dialogue"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.450-05:00", file: "2026-08-10T22:58:31.450-05:00.webp",
+    tags: ["text message conversation","love language discussion","physical touch","manipulation","heart emoji","8:31 pm timestamp","8:44 pm timestamp","8:45 pm timestamp","mobile chat interface","digital communication"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.433-05:00", file: "2026-08-10T22:58:31.433-05:00.webp",
+    tags: ["cat and dog interaction","white dog","orange cat","wooden chair","home interior","pet behavior","feline and canine","domestic animals","kitten","puppy"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.416-05:00", file: "2026-08-10T22:58:31.416-05:00.webp",
+    tags: ["text message","mental health","anxiety","depression","panic attack","note","Alicia Cook","screenshot","personal note","emotional distress"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.399-05:00", file: "2026-08-10T22:58:31.399-05:00.webp",
+    tags: ["book page","text excerpt","quote","love definition","heat metaphor","grace state","imagination role","irrational love","person presence","need explanation"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.380-05:00", file: "2026-08-10T22:58:31.380-05:00.webp",
+    tags: ["body awareness","emotional connection","organic speech","handwritten text","silhouette drawing","blue bubbles","slow processing","unplanned communication","physical presence","mind-body connection"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.364-05:00", file: "2026-08-10T22:58:31.364-05:00.webp",
+    tags: ["space rocket launch","rural farm house","blue pickup truck","cornfield","night sky with stars","cloud formations","galaxy view","wooden barn","agricultural landscape","dreamy surrealism"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.321-05:00", file: "2026-08-10T22:58:31.321-05:00.webp",
+    tags: ["elderly man","sunglasses","black shirt","yellow dresser","text overlay","trees","office setting","gray hair","chair","text about trees"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.305-05:00", file: "2026-08-10T22:58:31.305-05:00.webp",
+    tags: ["social media post","TikTok","scrolling","searching","question","user comment","views","likes","comments","digital content"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-10T22:58:31.290-05:00", file: "2026-08-10T22:58:31.290-05:00.webp",
+    tags: ["man in suit","hands on head","text overlay","reddit","meme","frustration","political figure","courtroom setting","Obama","surreal humor"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-08-10T13:39:35.097-05:00",
     quote: "I hope you heal from all the things you don’t talk about" },
 
@@ -91,7 +207,7 @@ window.GALLERY_ITEMS = [
     quote: "We live in an age that demands apology for greatness" },
 
   { type: "image", date: "2026-08-05T12:07:23.373-05:00", file: "2026-08-05T12:07:23.373-05:00.webp",
-    desc: "If you want to go the fastest, go alone. If you want to go the farthest, go with company." },
+    desc: "If you want to go the fastest, go alone. If you want to go the farthest, go with company.", tags: ["panda","dragon","journey","destination","company","bamboo","mountain","water","fence","black and white"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-08-05T12:00:55.251-05:00",
     quote: "Trust in the LORD with all your heart;\r\ndo not depend on your own understanding.\r\nSeek his will in all you do,\r\nand he will show you which path to take.", author: "Proverbs 3:5–6 (NLT)" },
@@ -163,7 +279,7 @@ window.GALLERY_ITEMS = [
     quote: "For now we see only a reflection as in a mirror; then we shall see face to face. Now I know in part; then I shall know fully, even as I am fully known.", author: "1 Corinthians 13:12" },
 
   { type: "image", date: "2026-07-15T14:51:41.815-05:00", file: "2026-07-15T14:51:41.815-05:00.png",
-    desc: "I really loved you. There was always a small hope, deep inside me, that we'd end up together... but we never did.\nI don't want to let you go, I really don't. But I have to, I would be too lucky, you deserved better.\nThere's still this \"why?\" inside me, but I have let go for your happiness. \nStay happy, my love." },
+    desc: "I really loved you. There was always a small hope, deep inside me, that we'd end up together... but we never did.\nI don't want to let you go, I really don't. But I have to, I would be too lucky, you deserved better.\nThere's still this \"why?\" inside me, but I have let go for your happiness. \nStay happy, my love.", tags: ["painting","bench","two people","conversation","text overlay","man","woman","sadness","breakup","grass"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-07-15T14:44:40.847-05:00", file: "2026-07-15T14:44:40.847-05:00.jpeg",
     desc: "my first batch of cookies - crisped edges, chewy middle 🤤 - matcha white chocolate macadamia nut cookies", tags: ["green dumplings","aluminum foil tray","hand holding tray","round food items","baked goods","homemade food","food preparation","foil-lined baking sheet","dark green balls","food photography"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
