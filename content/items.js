@@ -17,6 +17,12 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-11T16:11:22.811-05:00", file: "2026-08-11T16:11:22.811-05:00.png",
+    tags: ["github pull request","codebase refactor","commit statistics","file changes","merge request","code review","software development","version control","git","open source"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-11T16:11:22.742-05:00", file: "2026-08-11T16:11:22.742-05:00.png",
+    tags: ["YouTube channel","fireplace video","10 hours","156M views","estimated revenue","$1.248M","subscriber count","108K subscribers","video analytics","YouTube analytics"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "youtube", date: "2026-08-11T01:09:22.747-05:00", id: "LREwy3BzEW4" },
 
   { type: "image", date: "2026-08-10T22:59:24.972-05:00", file: "2026-08-10T22:59:24.972-05:00.webp",
