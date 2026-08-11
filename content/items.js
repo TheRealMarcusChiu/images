@@ -17,55 +17,80 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-08-10T22:59:24.972-05:00", file: "2026-08-10T22:59:24.972-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:59:24.972-05:00", file: "2026-08-10T22:59:24.972-05:00.webp",
+    tags: ["poetry","love poem","relationship questions","emotional vulnerability","romantic inquiry","intimate communication","heartfelt questions","personal connection","trust in relationships","hopeful longing"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:59:17.630-05:00", file: "2026-08-10T22:59:17.630-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:59:17.630-05:00", file: "2026-08-10T22:59:17.630-05:00.webp",
+    tags: ["data space","latent space","encoder","decoder","manifold","low-density region","high-density region","interpolation","extrapolation","R^n"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:59:17.612-05:00", file: "2026-08-10T22:59:17.612-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:59:17.612-05:00", file: "2026-08-10T22:59:17.612-05:00.webp",
+    tags: ["harper's index","wikipedia edit count","ship of theseus","wiki article changes","philosophy topic","encyclopedia entry","content evolution","editorial history","harper's magazine","information update"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:59:17.592-05:00", file: "2026-08-10T22:59:17.592-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:59:17.592-05:00", file: "2026-08-10T22:59:17.592-05:00.webp",
+    tags: ["social media post","twitter","question","answer","writing advice","sad child","anonymous","user interaction","follow button","notes count"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:59:17.565-05:00", file: "2026-08-10T22:59:17.565-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:59:17.565-05:00", file: "2026-08-10T22:59:17.565-05:00.webp",
+    tags: ["relationship types","line art","hand-drawn","friendship","family","romance","therapist","dog","de recat","one night stand"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:32.067-05:00", file: "2026-08-10T22:58:32.067-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:32.067-05:00", file: "2026-08-10T22:58:32.067-05:00.webp",
+    tags: ["pink bowl","beige liquid","text overlay","coffee","milkshake","text 'You owe me nothing'","striped cloth background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:32.044-05:00", file: "2026-08-10T22:58:32.044-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:32.044-05:00", file: "2026-08-10T22:58:32.044-05:00.webp",
+    tags: ["handwritten text","blue background","encouraging message","small wins","pride","positive affirmation","personal note","inspirational quote","supportive words","written words"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:32.028-05:00", file: "2026-08-10T22:58:32.028-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:32.028-05:00", file: "2026-08-10T22:58:32.028-05:00.webp",
+    tags: ["fishing illustration","uncertainty concept","daily perseverance","black and white drawing","text overlay","motivational quote","person in hat","water scene","rewards uncertain","The 5 Types of Wealth"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:32.006-05:00", file: "2026-08-10T22:58:32.006-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:32.006-05:00", file: "2026-08-10T22:58:32.006-05:00.webp",
+    tags: ["person wearing jeans","gold ring","Adidas sneakers","black handbag","quote text","door step","text overlay","fashion accessory","casual outfit","text on image"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.990-05:00", file: "2026-08-10T22:58:31.990-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.990-05:00", file: "2026-08-10T22:58:31.990-05:00.webp",
+    tags: ["quote","leonardo da vinci","accomplishment","active mindset","inspirational","text on paper","quote attribution","motivational","philosophy","quote about success"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.974-05:00", file: "2026-08-10T22:58:31.974-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.974-05:00", file: "2026-08-10T22:58:31.974-05:00.webp",
+    tags: ["impulsive thoughts","intrusive thoughts","thought comparison","mental health","cognitive behavior","thought patterns","values alignment","distressing thoughts","compulsive behaviors","thought disorder"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.953-05:00", file: "2026-08-10T22:58:31.953-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.953-05:00", file: "2026-08-10T22:58:31.953-05:00.webp",
+    tags: ["page number 94","text excerpt","maturity definition","childhood seriousness","play seriousness","book page","printed text","page 94","text content","literary quote"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.938-05:00", file: "2026-08-10T22:58:31.938-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.938-05:00", file: "2026-08-10T22:58:31.938-05:00.webp",
+    tags: ["quote","text","inspirational phrase","English language","motivational message"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.923-05:00", file: "2026-08-10T22:58:31.923-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.923-05:00", file: "2026-08-10T22:58:31.923-05:00.webp",
+    tags: ["school bus","train","railroad tracks","collision","text overlay","planned plans","wife plans","comedy meme","transportation","vehicle crash"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.905-05:00", file: "2026-08-10T22:58:31.905-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.905-05:00", file: "2026-08-10T22:58:31.905-05:00.webp",
+    tags: ["bookstore interior","woman browsing books","music album display","bookshelf","CD collection","text overlay","social media post","follow button","heart icon","comment icon"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.888-05:00", file: "2026-08-10T22:58:31.888-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.888-05:00", file: "2026-08-10T22:58:31.888-05:00.webp",
+    tags: ["text message","Christmas question","mom message","video call","podium","business debate","investor","Anduril","Jason Calacanis","Palmer Luckey"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.873-05:00", file: "2026-08-10T22:58:31.873-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.873-05:00", file: "2026-08-10T22:58:31.873-05:00.webp",
+    tags: ["ML engineer workspace","computer monitors","brain scan visualization","desk setup","office environment"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.855-05:00", file: "2026-08-10T22:58:31.855-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.855-05:00", file: "2026-08-10T22:58:31.855-05:00.webp",
+    tags: ["two cats","sleeping cats","kitten","cute cats","bed","pillow","text overlay","always","here for you","plaid blanket"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.838-05:00", file: "2026-08-10T22:58:31.838-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.838-05:00", file: "2026-08-10T22:58:31.838-05:00.webp",
+    tags: ["Simpsons characters","Homer Simpson","Marge Simpson","sign with text","marriage","chicken","cartoon","house interior","leaf symbol","wedding vows"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.797-05:00", file: "2026-08-10T22:58:31.797-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.797-05:00", file: "2026-08-10T22:58:31.797-05:00.webp",
+    tags: ["Java programming","C++ programming","memory management","recycling","robot characters","coding humor","software development","garbage collection","memory ball","system32 comics"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.782-05:00", file: "2026-08-10T22:58:31.782-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.782-05:00", file: "2026-08-10T22:58:31.782-05:00.webp",
+    tags: ["emotional embrace","romantic dialogue","love quote","film still","couple hug","intimate moment","movie scene","text overlay","character interaction","cinematic dialogue"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.765-05:00", file: "2026-08-10T22:58:31.765-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.765-05:00", file: "2026-08-10T22:58:31.765-05:00.webp",
+    tags: ["parent child relationship","cornfield","man and girl","text quote","outdoor scene","family moment","adult and child","sunset lighting","vehicle","field landscape"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.745-05:00", file: "2026-08-10T22:58:31.745-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.745-05:00", file: "2026-08-10T22:58:31.745-05:00.webp",
+    tags: ["phone search","cuda 12.1","technical queries","relationship humor","search results","woman looking sad","man in bathroom","search bar","computer graphics","meme"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.727-05:00", file: "2026-08-10T22:58:31.727-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.727-05:00", file: "2026-08-10T22:58:31.727-05:00.webp",
+    tags: ["ipod advertisement","music player","1000 songs","cd quality","portable mp3 player","earphones","cumbaya song","menu button","ultra portable","6.5 ounce"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-10T22:58:31.711-05:00", file: "2026-08-10T22:58:31.711-05:00.webp" },
+  { type: "image", date: "2026-08-10T22:58:31.711-05:00", file: "2026-08-10T22:58:31.711-05:00.webp",
+    tags: ["quote","Franz Kafka","life metaphor","costume party","shame","real face","text image","philosophical quote","literary quote","text on white background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-08-10T22:58:31.698-05:00", file: "2026-08-10T22:58:31.698-05:00.webp",
     tags: ["social media post","snore audio","Spotify","40000 listeners","wife","apnea","humor","relationship","tweet","DaveApnea"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
