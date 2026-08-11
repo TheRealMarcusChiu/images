@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-08-11T01:09:22.747-05:00", id: "LREwy3BzEW4" },
+
   { type: "image", date: "2026-08-10T22:59:24.972-05:00", file: "2026-08-10T22:59:24.972-05:00.webp",
     tags: ["poetry","love poem","relationship questions","emotional vulnerability","romantic inquiry","intimate communication","heartfelt questions","personal connection","trust in relationships","hopeful longing"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
