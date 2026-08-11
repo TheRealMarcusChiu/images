@@ -2387,8 +2387,8 @@ class Component extends DCLogic {
         </div>
       </label>
       <label class="typed srcd" data-for="image" data-src="upload">
-        <span>Image file</span>
-        <input type="file" name="media" accept="image/*">
+        <span>Image file <em>select several · each becomes its own post</em></span>
+        <input type="file" name="media" accept="image/*" multiple>
       </label>
       <label class="typed srcd" data-for="image" data-src="url" hidden>
         <span>Image URL <em>downloaded &amp; saved locally</em></span>
@@ -2480,23 +2480,28 @@ class Component extends DCLogic {
       e.preventDefault();
       const type = currentType();
       const submitBtn = form.querySelector('button[type=submit]');
-      const fd = new FormData();
-      fd.append('type', type);
-      fd.append('desc', F.desc.value);
-      fd.append('link', F.link.value);
-      if (F.hidden.checked) fd.append('hidden', 'true');
+      const base = () => {
+        const fd = new FormData();
+        fd.append('type', type);
+        fd.append('desc', F.desc.value);
+        fd.append('link', F.link.value);
+        if (F.hidden.checked) fd.append('hidden', 'true');
+        return fd;
+      };
+      const payloads = [];   // one POST /api/tiles per payload = one post
 
       if (type === 'image') {
         if (currentSrc() === 'upload') {
-          if (!F.media.files[0]) return showNotice(card, 'Choose an image file.', true);
-          fd.append('media', F.media.files[0]);
+          const files = [...F.media.files];
+          if (!files.length) return showNotice(card, 'Choose one or more image files.', true);
+          for (const f of files) { const fd = base(); fd.append('media', f); payloads.push(fd); }
         } else {
           if (!F.imageUrl.value.trim()) return showNotice(card, 'Paste an image URL.', true);
-          fd.append('imageUrl', F.imageUrl.value.trim());
+          const fd = base(); fd.append('imageUrl', F.imageUrl.value.trim()); payloads.push(fd);
         }
       } else if (type === 'video') {
         if (!F.media2.files[0]) return showNotice(card, 'Choose a video file.', true);
-        fd.append('media', F.media2.files[0]);
+        const fd = base(); fd.append('media', F.media2.files[0]);
         if (F.poster.files[0]) {
           fd.append('poster', F.poster.files[0]);
         } else {
@@ -2504,7 +2509,9 @@ class Component extends DCLogic {
           const frame = await extractFirstFrame(F.media2.files[0]);
           if (frame) fd.append('poster', frame, 'poster.jpg');
         }
+        payloads.push(fd);
       } else if (type === 'audio') {
+        const fd = base();
         if (currentSrc() === 'youtube') {
           if (!F.audioUrl.value.trim()) return showNotice(card, 'Paste a YouTube URL or ID.', true);
           fd.append('audioUrl', F.audioUrl.value.trim());
@@ -2514,33 +2521,49 @@ class Component extends DCLogic {
         }
         if (F.audioCover.files[0]) fd.append('poster', F.audioCover.files[0]);
         if (F.title.value.trim()) fd.append('title', F.title.value.trim());
+        payloads.push(fd);
       } else if (type === 'quote') {
         if (!F.quote.value.trim()) return showNotice(card, 'Write the quote text.', true);
-        fd.append('quote', F.quote.value.trim());
+        const fd = base(); fd.append('quote', F.quote.value.trim());
         if (F.author.value.trim()) fd.append('author', F.author.value.trim());
+        payloads.push(fd);
       } else {
         if (!F.youtube.value.trim()) return showNotice(card, 'Paste a YouTube URL or ID.', true);
-        fd.append('youtube', F.youtube.value.trim());
+        const fd = base(); fd.append('youtube', F.youtube.value.trim()); payloads.push(fd);
       }
 
       const extracting = type === 'audio' && currentSrc() === 'youtube';
+      const total = payloads.length;
       submitBtn.disabled = true;
-      submitBtn.textContent = extracting ? 'Extracting audio…' : 'Adding…';
+      let done = 0, failed = 0, lastErr = '', lastEntry = null;
       try {
-        const res = await fetch(api('/api/tiles'), { method: 'POST', body: fd });
-        const data = await res.json();
-        if (res.ok) {
-          const what = data.entry.file ? `<code>${esc(data.entry.file)}</code>`
-            : data.entry.id ? `id <code>${esc(data.entry.id)}</code>`
-            : data.entry.quote ? `<code>“${esc(data.entry.quote.slice(0, 40))}”</code>` : '';
-          showNotice(card, `Added ${esc(data.entry.type)} ${what}` + (data.entry.hidden ? ' · hidden' : '') +
-            gitNote(data.git) +
-            ` · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`, false);
+        for (let k = 0; k < total; k++) {
+          submitBtn.textContent = extracting ? 'Extracting audio…'
+            : total > 1 ? `Adding ${k + 1}/${total}…` : 'Adding…';
+          try {
+            const res = await fetch(api('/api/tiles'), { method: 'POST', body: payloads[k] });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) { done++; lastEntry = data.entry; }
+            else { failed++; lastErr = data.error || ('HTTP ' + res.status); }
+          } catch (err) { failed++; lastErr = OFFLINE; }
+        }
+        const prod = ` · <a href="${PROD_URL}" target="_blank" rel="noopener">production →</a>`;
+        if (done && !failed) {
+          if (total > 1) showNotice(card, `Added ${done} tiles` + prod, false);
+          else {
+            const what = lastEntry && lastEntry.file ? `<code>${esc(lastEntry.file)}</code>`
+              : lastEntry && lastEntry.id ? `id <code>${esc(lastEntry.id)}</code>`
+              : lastEntry && lastEntry.quote ? `<code>“${esc(lastEntry.quote.slice(0, 40))}”</code>` : '';
+            showNotice(card, `Added ${esc(lastEntry.type)} ${what}` + (lastEntry.hidden ? ' · hidden' : '') + prod, false);
+          }
           form.reset(); syncFields();
           reloadGrid();
-        } else showNotice(card, esc(data.error) || 'Something went wrong.', true);
-      } catch (err) {
-        showNotice(card, `Could not save — ${OFFLINE}`, true);
+        } else if (done && failed) {
+          showNotice(card, `Added ${done} of ${total} — ${failed} failed (${esc(lastErr)})`, true);
+          setTimeout(reloadGrid, 1600);
+        } else {
+          showNotice(card, esc(lastErr) || 'Something went wrong.', true);
+        }
       } finally {
         submitBtn.disabled = false; submitBtn.textContent = 'Add tile';
       }
