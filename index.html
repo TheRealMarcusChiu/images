@@ -180,6 +180,19 @@
     .conn-status[data-state="fail"] .dot { background: #cf5d5d; }
     .conn-status[data-state="checking"] { color: var(--ac, #e8b34a); }
     .conn-status[data-state="checking"] .dot { background: var(--ac, #e8b34a); animation: pulseGlow 1s ease-in-out infinite; }
+    .git-panel { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; display: flex; flex-direction: column; gap: 11px; }
+    .git-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .git-title { font-family: 'Space Grotesk', sans-serif; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8b8579; }
+    .git-state { font-family: 'Space Grotesk', sans-serif; font-size: 11px; letter-spacing: 0.05em; color: #8b8579; text-align: right; }
+    .git-state[data-tone="ok"] { color: #6fcf97; }
+    .git-state[data-tone="warn"] { color: var(--ac, #e8b34a); }
+    .git-state[data-tone="fail"] { color: #e08a8a; }
+    .git-actions { display: flex; gap: 10px; }
+    .git-actions .btn { flex: 1; }
+    .git-msg { font-family: 'Space Grotesk', sans-serif; font-size: 10px; letter-spacing: 0.06em; line-height: 1.6; color: #8b8579; margin: 0; }
+    .git-msg[data-tone="ok"] { color: #6fcf97; }
+    .git-msg[data-tone="fail"] { color: #e08a8a; }
+    .git-msg[hidden] { display: none; }
     .admin-modal { position: fixed; inset: 0; z-index: 130; background: rgba(5,6,9,0.78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; padding: 6vh 18px; overflow-y: auto; }
     .admin-modal[hidden] { display: none; }
     .admin-modal-card { width: min(540px, 100%); background: #14161c; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 22px 24px 26px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); color: #f3efe6; font-family: 'Space Grotesk', sans-serif; }
@@ -785,6 +798,7 @@ class Component extends DCLogic {
     this.volume = 0.5; // default volume 50%
     this.fetchYouTubeTitles();
     window.GALLERY = { reload: () => location.reload() };   // admin: bridge for the admin layer
+    setTimeout(this.restoreAdmin, 0);   // keep admin mode across reloads (e.g. after adding a tile)
     setTimeout(() => this.finishLoading(), 8000); // ultimate fallback so the loader can never get stuck
     window.addEventListener('resize', this.onResize);
     window.addEventListener('wheel', this.onWheel, { passive: false });
@@ -1690,11 +1704,21 @@ class Component extends DCLogic {
       window.GALLERY_CONFIG.onEdit(im._raw);
     }
   };
+  restoreAdmin = () => {
+    let on = false;
+    try { on = localStorage.getItem('markive.admin') === '1'; } catch (e) {}
+    if (!on) return;
+    this.setState({ adminMode: true });
+    document.body.classList.add('admin-on');
+    if (window.GALLERY_CONFIG) window.GALLERY_CONFIG.admin = true;
+    if (typeof window.__verifyServer === 'function') window.__verifyServer();
+  };
   toggleAdmin = () => {
     const on = !this.state.adminMode;
     this.setState({ adminMode: on });
     document.body.classList.toggle('admin-on', on);
     if (window.GALLERY_CONFIG) window.GALLERY_CONFIG.admin = on;
+    try { localStorage.setItem('markive.admin', on ? '1' : ''); } catch (e) {}
     if (!on && typeof window.__adminCloseModal === 'function') window.__adminCloseModal();
     if (typeof this.showToast === 'function') this.showToast(on ? 'Admin mode on \u00b7 \u2318/Ctrl+E to exit' : 'Admin mode off');
     if (on && typeof window.__verifyServer === 'function') window.__verifyServer();
@@ -2534,6 +2558,16 @@ class Component extends DCLogic {
         </label>
         <p class="notice">Admin actions post to <code>&lt;endpoint&gt;/api/tiles…</code>. Leave blank to use this site's own origin (the bundled <code>server.js</code>).</p>
         <div class="conn-status" data-conn-status data-state="idle"><span class="dot"></span><span data-conn-label>Not checked</span></div>
+        <div class="git-panel">
+          <div class="git-head">
+            <span class="git-title">Version control</span>
+            <span class="git-state" data-git-state data-tone="">Checking…</span>
+          </div>
+          <div class="git-actions">
+            <button type="button" class="btn btn-primary" data-git="sync">Commit &amp; Push</button>
+          </div>
+          <p class="git-msg" data-git-msg hidden></p>
+        </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Save</button>
           <button type="button" class="btn btn-ghost" data-act="test">Test connection</button>
@@ -2573,6 +2607,50 @@ class Component extends DCLogic {
       const ok = await check(v);   // auto-verify the connection after saving
       setTimeout(closeModal, ok ? 950 : 1800);
     });
+
+    // ── version control: manual commit / push against the saved endpoint ──
+    const gitStateEl = form.querySelector('[data-git-state]');
+    const gitMsgEl = form.querySelector('[data-git-msg]');
+    const gitBtns = [...form.querySelectorAll('[data-git]')];
+    const gitMsg = (text, tone) => { gitMsgEl.hidden = !text; gitMsgEl.textContent = text || ''; gitMsgEl.dataset.tone = tone || ''; };
+    function renderGitState(s) {
+      if (!s || s.ok === false) { gitStateEl.textContent = 'unavailable'; gitStateEl.dataset.tone = 'fail'; return; }
+      const parts = [];
+      if (s.dirty) parts.push(s.dirty + ' uncommitted');
+      if (s.ahead) parts.push(s.ahead + ' to push');
+      const clean = !s.dirty && !s.ahead;
+      gitStateEl.textContent = clean ? 'Clean · up to date' : parts.join(' · ');
+      gitStateEl.dataset.tone = clean ? 'ok' : 'warn';
+    }
+    async function refreshGit() {
+      gitStateEl.textContent = 'Checking…'; gitStateEl.dataset.tone = '';
+      try {
+        const r = await fetch(api('/api/git/status'), { cache: 'no-store' });
+        renderGitState(await r.json());
+      } catch (e) { gitStateEl.textContent = 'offline'; gitStateEl.dataset.tone = 'fail'; }
+    }
+    async function gitDo() {
+      const btn = form.querySelector('[data-git="sync"]');
+      const label = btn.textContent;
+      gitBtns.forEach((b) => { b.disabled = true; });
+      gitMsg('', '');
+      try {
+        btn.textContent = 'Committing…';
+        const cr = await fetch(api('/api/git/commit'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        const cd = await cr.json().catch(() => ({}));
+        if (!cr.ok || cd.error) { gitMsg('Commit failed — ' + (cd.error || ('HTTP ' + cr.status)), 'fail'); if (cd.status) renderGitState(cd.status); return; }
+        if (cd.status) renderGitState(cd.status);
+        btn.textContent = 'Pushing…';
+        const pr = await fetch(api('/api/git/push'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        const pd = await pr.json().catch(() => ({}));
+        if (!pr.ok || pd.error) gitMsg('Committed, but push failed — ' + (pd.error || ('HTTP ' + pr.status)), 'fail');
+        else gitMsg(cd.committed ? 'Committed & pushed to GitHub.' : 'Nothing to commit · pushed to GitHub.', 'ok');
+        if (pd.status) renderGitState(pd.status); else refreshGit();
+      } catch (e) { gitMsg('Could not reach the server — ' + OFFLINE, 'fail'); }
+      finally { gitBtns.forEach((b) => { b.disabled = false; }); btn.textContent = label; }
+    }
+    form.querySelector('[data-git=sync]').addEventListener('click', gitDo);
+    refreshGit();
 
     // auto-check the currently saved endpoint as soon as the panel opens
     check(getApiBase());

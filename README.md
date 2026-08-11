@@ -89,7 +89,10 @@ a live connected / unreachable status).
 - **Manage** existing tiles: edit date / description / link / tags, hide or
   show, replace the image, or delete (which also removes the media files).
 
-Every successful change is automatically committed and pushed to GitHub. The
-server has no authentication, so when exposed beyond `127.0.0.1` (e.g. the
-`0.0.0.0:9002` service above) keep it behind a reverse proxy or firewall on a
-trusted network. Audio extraction requires `yt-dlp` and `ffmpeg` on the host.
+Changes are saved to `content/` on the server but are **not** auto-committed.
+Use the **Commit** and **Push** buttons in the gear \u2192 Settings panel to publish
+to GitHub when ready \u2014 the panel shows how many changes are uncommitted and how
+many commits are waiting to push. The server has no authentication, so when
+exposed beyond `127.0.0.1` (e.g. the `0.0.0.0:9002` service above) keep it
+behind a reverse proxy or firewall on a trusted network. Audio extraction
+requires `yt-dlp` and `ffmpeg` on the host.

@@ -227,31 +227,58 @@ async function writeItems(items) {
   await writeFile(ITEMS_FILE, `${prefix}window.GALLERY_ITEMS = [\n${body}\n];\n`);
 }
 
-/* ── Auto commit + push after each change (serialized; scoped to content) ── */
+/* ── Git: manual commit + push, serialized; scoped to content/ ──
+   Auto-commit is intentionally OFF. The admin batches edits and commits/pushes
+   on demand from the Settings panel, so many changes become one clean commit. */
 let gitQueue = Promise.resolve();
-function gitCommitPush(message) {
-  const run = () => doGitCommitPush(message);
-  const result = gitQueue.then(run, run);
+function serializeGit(fn) {
+  const result = gitQueue.then(fn, fn);
   gitQueue = result.catch(() => {});
   return result;
 }
-async function doGitCommitPush(message) {
+const gitErr = (e) => (e.stderr || e.stdout || e.message || String(e)).toString().trim();
+
+async function gitStatus() {
   const opts = { cwd: ROOT };
+  try {
+    const { stdout } = await pexecFile('git', ['status', '--porcelain', '--', 'content/items.js', 'content/media'], opts);
+    const dirty = stdout.split('\n').filter((l) => l.trim()).length;   // uncommitted changes
+    let ahead = 0, hasUpstream = true;
+    try {
+      const { stdout: a } = await pexecFile('git', ['rev-list', '--count', '@{u}..HEAD'], opts);
+      ahead = parseInt(a.trim(), 10) || 0;   // commits not yet pushed
+    } catch (e) { hasUpstream = false; }
+    return { ok: true, dirty, ahead, hasUpstream };
+  } catch (e) {
+    return { ok: false, error: gitErr(e) };
+  }
+}
+
+async function doGitCommit(message) {
+  const opts = { cwd: ROOT };
+  const msg = (message && message.trim()) || `admin: update ${new Date().toISOString()}`;
   try {
     await pexecFile('git', ['add', '-A', '--', 'content/items.js', 'content/media'], opts);
     try {
-      await pexecFile('git', ['commit', '-m', message], opts);
+      await pexecFile('git', ['commit', '-m', msg], opts);
     } catch (e) {
       const out = `${e.stdout || ''}${e.stderr || ''}`;
       if (/nothing to commit|no changes added/i.test(out)) return { committed: false, reason: 'nothing to commit' };
       throw e;
     }
-    await pexecFile('git', ['push'], opts);
-    return { committed: true, pushed: true };
+    return { committed: true, message: msg };
   } catch (e) {
-    const msg = (e.stderr || e.stdout || e.message || String(e)).toString().trim();
-    console.error('git auto-push failed:', msg);
-    return { committed: false, error: msg };
+    return { committed: false, error: gitErr(e) };
+  }
+}
+
+async function doGitPush() {
+  const opts = { cwd: ROOT };
+  try {
+    await pexecFile('git', ['push'], opts);
+    return { pushed: true };
+  } catch (e) {
+    return { pushed: false, error: gitErr(e) };
   }
 }
 
@@ -316,7 +343,6 @@ async function runTagJob(date, force) {
   entry.tagProvider = TAGGER_PROVIDER;
   entry.tagModel = TAGGER_MODEL;
   await writeItems(items);
-  await gitCommitPush(`admin: tag ${entry.type} tile ${entry.date}`);
 }
 
 /* ── Download a remote file (follows redirects, size-capped) ── */
@@ -517,9 +543,8 @@ async function handleAdd(req, res, body) {
   const items = await readItems();
   items.unshift(entry);
   await writeItems(items);
-  const git = await gitCommitPush(`admin: add ${entry.type} tile ${entry.date}`);
   if (taggableMedia(entry)) enqueueTag(entry.date);
-  return sendJSON(res, 200, { ok: true, entry, git });
+  return sendJSON(res, 200, { ok: true, entry });
 }
 
 /* ── POST /api/tiles/update : edit desc/date/link/hidden ── */
@@ -557,8 +582,7 @@ async function handleUpdate(res, body) {
   }
 
   await writeItems(items);
-  const git = await gitCommitPush(`admin: update tile ${entry.date}`);
-  return sendJSON(res, 200, { ok: true, entry, git });
+  return sendJSON(res, 200, { ok: true, entry });
 }
 
 /* ── POST /api/tiles/media : replace/add an image on an existing tile ──
@@ -591,10 +615,9 @@ async function handleMedia(req, res, body) {
   entry[slot] = newName;
 
   await writeItems(items);
-  const git = await gitCommitPush(`admin: update ${slot} for tile ${entry.date}`);
   const tm = taggableMedia(entry);
   if (tm && tm.name === entry[slot]) enqueueTag(entry.date, { force: true });
-  return sendJSON(res, 200, { ok: true, entry, git });
+  return sendJSON(res, 200, { ok: true, entry });
 }
 
 /* ── POST /api/tiles/delete : remove entry + media files ── */
@@ -612,8 +635,7 @@ async function handleDelete(res, body) {
   await tryUnlink(entry.file);
   await tryUnlink(entry.poster);
   await writeItems(items);
-  const git = await gitCommitPush(`admin: delete tile ${entry.date}`);
-  return sendJSON(res, 200, { ok: true, removed: entry, git });
+  return sendJSON(res, 200, { ok: true, removed: entry });
 }
 
 async function handleList(res) {
@@ -679,11 +701,30 @@ function collectBody(req, res, done) {
   req.on('end', () => done(Buffer.concat(chunks)));
 }
 
+/* ── Git endpoints (manual commit / push from the admin Settings panel) ── */
+async function handleGitStatus(res) {
+  return sendJSON(res, 200, await serializeGit(gitStatus));
+}
+async function handleGitCommit(res, body) {
+  let message = '';
+  try { message = (JSON.parse(body || '{}').message || '').toString(); } catch (e) {}
+  const r = await serializeGit(() => doGitCommit(message));
+  const status = await serializeGit(gitStatus);
+  return sendJSON(res, r.error ? 500 : 200, { ...r, status });
+}
+async function handleGitPush(res) {
+  const r = await serializeGit(doGitPush);
+  const status = await serializeGit(gitStatus);
+  return sendJSON(res, r.error ? 500 : 200, { ...r, status });
+}
+
 const ROUTES = {
   'POST /api/tiles':        (req, res, body) => handleAdd(req, res, body),
   'POST /api/tiles/update': (req, res, body) => handleUpdate(res, body),
   'POST /api/tiles/media':  (req, res, body) => handleMedia(req, res, body),
   'POST /api/tiles/delete': (req, res, body) => handleDelete(res, body),
+  'POST /api/git/commit':   (req, res, body) => handleGitCommit(res, body),
+  'POST /api/git/push':     (req, res, body) => handleGitPush(res),
 };
 
 const server = createServer((req, res) => {
@@ -701,6 +742,7 @@ const server = createServer((req, res) => {
 
   const key = `${req.method} ${req.url.split('?')[0]}`;
   if (req.method === 'GET' && req.url.split('?')[0] === '/api/tiles') return handleList(res);
+  if (req.method === 'GET' && req.url.split('?')[0] === '/api/git/status') return handleGitStatus(res);
   if (ROUTES[key]) {
     return collectBody(req, res, (body) =>
       ROUTES[key](req, res, body).catch((err) => {
