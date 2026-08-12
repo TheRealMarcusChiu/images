@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-08-12T12:37:16.643-05:00", id: "HOcWObhlULI" },
+
   { type: "quote", date: "2026-08-12T08:12:46.807-05:00",
     quote: "The Journey is the Destination" },
 
