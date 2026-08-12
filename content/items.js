@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-12T08:12:46.807-05:00",
+    quote: "The Journey is the Destination" },
+
   { type: "image", date: "2026-08-11T16:11:22.811-05:00", file: "2026-08-11T16:11:22.811-05:00.png",
     tags: ["github pull request","codebase refactor","commit statistics","file changes","merge request","code review","software development","version control","git","open source"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
