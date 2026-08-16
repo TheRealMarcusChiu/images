@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-16T11:01:35.502-05:00",
+    quote: "heaven and hell are both filled with people that don't feel like they belong there" },
+
   { type: "youtube", date: "2026-08-12T12:37:16.643-05:00", id: "HOcWObhlULI" },
 
   { type: "quote", date: "2026-08-12T08:12:46.807-05:00",
