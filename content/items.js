@@ -17,11 +17,20 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-17T15:04:52.855-05:00", file: "2026-08-17T15:04:52.855-05:00.png",
+    tags: ["rabbits fighting","bunny play","two rabbits","jumping rabbits","animal interaction","wildlife","outdoor","grass field","furry animals","rabbit wrestling"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-17T15:04:52.800-05:00", file: "2026-08-17T15:04:52.800-05:00.png",
+    tags: ["anime tshirts","folded shirts","store display","South Korea","fashion retail","character prints","stacked clothing","tshirt collection","anime merchandise","clothing shelf"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-17T15:04:52.710-05:00", file: "2026-08-17T15:04:52.710-05:00.png",
+    tags: ["grocery store","coupon machine","SmartSource","Low VIP","Save Now","Yogos","coupons","grocery aisle","store display","cartoon characters"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-08-17T13:32:08.834-05:00",
     quote: "For Augustine, the fundamental question of your life isn't merely “What do you believe?” but also “What do you love most?”" },
 
   { type: "quote", date: "2026-08-17T11:45:39.211-05:00",
-    quote: "Basic Instructions Before Leaving Earth (B.I.B.L.E)" },
+    quote: "Basic Instructions Before Leaving Earth (BIBLE)" },
 
   { type: "quote", date: "2026-08-16T11:01:35.502-05:00",
     quote: "heaven and hell are both filled with people that don't feel like they belong there" },
