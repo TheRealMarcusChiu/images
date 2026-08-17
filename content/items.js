@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-17T11:45:39.211-05:00",
+    quote: "Basic Instructions Before Leaving Earth (B.I.B.L.E)" },
+
   { type: "quote", date: "2026-08-16T11:01:35.502-05:00",
     quote: "heaven and hell are both filled with people that don't feel like they belong there" },
 
