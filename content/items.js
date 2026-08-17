@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-17T13:32:08.834-05:00",
+    quote: "For Augustine, the fundamental question of your life isn't merely “What do you believe?” but also “What do you love most?”" },
+
   { type: "quote", date: "2026-08-17T11:45:39.211-05:00",
     quote: "Basic Instructions Before Leaving Earth (B.I.B.L.E)" },
 
