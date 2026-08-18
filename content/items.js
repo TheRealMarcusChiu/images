@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-08-18T18:22:23.776-05:00", id: "Jmx7xibykW0" },
+
+  { type: "quote", date: "2026-08-17T15:11:05.964-05:00",
+    quote: "If you have the Word without the Spirit, you dry up, if you have the Spirit without the Word, you blow up, but if you have the Spirit and the Word you grow up", author: "Old Teacher" },
+
   { type: "image", date: "2026-08-17T15:04:52.855-05:00", file: "2026-08-17T15:04:52.855-05:00.png",
     tags: ["rabbits fighting","bunny play","two rabbits","jumping rabbits","animal interaction","wildlife","outdoor","grass field","furry animals","rabbit wrestling"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
