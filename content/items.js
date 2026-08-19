@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-19T14:41:28.123-05:00",
+    quote: "The reason we create porn is because we think Christ sucks. Pornography has become a way of defiling Christian and American culture", author: "The Father of Pornography" },
+
   { type: "youtube", date: "2026-08-19T12:07:12.100-05:00", id: "_Ge7Mp73whQ" },
 
   { type: "youtube", date: "2026-08-18T18:22:23.776-05:00", id: "Jmx7xibykW0" },
