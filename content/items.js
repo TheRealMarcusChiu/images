@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-20T23:59:44.522-05:00",
+    quote: "My soul is satisfied as with the richest of foods; with joyful lips my mouth will praise You. When I remember You on my bed, I think of You through the watches of the night.", author: "Psalms 63:5-6" },
+
   { type: "quote", date: "2026-08-20T23:47:41.226-05:00",
     quote: "Because Your loving devotion is better than life, my lips will glorify You.", author: "Psalm 63:3", desc: "In the biblical context, life is the most precious gift, yet the psalmist declares God's love surpasses even this" },
 
