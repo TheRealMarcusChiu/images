@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-20T23:34:15.329-05:00", file: "2026-08-20T23:34:15.329-05:00.png",
+    desc: "https://git.marcuschiu.com/thoughts/?slug=2025-07-09--Thoughts-on-Praise", link: "https://git.marcuschiu.com/thoughts/?slug=2025-07-09--Thoughts-on-Praise" },
+
   { type: "youtube", date: "2026-08-20T22:46:51.914-05:00", id: "icVxxvlUiLE",
     desc: "talk to yourself instead of listening to yourself" },
 
