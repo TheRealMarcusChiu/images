@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "quote", date: "2026-08-20T23:59:44.522-05:00",
-    quote: "My soul is satisfied as with the richest of foods; with joyful lips my mouth will praise You. When I remember You on my bed, I think of You through the watches of the night.", author: "Psalms 63:5-6" },
+    quote: "My soul is satisfied as with the richest of foods; with joyful lips my mouth will praise You. When I remember You on my bed, I think of You through the watches of the night.", author: "Psalms 63:5-6", desc: "In biblical times, the bed was not only a place for rest but also a place for contemplation and prayer. The psalmist, traditionally understood to be David, often found solace in remembering God during times of distress. This act of remembrance is a deliberate choice to focus on God's faithfulness and character. The bed, a place of vulnerability and rest, becomes a sanctuary for spiritual reflection. This practice is echoed in other scriptures, such as Psalm 4:4, where meditation in the heart upon the bed is encouraged. It signifies a deep, personal relationship with God, where even in solitude, the believer seeks communion with the Divine." },
 
   { type: "quote", date: "2026-08-20T23:47:41.226-05:00",
     quote: "Because Your loving devotion is better than life, my lips will glorify You.", author: "Psalm 63:3", desc: "In the biblical context, life is the most precious gift, yet the psalmist declares God's love surpasses even this" },
