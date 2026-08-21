@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-08-20T22:46:51.914-05:00", id: "icVxxvlUiLE",
+    desc: "talk to yourself instead of listening to yourself" },
+
   { type: "quote", date: "2026-08-20T20:42:48.459-05:00",
     quote: "Humble yourself before the Lord, lest the Lord humbles you" },
 
