@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "quote", date: "2026-08-20T23:47:41.226-05:00",
-    quote: "In the biblical context, life is the most precious gift, yet the psalmist declares God's love surpasses even this" },
+    quote: "Because Your loving devotion is better than life, my lips will glorify You.", author: "Psalm 63:3", desc: "In the biblical context, life is the most precious gift, yet the psalmist declares God's love surpasses even this" },
 
   { type: "image", date: "2026-08-20T23:34:15.329-05:00", file: "2026-08-20T23:34:15.329-05:00.png",
     desc: "https://git.marcuschiu.com/thoughts/?slug=2025-07-09--Thoughts-on-Praise", link: "https://git.marcuschiu.com/thoughts/?slug=2025-07-09--Thoughts-on-Praise", tags: ["meditation guide","praise philosophy","inner health","spontaneous joy","religious doctrine","Christian theology","joyful expression","praise as communication","heaven concept","worship songs"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
