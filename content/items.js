@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-21T11:28:41.512-05:00",
+    quote: "Do not store up for yourselves treasures on earth, where moth and rust destroy, and where thieves break in and steal. 20But store up for yourselves treasures in heaven, where moth and rust do not destroy, and where thieves do not break in and steal. 21For where your treasure is, there your heart will be also.", author: "Matthew 6:19-21" },
+
   { type: "quote", date: "2026-08-21T10:58:07.017-05:00",
     quote: "One thing I have asked of the LORD; this is what I desire: to dwell in the house of the LORD all the days of my life, to gaze on the beauty of the LORD and seek Him in His temple.", author: "Psalm 27:4", desc: "the beauty of the lord", link: "https://git.marcuschiu.com/thoughts/?slug=2026-06-23--What-is-Beauty%3F" },
 
