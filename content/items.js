@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-20T20:42:48.459-05:00",
+    quote: "Humble yourself before the Lord, lest the Lord humbles you" },
+
+  { type: "youtube", date: "2026-08-20T09:59:51.005-05:00", id: "_Ge7Mp73whQ" },
+
   { type: "quote", date: "2026-08-19T14:41:28.123-05:00",
     quote: "The reason we create porn is because we think Christ sucks. Pornography has become a way of defiling Christian and American culture", author: "The Father of Pornography" },
 
