@@ -17,6 +17,33 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-25T10:13:26.322-05:00", file: "2026-08-25T10:13:26.322-05:00.webp",
+    tags: ["tangerines","peeled tangerines","plate with fruit","fruit plate","text overlay","love message","thousand tangerines","orange fruit","ceramic plate","decorative plate"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-25T10:13:26.296-05:00", file: "2026-08-25T10:13:26.296-05:00.webp",
+    tags: ["abstract art","colorful shapes","minimalist design","geometric forms","simple characters","flat design","solid colors","rounded shapes","silhouette","closed eyes"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-25T10:13:26.282-05:00", file: "2026-08-25T10:13:26.282-05:00.webp",
+    tags: ["too cold","too hot","just right","comic strip","weather extremes","person in coat","sitting on couch","hot and cold","mood contrast","illustration"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-25T10:13:26.261-05:00", file: "2026-08-25T10:13:26.261-05:00.webp",
+    tags: ["mathematical sequence","chaotic heart sequence","Hofstadter sequence","recurrence relation","fractal pattern","pink scatter plot","numerical analysis","mathematical visualization","sequence comparison","discrete mathematics"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-25T10:13:26.185-05:00", file: "2026-08-25T10:13:26.185-05:00.webp",
+    tags: ["man in white shirt","black tie","office setting","astronomy posters","New York City poster","technology limitation quote","desk with models","moustache","film still","1960s style"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-25T10:13:26.167-05:00", file: "2026-08-25T10:13:26.167-05:00.webp",
+    tags: ["woman at table","night setting","conversation","subtitles","restaurant scene","dining table","blurred background","casual attire","tableware","indoor lighting"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-25T10:13:26.149-05:00", file: "2026-08-25T10:13:26.149-05:00.webp",
+    tags: ["stitch sleeping","lilo and stitch","blue alien","cartoon character","animated character","sleeping pose","large eye","green background","red cushion","character design"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "youtube", date: "2026-08-24T22:03:17.206-05:00", id: "P3gQAkmqzbw",
+    desc: "I will cry out in faith even when I don't feel Your presence" },
+
+  { type: "image", date: "2026-08-21T12:40:40.887-05:00", file: "2026-08-21T12:40:40.887-05:00.png",
+    desc: "got tired of reading Psalm 42 on biblehub - so i decided to go onto biblegateway for the verse of the day (this is something i used to do) and it's a verse on Psalm 42:8. I've studied up to verse 5 today and I'm just muttered WTF when i saw this lol", tags: ["psalm 42:8","new international version","bible verse","religious text","prayer","god","lord","day and night","faith","scripture"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-08-21T11:28:41.512-05:00",
     quote: "Do not store up for yourselves treasures on earth, where moth and rust destroy, and where thieves break in and steal. 20But store up for yourselves treasures in heaven, where moth and rust do not destroy, and where thieves do not break in and steal. 21For where your treasure is, there your heart will be also.", author: "Matthew 6:19-21" },
 
