@@ -17,6 +17,30 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-26T13:49:32.145-05:00", file: "2026-08-26T13:49:32.145-05:00.webp" },
+
+  { type: "image", date: "2026-08-26T13:49:32.098-05:00", file: "2026-08-26T13:49:32.098-05:00.webp" },
+
+  { type: "image", date: "2026-08-26T13:49:32.038-05:00", file: "2026-08-26T13:49:32.038-05:00.webp" },
+
+  { type: "image", date: "2026-08-26T13:49:32.020-05:00", file: "2026-08-26T13:49:32.020-05:00.webp" },
+
+  { type: "image", date: "2026-08-26T13:49:31.996-05:00", file: "2026-08-26T13:49:31.996-05:00.webp" },
+
+  { type: "image", date: "2026-08-26T13:49:31.975-05:00", file: "2026-08-26T13:49:31.975-05:00.webp" },
+
+  { type: "image", date: "2026-08-26T13:49:31.952-05:00", file: "2026-08-26T13:49:31.952-05:00.webp",
+    tags: ["letters to your ex","interactive art installation","waterworks food hall","toronto","ex letters","guest participation","booklet","business cards","exhibition display","wooden table"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-26T13:49:31.917-05:00", file: "2026-08-26T13:49:31.917-05:00.webp",
+    tags: ["social media post","TikTok","scrolling","searching","question","user comment","views","likes","comments","digital content"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-08-26T13:49:31.897-05:00", file: "2026-08-26T13:49:31.897-05:00.webp",
+    tags: ["stacked wooden blocks","STEM","linear algebra","office desk","computer mouse","monitor","bookshelf","mathematical concept","educational model","wooden blocks structure"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "quote", date: "2026-08-26T12:33:21.422-05:00",
+    quote: "Heroes would kill their mom for the world, villains would kill the world for their mom" },
+
   { type: "youtube", date: "2026-08-25T21:13:26.671-05:00", id: "iKZ72_50mQ0" },
 
   { type: "image", date: "2026-08-25T10:13:26.322-05:00", file: "2026-08-25T10:13:26.322-05:00.webp",
