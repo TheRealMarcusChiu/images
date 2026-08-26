@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-26T14:45:05.220-05:00",
+    quote: "anything worth having takes time" },
+
   { type: "quote", date: "2026-08-26T14:04:34.971-05:00",
     quote: "Suffering is such a privilege: it moves us towards thinking about essential things, it shakes us out of short-sighted complacency. When I was a boy, it was believed that suffering proves such a hidden blessing that you should be willing to pay for it.", author: "90 yr old Japanese Painter" },
 
