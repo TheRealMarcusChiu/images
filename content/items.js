@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-26T14:04:34.971-05:00",
+    quote: "Suffering is such a privilege: it moves us towards thinking about essential things, it shakes us out of short-sighted complacency. When I was a boy, it was believed that suffering proves such a hidden blessing that you should be willing to pay for it.", author: "90 yr old Japanese Painter" },
+
   { type: "image", date: "2026-08-26T13:49:32.145-05:00", file: "2026-08-26T13:49:32.145-05:00.webp",
     tags: ["bedroom","bed","mugs","coffee","text overlay","pillow","blanket","warm lighting","cozy","morning"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
