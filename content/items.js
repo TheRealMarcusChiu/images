@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-08-25T21:13:26.671-05:00", id: "iKZ72_50mQ0" },
+
   { type: "image", date: "2026-08-25T10:13:26.322-05:00", file: "2026-08-25T10:13:26.322-05:00.webp",
     tags: ["tangerines","peeled tangerines","plate with fruit","fruit plate","text overlay","love message","thousand tangerines","orange fruit","ceramic plate","decorative plate"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
