@@ -17,17 +17,23 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-08-26T13:49:32.145-05:00", file: "2026-08-26T13:49:32.145-05:00.webp" },
+  { type: "image", date: "2026-08-26T13:49:32.145-05:00", file: "2026-08-26T13:49:32.145-05:00.webp",
+    tags: ["bedroom","bed","mugs","coffee","text overlay","pillow","blanket","warm lighting","cozy","morning"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-26T13:49:32.098-05:00", file: "2026-08-26T13:49:32.098-05:00.webp" },
+  { type: "image", date: "2026-08-26T13:49:32.098-05:00", file: "2026-08-26T13:49:32.098-05:00.webp",
+    tags: ["tree","flowers","landscape","nature","text","quote","blue sky","mountains","bushes","sunlight"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-26T13:49:32.038-05:00", file: "2026-08-26T13:49:32.038-05:00.webp" },
+  { type: "image", date: "2026-08-26T13:49:32.038-05:00", file: "2026-08-26T13:49:32.038-05:00.webp",
+    tags: ["page number 94","text excerpt","maturity definition","childhood play seriousness","book page"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-26T13:49:32.020-05:00", file: "2026-08-26T13:49:32.020-05:00.webp" },
+  { type: "image", date: "2026-08-26T13:49:32.020-05:00", file: "2026-08-26T13:49:32.020-05:00.webp",
+    tags: ["iceberg","text overlay","love message","water","sky","birds","comparison","emotional expression","visual metaphor","relationship"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-26T13:49:31.996-05:00", file: "2026-08-26T13:49:31.996-05:00.webp" },
+  { type: "image", date: "2026-08-26T13:49:31.996-05:00", file: "2026-08-26T13:49:31.996-05:00.webp",
+    tags: ["landscape painting","sunset","mountains","forest","path","digital art","painting software","clouds","nature scene","digital illustration"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-08-26T13:49:31.975-05:00", file: "2026-08-26T13:49:31.975-05:00.webp" },
+  { type: "image", date: "2026-08-26T13:49:31.975-05:00", file: "2026-08-26T13:49:31.975-05:00.webp",
+    tags: ["shared cause diagram","intermediary diagram","metric manipulation diagram","goal metric relationship","cause effect diagram","diagram with X","X as central element","metric and goal nodes","flowchart","conceptual diagram"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-08-26T13:49:31.952-05:00", file: "2026-08-26T13:49:31.952-05:00.webp",
     tags: ["letters to your ex","interactive art installation","waterworks food hall","toronto","ex letters","guest participation","booklet","business cards","exhibition display","wooden table"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
