@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-27T06:59:52.108-05:00",
+    quote: "romance is when two are face-to-face admiring each other, friendship is when two are side-by-side admiring the same thing" },
+
   { type: "quote", date: "2026-08-26T14:45:05.220-05:00",
     quote: "anything worth having takes time" },
 
