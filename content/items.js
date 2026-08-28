@@ -17,6 +17,12 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-27T23:18:31.816-05:00",
+    quote: "a fool learns from his experience, a wise person learns from the experience of others", author: "Summary of Proverbs" },
+
+  { type: "image", date: "2026-08-27T16:45:32.780-05:00", file: "2026-08-27T16:45:32.780-05:00.webp",
+    desc: "I've made matcha white chocolate macadamia nut muffins (it's in the back)", tags: ["brown butter miso dark chocolate cookies","food container","label","miso","dark chocolate","cookies","seeds","plastic container","green text","label tape"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-08-27T14:31:17.078-05:00",
     quote: "the legal system is based on money" },
 
