@@ -21,7 +21,7 @@ window.GALLERY_ITEMS = [
     quote: "And this I call tasting, when I do with my very heart believe that Christ has given Himself to me, and that I have my full interest in Him—that He hears and answers for all my sins, transgressions, and harms—and that His life is my life", author: "Martin Luther" },
 
   { type: "quote", date: "2026-08-28T23:41:04.247-05:00",
-    quote: "the greatest pleasure that god has given you is to see him through the eyes of faith, this is what will make heaven heaven. It consists in a sense of the heart of the supreme beauty and sweetness of the holiness and moral perfection of divine things", author: "Jonathan Edwards" },
+    quote: "the greatest pleasure that god has given you is to see him through the eyes of faith, this is what will make heaven heaven. It consists in a sense of the heart of the supreme beauty and sweetness of the holiness and moral perfection of divine things... when this persuasion is thoroughly settled upon my soul it yieldeth  wonderful and incredible taste.", author: "Jonathan Edwards" },
 
   { type: "image", date: "2026-08-28T22:15:34.039-05:00", file: "2026-08-28T22:15:34.039-05:00.webp",
     desc: "Looking for Alice - i guess i'm not weird to not have a type", link: "https://www.henrikkarlsson.xyz/p/looking-for-alice", tags: ["woman","black and white photograph","floral patterned shirt","short hair","outdoor setting","vintage style","portrait","neutral background","mid-century fashion","soft focus"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
