@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-08-28T22:15:34.039-05:00", file: "2026-08-28T22:15:34.039-05:00.webp",
+    desc: "Looking for Alice - i guess i'm not weird to not have a type", link: "https://www.henrikkarlsson.xyz/p/looking-for-alice", tags: ["woman","black and white photograph","floral patterned shirt","short hair","outdoor setting","vintage style","portrait","neutral background","mid-century fashion","soft focus"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-08-28T15:03:54.741-05:00",
     quote: "I wonder what's it like to be Uriah in 2 Samuel 11–12 - then hear that David is most often referred to as a man after God's heart.", author: "2 Samuel 11–12" },
 
