@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-08-28T23:45:17.819-05:00",
+    quote: "And this I call tasting, when I do with my very heart believe that Christ has given Himself to me, and that I have my full interest in Him—that He hears and answers for all my sins, transgressions, and harms—and that His life is my life", author: "Martin Luther" },
+
   { type: "quote", date: "2026-08-28T23:41:04.247-05:00",
     quote: "the greatest pleasure that god has given you is to see him through the eyes of faith, this is what will make heaven heaven. It consists in a sense of the heart of the supreme beauty and sweetness of the holiness and moral perfection of divine things", author: "Jonathan Edwards" },
 
