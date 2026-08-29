@@ -21,7 +21,7 @@ window.GALLERY_ITEMS = [
     desc: "Looking for Alice - i guess i'm not weird to not have a type", link: "https://www.henrikkarlsson.xyz/p/looking-for-alice", tags: ["woman","black and white photograph","floral patterned shirt","short hair","outdoor setting","vintage style","portrait","neutral background","mid-century fashion","soft focus"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-08-28T15:03:54.741-05:00",
-    quote: "I wonder what's it like to be Uriah in 2 Samuel 11–12 - then hear that David is most often referred to as a man after God's heart.", author: "2 Samuel 11–12" },
+    quote: "I wonder what's it like to be Uriah in 2 Samuel 11–12 - then hear that David is a \"man after God's heart\".", author: "2 Samuel 11–12" },
 
   { type: "youtube", date: "2026-08-27T23:26:55.625-05:00", id: "JF0U5z5XA9M",
     desc: "See quote on the Summary of Proverbs" },
