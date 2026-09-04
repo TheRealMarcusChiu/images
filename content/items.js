@@ -21,7 +21,7 @@ window.GALLERY_ITEMS = [
     desc: "matcha chiffon cake :)", tags: ["green cake","ring cake","kitchen sink","blue sponge","cake knife","baking","unfrosted","round cake","food photography","homemade"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-09-03T17:49:37.538-05:00",
-    quote: "they say to be great is to be misunderstood - but to feel loved is to be understood" },
+    quote: "they say to be great is to be misunderstood - but to be loved is to be understood. It is greater to be loved than to be great" },
 
   { type: "quote", date: "2026-08-28T23:45:17.819-05:00",
     quote: "And this I call tasting, when I do with my very heart believe that Christ has given Himself to me, and that I have my full interest in Him—that He hears and answers for all my sins, transgressions, and harms—and that His life is my life", author: "Martin Luther" },
