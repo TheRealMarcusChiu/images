@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-09-06T00:09:45.082-05:00", id: "tznIUEBjezU" },
+
   { type: "image", date: "2026-09-03T21:32:08.209-05:00", file: "2026-09-03T21:32:08.209-05:00.jpeg",
     desc: "matcha chiffon cake :)", tags: ["green cake","ring cake","kitchen sink","blue sponge","cake knife","baking","unfrosted","round cake","food photography","homemade"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
