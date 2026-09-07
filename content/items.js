@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-09-07T01:54:43.680-05:00",
+    quote: "You cannot know someone without spending time with that person" },
+
   { type: "youtube", date: "2026-09-07T00:46:41.302-05:00", id: "HMFqEr59SEE" },
 
   { type: "youtube", date: "2026-09-06T00:09:45.082-05:00", id: "tznIUEBjezU" },
