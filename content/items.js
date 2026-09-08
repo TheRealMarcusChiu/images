@@ -17,6 +17,14 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-09-07T21:48:21.201-05:00", file: "2026-09-07T21:48:21.201-05:00.jpeg",
+    desc: "millstone" },
+
+  { type: "youtube", date: "2026-09-07T10:30:03.056-05:00", id: "heQJOoFN_-w" },
+
+  { type: "quote", date: "2026-09-07T02:03:10.049-05:00",
+    quote: "I have never known a greater instrument than the mill of suffering to bring you near to God", author: "Amy Carmichael (1867–1951)", desc: "Irish missionary to India who founded the Dohnavur Fellowship and wrote extensively on the Christian life, is widely associated with reflections on suffering as a means of drawing nearer to God.\r\n\r\nIn 1931, when Amy Carmichael was in her early sixties, she fell into an uncovered pit (or similar opening) while walking in the dark during a ministry trip. The accident broke her leg, dislocated her ankle, and twisted her spine.\r\n\r\nThe injuries left her largely bedridden and in nearly constant pain for the remaining twenty years of her life (until her death in 1951). She spent those years mostly confined to her room at Dohnavur, often lying down because of the spinal damage and ongoing discomfort. From that place she continued writing books, letters, and poems, and she still directed the work of the Fellowship as best she could." },
+
   { type: "quote", date: "2026-09-07T01:54:43.680-05:00",
     quote: "You cannot know someone without spending time with that person" },
 
