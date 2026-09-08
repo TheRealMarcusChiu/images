@@ -17,8 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-09-08T00:07:04.016-05:00",
+    quote: "we may not see God directly, yet God’s indwelling love becomes visible among people who love one another", author: "1 John 4:12 MCV (Marcus Chiu Version)" },
+
   { type: "image", date: "2026-09-07T21:48:21.201-05:00", file: "2026-09-07T21:48:21.201-05:00.jpeg",
-    desc: "millstone" },
+    desc: "millstone", tags: ["stone mill","grinding stone","traditional mill","wooden handle","ancient machinery","farm equipment","grain processing","hand mill","milling stone","rustic tool"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "youtube", date: "2026-09-07T10:30:03.056-05:00", id: "heQJOoFN_-w" },
 
