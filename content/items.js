@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-09-09T11:57:15.405-05:00", id: "IPURy4mP1zU" },
+
   { type: "quote", date: "2026-09-08T00:07:04.016-05:00",
     quote: "we may not see God directly, yet God’s indwelling love becomes visible among people who love one another", author: "1 John 4:12 MCV (Marcus Chiu Version)" },
 
