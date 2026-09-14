@@ -17,15 +17,23 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
-  { type: "image", date: "2026-09-10T10:52:56.069-05:00", file: "2026-09-10T10:52:56.069-05:00.jpeg" },
+  { type: "quote", date: "2026-09-14T12:41:48.525-05:00",
+    quote: "if you want to begin to know a person - you got to give up distance" },
 
-  { type: "image", date: "2026-09-10T10:52:56.041-05:00", file: "2026-09-10T10:52:56.041-05:00.png" },
+  { type: "image", date: "2026-09-10T10:52:56.069-05:00", file: "2026-09-10T10:52:56.069-05:00.jpeg",
+    tags: ["birthday cake","watermelon cake","fruit decoration","candles","strawberries","blueberries","cherries","three-tiered cake","glass cake stand","indoor setting"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-09-10T10:52:55.988-05:00", file: "2026-09-10T10:52:55.988-05:00.jpeg" },
+  { type: "image", date: "2026-09-10T10:52:56.041-05:00", file: "2026-09-10T10:52:56.041-05:00.png",
+    tags: ["love and receiving","biblical themes","grace","reciprocity","spiritual love","Christian teachings","giving and receiving","humility in love","love as gift","healthy love"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-09-10T10:52:55.918-05:00", file: "2026-09-10T10:52:55.918-05:00.jpeg" },
+  { type: "image", date: "2026-09-10T10:52:55.988-05:00", file: "2026-09-10T10:52:55.988-05:00.jpeg",
+    tags: ["stitch plush toy","blue character","red outfit","hand holding","cartoon character","Disney character","furry toy","sitting pose","large ears","closed eyes"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
-  { type: "image", date: "2026-09-10T10:52:55.876-05:00", file: "2026-09-10T10:52:55.876-05:00.jpeg" },
+  { type: "image", date: "2026-09-10T10:52:55.918-05:00", file: "2026-09-10T10:52:55.918-05:00.jpeg",
+    tags: ["hebrew translation","biblical phrase","isaiah 53:5","1 peter 2:24","messiah suffering","spiritual healing","chaburah word","chaver root","theological meaning","brave search"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-09-10T10:52:55.876-05:00", file: "2026-09-10T10:52:55.876-05:00.jpeg",
+    tags: ["pink dumbbell cake","dumbbell shaped dessert","cake with pink icing","dumbbell cake","edible dumbbell","cake decoration","pink cake","dumbbell cake slice","cake with filling","dumbbell shaped food"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "youtube", date: "2026-09-10T09:41:45.540-05:00", id: "tyOFnmZ5bho" },
 
