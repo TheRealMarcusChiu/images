@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-09-14T22:53:41.664-05:00",
+    quote: "If you know who or what a person builds their identity around, you can understand what fuels their pride and what stirs their anxiety" },
+
   { type: "quote", date: "2026-09-14T12:41:48.525-05:00",
     quote: "if you want to begin to know a person - you got to give up distance" },
 
