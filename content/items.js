@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-09-19T14:54:47.640-05:00", id: "EPQrnJR28ps" },
+
   { type: "quote", date: "2026-09-15T13:50:47.626-05:00",
     quote: "live a life following 1 principle: speak the truth" },
 
