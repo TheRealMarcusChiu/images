@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-09-20T20:42:51.378-05:00", id: "rUD4qSPV_Ps" },
+
   { type: "youtube", date: "2026-09-20T20:40:30.862-05:00", id: "3ldibE9oAok",
     desc: "interesting", link: "https://thunderstruck.org/evel-knievels-leap-of-faith/?utm_source=chatgpt.com" },
 
