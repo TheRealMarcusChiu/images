@@ -17,6 +17,13 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-09-21T16:05:47.463-05:00",
+    quote: "There is a kind of happiness and wonder that makes you serious", author: "C.S. Lewis - The Last Battle" },
+
+  { type: "youtube", date: "2026-09-20T22:10:32.570-05:00", id: "8co3CJjNYMU" },
+
+  { type: "youtube", date: "2026-09-20T20:47:31.468-05:00", id: "qzAZXlsnBgg" },
+
   { type: "youtube", date: "2026-09-20T20:42:51.378-05:00", id: "rUD4qSPV_Ps" },
 
   { type: "youtube", date: "2026-09-20T20:40:30.862-05:00", id: "3ldibE9oAok",
