@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-09-22T18:19:48.024-05:00",
+    quote: "AI can't take jobs - bc people are confusing tasks with jobs" },
+
   { type: "quote", date: "2026-09-21T16:05:47.463-05:00",
     quote: "There is a kind of happiness and wonder that makes you serious", author: "C.S. Lewis - The Last Battle" },
 
