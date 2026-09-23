@@ -17,6 +17,18 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-09-23T10:05:25.035-05:00",
+    quote: "Where your world ends mine begins" },
+
+  { type: "youtube", date: "2026-09-23T10:00:01.691-05:00", id: "5v8aEnMNQmE",
+    desc: "That's not being narrow-minded , that's being specific" },
+
+  { type: "quote", date: "2026-09-23T09:57:18.080-05:00",
+    quote: "When we sing it makes the devil mad" },
+
+  { type: "quote", date: "2026-09-23T09:55:42.903-05:00",
+    quote: "we didn't come here to get out, we come here to have church" },
+
   { type: "youtube", date: "2026-09-23T00:42:24.700-05:00", id: "tHp8eThI2qk",
     desc: "Tim's fav" },
 
