@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-09-23T00:42:24.700-05:00", id: "tHp8eThI2qk",
+    desc: "Tim's fav" },
+
   { type: "quote", date: "2026-09-22T18:19:48.024-05:00",
     quote: "AI can't take jobs - bc people are confusing tasks with jobs" },
 
