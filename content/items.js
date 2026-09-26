@@ -17,6 +17,19 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-09-26T14:12:56.436-05:00", id: "VJhoP3l5hHQ" },
+
+  { type: "image", date: "2026-09-26T02:08:01.121-05:00", file: "2026-09-26T02:08:01.121-05:00.png",
+    tags: ["dictionary definition","book page","text overlay","emotional memory","wallowing","sense memory","thoroughly mulled","drained emotion","yellow background","hand holding book"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-09-26T02:08:01.075-05:00", file: "2026-09-26T02:08:01.075-05:00.png",
+    tags: ["dictionary definition","text overlay","SISO definition","solitary experience","shared experience","wordplay","humorous definition","printed text","book page","handheld device"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-09-26T02:08:01.016-05:00", file: "2026-09-26T02:08:01.016-05:00.jpeg",
+    tags: ["handheld device","flipper","orange button","screen","white casing","remote control","digital display","gaming accessory","portable gadget","indoor setting"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "youtube", date: "2026-09-26T02:06:57.307-05:00", id: "OSdD860DTJw" },
+
   { type: "quote", date: "2026-09-23T10:05:25.035-05:00",
     quote: "Where your world ends mine begins" },
 
