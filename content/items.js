@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-10-01T18:25:17.591-05:00", id: "s2a-DsX9Ezg" },
+
   { type: "quote", date: "2026-09-29T19:02:29.641-05:00",
     quote: "marriage isn't for the people who are married - it's for the children" },
 
