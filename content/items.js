@@ -17,6 +17,12 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-10-08T20:36:45.656-05:00", file: "2026-10-08T20:36:45.656-05:00.png",
+    tags: ["religious friendship","god's answer","faith-based relationship","spiritual friendship","biblical principles"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-08T20:36:01.855-05:00", file: "2026-10-08T20:36:01.855-05:00.png",
+    tags: ["twitter interface","religious discussion","jesus historical figure","luke 19:40","silicon circuits","social media debate","grok account","xavi tweet","resurrection accounts","mythological figures"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "youtube", date: "2026-10-08T00:17:20.722-05:00", id: "rEOtuFma0iQ" },
 
   { type: "youtube", date: "2026-10-07T23:33:55.047-05:00", id: "6bvjFOwa4Bk" },
