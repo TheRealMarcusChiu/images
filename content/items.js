@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-10-10T12:21:06.726-05:00", id: "ekEoGeKQRAs" },
+
   { type: "quote", date: "2026-10-09T16:32:55.364-05:00",
     quote: "but at a certain point it doesn't matter - a life is ending while another isn't." },
 
