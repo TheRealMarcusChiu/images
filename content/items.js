@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-10-12T15:31:10.678-05:00", id: "oApxfVNfXGE",
+    desc: "🥹" },
+
+  { type: "youtube", date: "2026-10-10T16:12:08.080-05:00", id: "Sb61XhPBsFU" },
+
   { type: "youtube", date: "2026-10-10T15:05:35.154-05:00", id: "ao7VxMUu2tc" },
 
   { type: "youtube", date: "2026-10-10T12:21:06.726-05:00", id: "ekEoGeKQRAs" },
