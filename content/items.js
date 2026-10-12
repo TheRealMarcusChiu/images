@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-10-12T17:55:03.000-05:00",
+    quote: "You see, In their last moments, people show you who they really are", author: "Joker" },
+
   { type: "image", date: "2026-10-12T15:36:57.474-05:00", file: "2026-10-12T15:36:57.474-05:00.webp",
     tags: ["boat on clouds","two people","birthday cake","flying boat","cloudy sky","art painting","people in boat","celebration","fantasy scene","cloud background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
