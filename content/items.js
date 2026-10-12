@@ -17,6 +17,24 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-10-12T15:36:57.474-05:00", file: "2026-10-12T15:36:57.474-05:00.webp",
+    tags: ["boat on clouds","two people","birthday cake","flying boat","cloudy sky","art painting","people in boat","celebration","fantasy scene","cloud background"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-12T15:36:57.444-05:00", file: "2026-10-12T15:36:57.444-05:00.webp",
+    tags: ["bedroom","couple sleeping","sunlight through window","Sunday morning","quiet atmosphere","blanket","city view","intimate moment","soft lighting","text overlay"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-12T15:36:57.394-05:00", file: "2026-10-12T15:36:57.394-05:00.webp",
+    tags: ["snoopy","charlie brown","peanuts comic strip","sunset landscape","mountain backdrop","grass field","house with red roof","trees","text overlay","lucky sentiment"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-12T15:36:57.353-05:00", file: "2026-10-12T15:36:57.353-05:00.webp",
+    tags: ["mason jar","black ball","affection","shrinking","growing","relationship","metaphor","illustration","text","comparison"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-12T15:36:57.311-05:00", file: "2026-10-12T15:36:57.311-05:00.webp",
+    tags: ["cat","human legs","text bubble","pet me","with your eyes freak","meme","two-panel comic","yellow cat","socks","paw"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-12T15:36:57.222-05:00", file: "2026-10-12T15:36:57.222-05:00.webp",
+    tags: ["O'Reilly","Deploy First Pray Later","animal characters","praying","pipeline","humorous","book cover","fairy tale style","squirrel","rabbit"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "youtube", date: "2026-10-12T15:31:10.678-05:00", id: "oApxfVNfXGE",
     desc: "🥹" },
 
