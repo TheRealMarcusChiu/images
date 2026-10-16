@@ -17,6 +17,33 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-10-15T19:04:20.261-05:00", file: "2026-10-15T19:04:20.261-05:00.png",
+    tags: ["social media comment","cancer support","stage 4 cancer","online conversation","emotional support","user interaction","digital discussion","health discussion","personal story","anonymous user"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:53.247-05:00", file: "2026-10-15T19:02:53.247-05:00.png",
+    tags: ["social media post","twitter","breakup","restaurant","closed down","pinkie","@pinkamaniaa","5.15pm","8 9 26","4.6m views"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:53.220-05:00", file: "2026-10-15T19:02:53.220-05:00.jpeg",
+    tags: ["pink suitcase","emotional baggage","vacation","meme","text overlay","frowning luggage","wooden floor","corner","hand gesture","humor"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:53.191-05:00", file: "2026-10-15T19:02:53.191-05:00.jpeg",
+    tags: ["google street view","redacted image","public toilet","flock ceo","lawn privacy","surveillance tech","internet backlash","poetic justice","aerial view","house redaction"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:53.152-05:00", file: "2026-10-15T19:02:53.152-05:00.jpeg",
+    tags: ["GPT-6 Astra","Minecraft","AI agent","blaze rod farm","warped forest","Endermen","creepers","potato farming","AI demoralization","GenAl Works"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:53.093-05:00", file: "2026-10-15T19:02:53.093-05:00.jpeg",
+    tags: ["pinball machine","Pokémon","Stern pinball","arcade game","pikachu","bulbasaur","charmander","gumball","monsters","pinball playfield"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:53.017-05:00", file: "2026-10-15T19:02:53.017-05:00.jpeg",
+    tags: ["social media post","tweet","apocalypse dream","relationship","dream interpretation","male perspective","cheating in dream","irritated","text message","internet meme"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:52.995-05:00", file: "2026-10-15T19:02:52.995-05:00.jpeg",
+    tags: ["disaster relief camp","community gathering","movie screening","tents","ruined buildings","children","UNICEF","evening","refugee settlement","projection screen"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-15T19:02:52.925-05:00", file: "2026-10-15T19:02:52.925-05:00.jpeg",
+    tags: ["social media comment","egg carton","anonymous user","cat profile picture","upvote count","reply button","digital interaction","internet culture","humor","anonymous internet comment"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "youtube", date: "2026-10-15T18:55:16.577-05:00", id: "VP1XAz_CeYg" },
 
   { type: "youtube", date: "2026-10-15T17:10:20.158-05:00", id: "ebHZhK54spQ" },
