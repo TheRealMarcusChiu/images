@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-10-16T22:35:36.073-05:00", id: "3Q20TMkJUjo" },
+
   { type: "image", date: "2026-10-15T19:04:20.261-05:00", file: "2026-10-15T19:04:20.261-05:00.png",
     tags: ["social media comment","cancer support","stage 4 cancer","online conversation","emotional support","user interaction","digital discussion","health discussion","personal story","anonymous user"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
