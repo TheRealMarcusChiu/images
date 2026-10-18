@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-10-18T15:49:02.267-05:00", id: "vDfuD7tU8p8" },
+
+  { type: "quote", date: "2026-10-18T15:48:49.622-05:00",
+    quote: "Amazing grace how sweet the sound who saved a wretch like me" },
+
   { type: "quote", date: "2026-10-17T20:00:03.227-05:00",
     quote: "interesting music is all about making arrangements that sound almost like a question/answer type situation" },
 
