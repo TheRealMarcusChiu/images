@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-10-17T20:00:03.227-05:00",
+    quote: "interesting music is all about making arrangements that sound almost like a question/answer type situation" },
+
+  { type: "youtube", date: "2026-10-17T19:44:35.673-05:00", id: "iOxT3U4MCzE" },
+
   { type: "youtube", date: "2026-10-16T22:35:36.073-05:00", id: "3Q20TMkJUjo" },
 
   { type: "image", date: "2026-10-15T19:04:20.261-05:00", file: "2026-10-15T19:04:20.261-05:00.png",
