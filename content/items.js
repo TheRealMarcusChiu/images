@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-10-19T17:47:26.345-05:00", id: "vP-4rNXfTTs" },
+
   { type: "quote", date: "2026-10-18T18:15:42.654-05:00",
     quote: "worship predicts identity, and identity predicts both pride and anxiety" },
 
