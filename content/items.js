@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-10-21T02:19:01.010-05:00", file: "2026-10-21T02:19:01.010-05:00.webp",
+    tags: ["gradient descent graph","LLM distribution","human distribution","random distribution","X.com tweet","Adam Zachary Wasserman","probability distribution","bell curve","machine learning","data visualization"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-10-21T00:57:09.617-05:00",
     quote: "Zeke has largely given up. He sees life as a process of reproduction and suffering, with little reason to resist death.\r\n\r\nArmin offers another perspective: seemingly insignificant experiences—running with friends, reading a book, enjoying a moment—can make being alive worthwhile." },
 
