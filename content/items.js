@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-10-21T00:57:09.617-05:00",
+    quote: "Zeke has largely given up. He sees life as a process of reproduction and suffering, with little reason to resist death.\r\n\r\nArmin offers another perspective: seemingly insignificant experiences—running with friends, reading a book, enjoying a moment—can make being alive worthwhile." },
+
   { type: "youtube", date: "2026-10-19T17:47:26.345-05:00", id: "vP-4rNXfTTs" },
 
   { type: "quote", date: "2026-10-18T18:15:42.654-05:00",
