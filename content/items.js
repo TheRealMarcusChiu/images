@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-10-21T16:47:24.147-05:00",
+    quote: "A test drive tests the car. Marriage tests the driver" },
+
+  { type: "youtube", date: "2026-10-21T16:46:43.154-05:00", id: "BpawFQ31fr4" },
+
   { type: "image", date: "2026-10-21T02:19:01.010-05:00", file: "2026-10-21T02:19:01.010-05:00.webp",
     tags: ["gradient descent graph","LLM distribution","human distribution","random distribution","X.com tweet","Adam Zachary Wasserman","probability distribution","bell curve","machine learning","data visualization"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
