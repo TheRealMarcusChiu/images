@@ -17,6 +17,21 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-10-23T03:28:31.158-05:00",
+    quote: "Grief is just love with no place to go." },
+
+  { type: "image", date: "2026-10-23T02:02:38.516-05:00", file: "2026-10-23T02:02:38.516-05:00.jpg",
+    tags: ["movie poster","the visitor","man playing drum","subway bench","blurred figure","film critic quote","oscar nomination","director credit","station agent","sideways"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "youtube", date: "2026-10-23T00:10:06.911-05:00", id: "Ybhq8ZwTOdo",
+    desc: "everywhere he looks he sees her" },
+
+  { type: "quote", date: "2026-10-21T22:43:12.353-05:00",
+    quote: "im a slave to freedom" },
+
+  { type: "quote", date: "2026-10-21T16:48:47.973-05:00",
+    quote: "The grass isn’t greener on the other side, it’s green where you water it" },
+
   { type: "quote", date: "2026-10-21T16:47:24.147-05:00",
     quote: "A test drive tests the car. Marriage tests the driver" },
 
