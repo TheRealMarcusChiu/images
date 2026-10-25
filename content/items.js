@@ -17,6 +17,17 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-10-25T11:54:35.026-05:00", id: "bImGFgNe0XI" },
+
+  { type: "quote", date: "2026-10-24T20:45:41.472-05:00",
+    quote: "you can't have an easy life and a great character" },
+
+  { type: "quote", date: "2026-10-24T04:17:41.413-05:00",
+    quote: "the opposite of grief isn't happiness; the opposite of grief is forgetting" },
+
+  { type: "quote", date: "2026-10-24T04:16:19.551-05:00",
+    quote: "Grief is the price we pay for love." },
+
   { type: "quote", date: "2026-10-23T03:28:31.158-05:00",
     quote: "Grief is just love with no place to go." },
 
