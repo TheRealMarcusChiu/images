@@ -17,6 +17,12 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-10-26T12:47:08.877-05:00", file: "2026-10-26T12:47:08.877-05:00.webp",
+    tags: ["crucifixion","christ","cross","inri","crown of thorns","red robe","geometric lines","religious art","sacred imagery","jesus christ"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-26T11:37:42.437-05:00", file: "2026-10-26T11:37:42.437-05:00.png",
+    tags: ["comic","internet","bed","conversation","stick figure","text bubble","computer","meme","online","wrong"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "youtube", date: "2026-10-25T11:54:35.026-05:00", id: "bImGFgNe0XI" },
 
   { type: "quote", date: "2026-10-24T20:45:41.472-05:00",
