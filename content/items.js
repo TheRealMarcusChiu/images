@@ -18,7 +18,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
   { type: "image", date: "2026-10-26T12:47:08.877-05:00", file: "2026-10-26T12:47:08.877-05:00.webp",
-    desc: "he who gave us the breathe of life, took his last breathe of life", tags: ["crucifixion","christ","cross","inri","crown of thorns","red robe","geometric lines","religious art","sacred imagery","jesus christ"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+    desc: "he who gave us the breathe of life, struggled to take his last breathe", tags: ["crucifixion","christ","cross","inri","crown of thorns","red robe","geometric lines","religious art","sacred imagery","jesus christ"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "image", date: "2026-10-26T11:37:42.437-05:00", file: "2026-10-26T11:37:42.437-05:00.png",
     tags: ["comic","internet","bed","conversation","stick figure","text bubble","computer","meme","online","wrong"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
