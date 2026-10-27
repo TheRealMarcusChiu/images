@@ -17,6 +17,36 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-10-27T00:02:48.154-05:00", file: "2026-10-27T00:02:48.154-05:00.webp",
+    tags: ["intellectual loneliness","deep talks","complexity tolerance","nuance avoidance","social exhaustion","thoughtful communication","vibes and reels","script adherence","small talk alienation","thinking people"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:48.119-05:00", file: "2026-10-27T00:02:48.119-05:00.webp",
+    tags: ["writing process","personal growth","book reading","self transformation","creative expression","thought articulation","life change","journaling","reflective writing","emotional connection"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:48.088-05:00", file: "2026-10-27T00:02:48.088-05:00.webp",
+    tags: ["book quote","marriage advice","Anne Brontë","The Tenant of Wildfell Hall","love and marriage","single life","marriage caution","literary text","19th century literature","romance novel"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:48.051-05:00", file: "2026-10-27T00:02:48.051-05:00.webp",
+    tags: ["love vulnerability","heart broken","selfishness","casket metaphor","emotional protection","text excerpt","philosophical text","literary quote","introspection","emotional safety"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:48.018-05:00", file: "2026-10-27T00:02:48.018-05:00.webp",
+    tags: ["The Art of Living","happiness factors","human mind","physical health","mental health","personal relationships","marriage","family","friendships","art and nature"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:47.989-05:00", file: "2026-10-27T00:02:47.989-05:00.webp",
+    tags: ["Jung psychology","heartbreak healing","ego surrender","self-acceptance","initiatory ordeal","love projections","reclaiming inner resources","Red Book","soul energy","radical acceptance"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:47.913-05:00", file: "2026-10-27T00:02:47.913-05:00.webp",
+    tags: ["love yourself","self-love","emotional pain","red-hot iron metaphor","personal growth","self-discovery","love test","relationship introspection","inner journey","existential question"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:47.867-05:00", file: "2026-10-27T00:02:47.867-05:00.webp",
+    tags: ["quote","inspirational quote","humanity","gentleman","lady","God","words","universe","hope","The Medicine of Hope"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:47.665-05:00", file: "2026-10-27T00:02:47.665-05:00.webp",
+    tags: ["quote","philosophy","mountain metaphor","climbing","memory","knowledge","inspiration","life lesson","text image","motivational"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
+  { type: "image", date: "2026-10-27T00:02:47.563-05:00", file: "2026-10-27T00:02:47.563-05:00.webp",
+    tags: ["water droplet","rock","consistency","intensity","perseverance","motivational quote","daily effort","long-term progress","patience","slow progress"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "image", date: "2026-10-26T12:47:08.877-05:00", file: "2026-10-26T12:47:08.877-05:00.webp",
     desc: "he who gave us the breathe of life, breathe his last on the cross", tags: ["crucifixion","christ","cross","inri","crown of thorns","red robe","geometric lines","religious art","sacred imagery","jesus christ"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
