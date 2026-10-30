@@ -17,6 +17,12 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-10-30T17:51:24.046-05:00",
+    quote: "Your failures aren't failures they are lessons." },
+
+  { type: "image", date: "2026-10-30T00:07:08.259-05:00", file: "2026-10-30T00:07:08.259-05:00.png",
+    link: "https://git.marcuschiu.com/github-pages-directory/", tags: ["grief quote","text on black background","emotional message","mental health","healing process"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-10-29T22:09:34.322-05:00",
     quote: "debating is about winning, deliberating is about figuring out the right answer" },
 
