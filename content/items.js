@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-10-29T22:09:34.322-05:00",
+    quote: "debating is about winning, deliberating is about figuring out the right answer" },
+
   { type: "image", date: "2026-10-27T00:02:48.154-05:00", file: "2026-10-27T00:02:48.154-05:00.webp",
     tags: ["intellectual loneliness","deep talks","complexity tolerance","nuance avoidance","social exhaustion","thoughtful communication","vibes and reels","script adherence","small talk alienation","thinking people"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
