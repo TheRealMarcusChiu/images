@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-11-03T00:30:47.789-05:00",
+    quote: "If no one believes in you.... You're unbelievable" },
+
+  { type: "youtube", date: "2026-11-02T17:49:14.309-05:00", id: "WLdk4kG9Yks" },
+
   { type: "quote", date: "2026-10-30T17:51:24.046-05:00",
     quote: "Your failures aren't failures they are lessons." },
 
