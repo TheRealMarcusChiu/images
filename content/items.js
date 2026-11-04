@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-11-04T17:17:32.783-05:00", id: "2kEGMQfr2TE" },
+
   { type: "youtube", date: "2026-11-04T00:28:03.793-05:00", id: "gqNsQdlfo7c",
     desc: "Griefwalker - Directed by Tim Wilson - 2008\n\nDocumentary about Harvard-trained theologian Stephen Jenkinson, a grief counselor who teaches that death empowers us to live and that we must not only accept death but embrace it" },
 
