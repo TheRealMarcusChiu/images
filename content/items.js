@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-11-04T00:28:03.793-05:00", id: "gqNsQdlfo7c",
+    desc: "Griefwalker - Directed by Tim Wilson - 2008" },
+
   { type: "youtube", date: "2026-11-03T23:55:18.938-05:00", id: "qbkHfpdxDp4" },
 
   { type: "youtube", date: "2026-11-03T01:06:57.964-05:00", id: "hOdt5a1TkBA" },
