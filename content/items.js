@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-11-08T22:36:44.568-05:00", id: "54XZXwEoRQ8" },
+
   { type: "quote", date: "2026-11-05T00:50:59.700-05:00",
     quote: "A Dad Directs, Advise, & Discuss." },
 
