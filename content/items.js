@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-11-10T00:16:36.920-05:00",
+    quote: "If you commit to nothing, you’ll be distracted by everything" },
+
   { type: "quote", date: "2026-11-09T23:24:40.747-05:00",
     quote: "Stress and nervousness are often signals that you’re avoiding something important" },
 
