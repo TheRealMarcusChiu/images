@@ -17,6 +17,10 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-11-09T23:01:53.529-05:00", id: "Wu2CdY_vY3A" },
+
+  { type: "youtube", date: "2026-11-09T19:18:04.039-05:00", id: "CgEZSYwiwrc" },
+
   { type: "quote", date: "2026-11-08T22:38:16.070-05:00",
     quote: "Your confidence far exceeds your competence" },
 
