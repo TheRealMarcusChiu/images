@@ -17,6 +17,11 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-11-11T22:23:25.051-05:00",
+    quote: "Don't let your past become your burden forever" },
+
+  { type: "youtube", date: "2026-11-11T21:52:07.641-05:00", id: "s4IyddefhLQ" },
+
   { type: "youtube", date: "2026-11-11T19:25:36.642-05:00", id: "Jl-lo061-Hs" },
 
   { type: "quote", date: "2026-11-10T00:16:36.920-05:00",
