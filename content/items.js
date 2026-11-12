@@ -17,6 +17,8 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "youtube", date: "2026-11-11T19:25:36.642-05:00", id: "Jl-lo061-Hs" },
+
   { type: "quote", date: "2026-11-10T00:16:36.920-05:00",
     quote: "If you commit to nothing, you’ll be distracted by everything" },
 
