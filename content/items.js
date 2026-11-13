@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "image", date: "2026-11-13T00:59:29.460-05:00", file: "2026-11-13T00:59:29.460-05:00.png",
+    tags: ["text image","motivational quote","inspirational message","belief in you","positive affirmation","encouragement","support","personal growth","self confidence","hope"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
+
   { type: "quote", date: "2026-11-11T22:23:25.051-05:00",
     quote: "Don't let your past become your burden forever" },
 
