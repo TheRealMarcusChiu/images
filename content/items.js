@@ -24,7 +24,7 @@ window.GALLERY_ITEMS = [
     tags: ["twitter post","andrej karpathy","language models","llm tips","asd-ste100","aerospace documentation","controlled language specification","writing style","readability","ai tips"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
   { type: "quote", date: "2026-11-14T02:55:18.343-05:00",
-    quote: "there's nothing worse that you can say to me, than what I can say to myself" },
+    quote: "there's nothing worse you can say to me, than what I can say to myself" },
 
   { type: "image", date: "2026-11-13T00:59:29.460-05:00", file: "2026-11-13T00:59:29.460-05:00.png",
     tags: ["text image","motivational quote","inspirational message","belief in you","positive affirmation","encouragement","support","personal growth","self confidence","hope"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
