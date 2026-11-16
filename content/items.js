@@ -17,6 +17,9 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-11-16T01:43:58.045-05:00",
+    quote: "The only one you must compare yourself with is yourself from yesterday" },
+
   { type: "image", date: "2026-11-14T16:14:48.588-05:00", file: "2026-11-14T16:14:48.588-05:00.png",
     tags: ["twitter post","andrej karpathy","language models","llm tips","asd-ste100","aerospace documentation","controlled language specification","writing style","readability","ai tips"], tagProvider: "ollama", tagModel: "qwen3-vl:8b" },
 
