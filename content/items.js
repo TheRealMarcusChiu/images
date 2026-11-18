@@ -17,6 +17,13 @@
      poster filename in content/media/ — video thumbnail or audio cover (optional)
    ────────────────────────────────────────────────────────────────────────── */
 window.GALLERY_ITEMS = [
+  { type: "quote", date: "2026-11-17T20:08:16.478-05:00",
+    quote: "a poem dances finely between the familiar and the unknown" },
+
+  { type: "youtube", date: "2026-11-16T18:10:16.091-05:00", id: "nR_8wypFZ2M" },
+
+  { type: "youtube", date: "2026-11-16T01:52:05.401-05:00", id: "XKq5azWtrB0" },
+
   { type: "quote", date: "2026-11-16T01:43:58.045-05:00",
     quote: "The only one you must compare yourself with is yourself from yesterday" },
 
